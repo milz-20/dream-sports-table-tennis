@@ -1,0 +1,202 @@
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import * as amplify from 'aws-cdk-lib/aws-amplify';
+import * as iam from 'aws-cdk-lib/aws-iam';
+
+export class TableTennisInfraStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+    super(scope, id, props);
+
+    // DynamoDB Tables - COMMENTED OUT FOR NOW
+    /*
+    // 1. Customers Table - Store customer information
+    const customersTable = new dynamodb.Table(this, 'CustomersTable', {
+      tableName: 'table-tennis-customers',
+      partitionKey: { name: 'customerId', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'email', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      pointInTimeRecovery: true,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+    });
+
+    // Global Secondary Index for email lookup
+    customersTable.addGlobalSecondaryIndex({
+      indexName: 'EmailIndex',
+      partitionKey: { name: 'email', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
+    // 2. Coaching Sessions Table - Store coaching session bookings
+    const coachingSessionsTable = new dynamodb.Table(this, 'CoachingSessionsTable', {
+      tableName: 'table-tennis-coaching-sessions',
+      partitionKey: { name: 'sessionId', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'sessionDate', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      pointInTimeRecovery: true,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+    });
+
+    // GSI for querying sessions by customer
+    coachingSessionsTable.addGlobalSecondaryIndex({
+      indexName: 'CustomerSessionsIndex',
+      partitionKey: { name: 'customerId', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'sessionDate', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
+    // GSI for querying sessions by date
+    coachingSessionsTable.addGlobalSecondaryIndex({
+      indexName: 'DateIndex',
+      partitionKey: { name: 'sessionDate', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'sessionId', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
+    // 3. Equipment Inventory Table - Store equipment products
+    const equipmentTable = new dynamodb.Table(this, 'EquipmentTable', {
+      tableName: 'table-tennis-equipment',
+      partitionKey: { name: 'productId', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'category', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      pointInTimeRecovery: true,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+    });
+
+    // GSI for querying by category
+    equipmentTable.addGlobalSecondaryIndex({
+      indexName: 'CategoryIndex',
+      partitionKey: { name: 'category', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'productName', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
+    // 4. Orders Table - Store equipment orders
+    const ordersTable = new dynamodb.Table(this, 'OrdersTable', {
+      tableName: 'table-tennis-orders',
+      partitionKey: { name: 'orderId', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'orderDate', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      pointInTimeRecovery: true,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+    });
+
+    // GSI for customer orders
+    ordersTable.addGlobalSecondaryIndex({
+      indexName: 'CustomerOrdersIndex',
+      partitionKey: { name: 'customerId', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'orderDate', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
+    // 5. Contact Inquiries Table - Store contact form submissions
+    const inquiriesTable = new dynamodb.Table(this, 'InquiriesTable', {
+      tableName: 'table-tennis-inquiries',
+      partitionKey: { name: 'inquiryId', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'submittedDate', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      pointInTimeRecovery: true,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+    });
+    */
+
+    // AWS Amplify Hosting App
+    // Note: You'll need to connect this to a Git repository (GitHub, CodeCommit, etc.)
+    // or use manual deployment through Amplify Console
+    const amplifyApp = new amplify.CfnApp(this, 'TableTennisWebApp', {
+      name: 'table-tennis-website',
+      description: 'Table Tennis Coaching and Equipment Business Website',
+      platform: 'WEB',
+      enableBranchAutoDeletion: true,
+      iamServiceRole: this.createAmplifyRole().roleArn,
+      customRules: [
+        {
+          source: '/<*>',
+          target: '/index.html',
+          status: '404-200',
+        },
+        {
+          source: '</^[^.]+$|\\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|ttf|map|json)$)([^.]+$)/>',
+          target: '/index.html',
+          status: '200',
+        },
+      ],
+      environmentVariables: [
+        {
+          name: 'REACT_APP_AWS_REGION',
+          value: this.region,
+        },
+      ],
+    });
+
+    // Create main branch for Amplify
+    const mainBranch = new amplify.CfnBranch(this, 'MainBranch', {
+      appId: amplifyApp.attrAppId,
+      branchName: 'main',
+      enableAutoBuild: true,
+      enablePullRequestPreview: false,
+      stage: 'PRODUCTION',
+    });
+
+    // CloudFormation Outputs
+    /*
+    new cdk.CfnOutput(this, 'CustomersTableName', {
+      value: customersTable.tableName,
+      description: 'DynamoDB Customers Table Name',
+    });
+
+    new cdk.CfnOutput(this, 'CoachingSessionsTableName', {
+      value: coachingSessionsTable.tableName,
+      description: 'DynamoDB Coaching Sessions Table Name',
+    });
+
+    new cdk.CfnOutput(this, 'EquipmentTableName', {
+      value: equipmentTable.tableName,
+      description: 'DynamoDB Equipment Table Name',
+    });
+
+    new cdk.CfnOutput(this, 'OrdersTableName', {
+      value: ordersTable.tableName,
+      description: 'DynamoDB Orders Table Name',
+    });
+
+    new cdk.CfnOutput(this, 'InquiriesTableName', {
+      value: inquiriesTable.tableName,
+      description: 'DynamoDB Inquiries Table Name',
+    });
+    */
+
+    new cdk.CfnOutput(this, 'AmplifyAppId', {
+      value: amplifyApp.attrAppId,
+      description: 'Amplify App ID',
+    });
+
+    new cdk.CfnOutput(this, 'AmplifyDefaultDomain', {
+      value: amplifyApp.attrDefaultDomain,
+      description: 'Amplify Default Domain',
+    });
+
+    new cdk.CfnOutput(this, 'WebsiteURL', {
+      value: `https://main.${amplifyApp.attrDefaultDomain}`,
+      description: 'Website URL',
+    });
+  }
+
+  private createAmplifyRole(): iam.Role {
+    const role = new iam.Role(this, 'AmplifyRole', {
+      assumedBy: new iam.ServicePrincipal('amplify.amazonaws.com'),
+      description: 'IAM role for Amplify to access AWS resources',
+    });
+
+    role.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess-Amplify')
+    );
+
+    return role;
+  }
+}

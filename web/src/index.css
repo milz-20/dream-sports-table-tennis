@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@layer base {
+  * {
+    @apply border-charcoal-200;
+  }
+
+  body {
+    @apply bg-white text-charcoal-950 font-sans antialiased;
+    margin: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .glass-effect {
+    @apply bg-white/80 backdrop-blur-md border border-charcoal-100/50;
+  }
+  
+  .elegant-card {
+    @apply bg-white rounded-lg shadow-elegant hover:shadow-elegant-md transition-all duration-300;
+  }
+  
+  .elegant-input {
+    @apply w-full px-4 py-3 border border-charcoal-200 rounded-lg 
+           focus:outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-500
+           transition-all duration-200 bg-white;
+  }
+  
+  .elegant-button {
+    @apply px-6 py-3 bg-accent-500 text-white rounded-lg font-medium
+           hover:bg-accent-600 active:scale-[0.98]
+           transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+  
+  .elegant-button-outline {
+    @apply px-6 py-3 border-2 border-charcoal-900 text-charcoal-900 rounded-lg font-medium
+           hover:bg-charcoal-900 hover:text-white active:scale-[0.98]
+           transition-all duration-200;
+  }
+}
