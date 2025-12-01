@@ -27,19 +27,19 @@ function App() {
     <Router>
       <div className="min-h-screen flex flex-col bg-white">
         {/* Elegant Navigation */}
-        <header className="sticky top-0 z-50 glass-effect border-b border-charcoal-100">
+        <header className="sticky top-0 z-50 glass-effect border-b border-border">
           <nav className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="flex items-center justify-between h-20">
               {/* Brand */}
               <Link to="/" className="group flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-500 to-accent-600 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300">
-                  <span className="text-white font-bold text-xl">DS</span>
+                <div className="w-10 h-10 bg-gradient-to-br from-primary to-orange-600 rounded-lg flex items-center justify-center shadow-ios group-hover:shadow-ios-lg transition-all duration-300">
+                  <span className="text-white font-bold text-xl drop-shadow-md">DS</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-display font-bold text-xl text-charcoal-950 tracking-tight">
+                  <span className="font-display font-bold text-xl text-foreground tracking-tight">
                     Dream Sports
                   </span>
-                  <span className="text-xs text-charcoal-500 font-medium -mt-1">
+                  <span className="text-xs text-muted-foreground font-medium -mt-1">
                     Table Tennis
                   </span>
                 </div>
@@ -72,7 +72,7 @@ function App() {
         </main>
 
         {/* Elegant Footer */}
-        <footer className="bg-charcoal-950 text-white border-t border-charcoal-900">
+        <footer className="bg-slate-950/95 backdrop-blur-md text-white border-t border-slate-800/50">
           <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
               {/* Brand Column */}
@@ -83,7 +83,7 @@ function App() {
                   </div>
                   <span className="font-display font-bold text-xl">Dream Sports Table Tennis</span>
                 </div>
-                <p className="text-charcoal-400 text-sm leading-relaxed max-w-md">
+                <p className="text-slate-400 text-sm leading-relaxed max-w-md">
                   Elevating your game with expert coaching, premium equipment, and a passion for excellence in table tennis.
                 </p>
               </div>
@@ -102,7 +102,7 @@ function App() {
               {/* Contact Info */}
               <div>
                 <h3 className="font-display font-semibold text-white mb-4">Contact</h3>
-                <ul className="space-y-2 text-sm text-charcoal-400">
+                <ul className="space-y-2 text-sm text-slate-400">
                   <li>info@dreamsports-tt.com</li>
                   <li>(555) 123-4567</li>
                   <li>Mon-Sat: 9AM-7PM</li>
@@ -111,7 +111,7 @@ function App() {
             </div>
 
             {/* Bottom Bar */}
-            <div className="pt-8 border-t border-charcoal-800 flex flex-col md:flex-row justify-between items-center text-sm text-charcoal-500">
+            <div className="pt-8 border-t border-slate-800/50 flex flex-col md:flex-row justify-between items-center text-sm text-slate-500">
               <p>&copy; 2025 Dream Sports Table Tennis. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <button className="hover:text-accent-500 transition-colors">Privacy Policy</button>
@@ -138,12 +138,12 @@ function NavLink({ to, icon: Icon, label }: { to: string; icon: any; label: stri
           flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-sm
           transition-all duration-200 group
           ${isActive 
-            ? 'bg-charcoal-950 text-white' 
-            : 'text-charcoal-700 hover:bg-charcoal-50 hover:text-charcoal-950'
+            ? 'bg-primary text-primary-foreground shadow-sm' 
+            : 'text-foreground/70 hover:bg-muted hover:text-foreground'
           }
         `}
       >
-        <Icon className={`w-4 h-4 ${isActive ? 'text-accent-500' : 'text-charcoal-400 group-hover:text-charcoal-600'}`} />
+        <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-muted-foreground group-hover:text-foreground'}`} />
         <span>{label}</span>
       </Link>
     </li>
@@ -156,7 +156,7 @@ function FooterLink({ to, children }: { to: string; children: React.ReactNode })
     <li>
       <Link
         to={to}
-        className="text-sm text-charcoal-400 hover:text-accent-500 transition-colors duration-200"
+        className="text-sm text-slate-400 hover:text-primary transition-colors duration-200"
       >
         {children}
       </Link>

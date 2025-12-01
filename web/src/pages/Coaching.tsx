@@ -20,36 +20,23 @@ const Coaching: React.FC = () => {
             transition={{ delay: 0.2, duration: 0.6 }}
             className="text-center mb-12"
           >
-            <div className="inline-flex items-center space-x-2 bg-accent-50 text-accent-600 px-4 py-2 rounded-full text-sm font-medium mb-6">
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.5 }}
+              className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6 border border-primary/20"
+            >
               <Award className="w-4 h-4" />
               <span>Expert-Led Training Programs</span>
-            </div>
-            <h1 className="font-display font-bold text-5xl lg:text-6xl text-charcoal-950 mb-6">
+            </motion.div>
+            <h1 className="font-display font-bold text-5xl lg:text-6xl text-foreground mb-6">
               Coaching Programs
             </h1>
-            <p className="text-xl text-charcoal-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Personalized training programs designed to elevate your game, from foundational skills to advanced competitive strategies.
             </p>
           </motion.div>
 
-          {/* Hero Image Placeholder */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="max-w-4xl mx-auto"
-          >
-            <div className="aspect-[21/9] rounded-2xl bg-gradient-to-br from-charcoal-100 to-charcoal-200 shadow-elegant-xl overflow-hidden">
-              {/* Placeholder for stock photo: Coach instructing student */}
-              <div className="w-full h-full flex items-center justify-center">
-                <div className="text-center">
-                  <User className="w-20 h-20 text-charcoal-400 mx-auto mb-4" />
-                  <p className="text-charcoal-500 font-medium">Stock Photo: Professional Coaching Session</p>
-                  <p className="text-charcoal-400 text-sm mt-2">Coach providing personalized instruction</p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
         </div>
       </section>
 
@@ -65,7 +52,7 @@ const Coaching: React.FC = () => {
       </section>
 
       {/* What You'll Learn Section */}
-      <section className="py-20 bg-charcoal-950 text-white">
+      <section className="py-20 bg-gradient-to-br from-slate-900/95 via-slate-950/95 to-slate-900/95 backdrop-blur-md text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -77,7 +64,7 @@ const Coaching: React.FC = () => {
               <h2 className="font-display font-bold text-4xl lg:text-5xl mb-6">
                 What You'll Learn
               </h2>
-              <p className="text-lg text-charcoal-300 mb-8">
+              <p className="text-lg text-slate-300 mb-8">
                 Our comprehensive training program covers all aspects of table tennis, from fundamental techniques to advanced competitive strategies.
               </p>
               
@@ -91,12 +78,12 @@ const Coaching: React.FC = () => {
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                     className="flex items-start space-x-3"
                   >
-                    <div className="w-6 h-6 bg-accent-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                       <Check className="w-4 h-4 text-white" />
                     </div>
                     <div>
                       <h4 className="font-semibold text-white mb-1">{skill.title}</h4>
-                      <p className="text-charcoal-400 text-sm">{skill.description}</p>
+                      <p className="text-slate-400 text-sm">{skill.description}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -109,13 +96,13 @@ const Coaching: React.FC = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <div className="aspect-[4/5] rounded-2xl bg-charcoal-800 shadow-elegant-xl overflow-hidden">
+              <div className="aspect-[4/5] rounded-2xl bg-slate-800/80 backdrop-blur-sm shadow-ios-xl overflow-hidden border border-slate-700/50">
                 {/* Placeholder for stock photo: Training techniques collage */}
                 <div className="w-full h-full flex items-center justify-center">
                   <div className="text-center p-8">
-                    <TrendingUp className="w-24 h-24 text-charcoal-600 mx-auto mb-4" />
-                    <p className="text-charcoal-400 font-medium">Stock Photo: Training Techniques</p>
-                    <p className="text-charcoal-500 text-sm mt-2">Professional skill development</p>
+                    <TrendingUp className="w-24 h-24 text-slate-600 mx-auto mb-4" />
+                    <p className="text-slate-400 font-medium">Stock Photo: Training Techniques</p>
+                    <p className="text-slate-500 text-sm mt-2">Professional skill development</p>
                   </div>
                 </div>
               </div>
@@ -125,7 +112,7 @@ const Coaching: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-charcoal-50 to-white">
+      <section className="py-20 bg-gradient-to-br from-slate-50/60 to-white/60 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -133,10 +120,10 @@ const Coaching: React.FC = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="font-display font-bold text-4xl lg:text-5xl text-charcoal-950 mb-6">
+            <h2 className="font-display font-bold text-4xl lg:text-5xl text-foreground mb-6">
               Ready to Begin?
             </h2>
-            <p className="text-lg text-charcoal-600 mb-8 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
               Take the first step towards mastering table tennis. Contact us to discuss which program is right for you.
             </p>
             <Link to="/contact" className="elegant-button inline-flex items-center group">
@@ -235,21 +222,31 @@ function ProgramCard({ icon: Icon, title, duration, price, priceUnit, focus, per
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.5 }}
-      className={`elegant-card p-8 relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300 ${
-        featured ? 'ring-2 ring-accent-500' : ''
+      whileHover={{ y: -8, transition: { duration: 0.3 } }}
+      className={`elegant-card p-8 relative overflow-hidden group ${
+        featured ? 'ring-2 ring-primary/30 border-primary/20' : ''
       }`}
     >
       {featured && (
-        <div className="absolute top-0 right-0 bg-accent-500 text-white text-xs font-bold px-4 py-1 rounded-bl-lg">
+        <motion.div 
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.3 }}
+          className="absolute top-0 right-0 bg-gradient-to-br from-primary to-orange-600 text-white text-xs font-bold px-4 py-1 rounded-bl-lg shadow-ios"
+        >
           MOST POPULAR
-        </div>
+        </motion.div>
       )}
 
-      <div className={`w-14 h-14 bg-gradient-to-br ${color} rounded-xl flex items-center justify-center mb-6 shadow-md group-hover:shadow-lg transition-shadow`}>
-        <Icon className="w-7 h-7 text-white" />
-      </div>
+      <motion.div 
+        whileHover={{ scale: 1.1, rotate: 5 }}
+        transition={{ duration: 0.3 }}
+        className={`w-16 h-16 bg-gradient-to-br ${color} rounded-xl flex items-center justify-center mb-6 shadow-ios group-hover:shadow-ios-lg`}
+      >
+        <Icon className="w-8 h-8 text-white drop-shadow-md" />
+      </motion.div>
 
-      <h3 className="font-display font-bold text-2xl text-charcoal-950 mb-2">
+      <h3 className="font-display font-bold text-2xl text-foreground mb-2">
         {title}
       </h3>
 
