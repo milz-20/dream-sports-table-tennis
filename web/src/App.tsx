@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Coaching from './pages/Coaching';
 import Equipment from './pages/Equipment';
 import Contact from './pages/Contact';
+import ProductDetail from './pages/ProductDetail';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -16,6 +17,7 @@ function AnimatedRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/coaching" element={<Coaching />} />
         <Route path="/equipment" element={<Equipment />} />
+        <Route path="/equipment/:productId" element={<ProductDetail />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
     </AnimatePresence>
@@ -32,17 +34,12 @@ function App() {
             <div className="flex items-center justify-between h-20">
               {/* Brand */}
               <Link to="/" className="group flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-primary to-orange-600 rounded-lg flex items-center justify-center shadow-ios group-hover:shadow-ios-lg transition-all duration-300">
-                  <span className="text-white font-bold text-xl drop-shadow-md">DS</span>
+                <div className="w-10 h-10 bg-gradient-to-br from-primary to-red-700 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300">
+                  <span className="text-white font-bold text-xl drop-shadow-md">PT</span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="font-display font-bold text-xl text-foreground tracking-tight">
-                    Dream Sports
-                  </span>
-                  <span className="text-xs text-muted-foreground font-medium -mt-1">
-                    Table Tennis
-                  </span>
-                </div>
+                <span className="font-display font-bold text-xl text-black tracking-tight">
+                  Pune Table Tennis
+                </span>
               </Link>
 
               {/* Navigation Links */}

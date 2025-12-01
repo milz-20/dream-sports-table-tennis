@@ -164,7 +164,7 @@ const Contact: React.FC = () => {
                     {/* Name Input */}
                     <div>
                       <label className="block text-sm font-semibold text-charcoal-900 mb-2">
-                        Full Name <span className="text-accent-500">*</span>
+                        Full Name <span className="text-primary">*</span>
                       </label>
                       <input
                         type="text"
@@ -180,7 +180,7 @@ const Contact: React.FC = () => {
                     {/* Email Input */}
                     <div>
                       <label className="block text-sm font-semibold text-charcoal-900 mb-2">
-                        Email Address <span className="text-accent-500">*</span>
+                        Email Address <span className="text-primary">*</span>
                       </label>
                       <input
                         type="email"
@@ -211,7 +211,7 @@ const Contact: React.FC = () => {
                     {/* Subject Select */}
                     <div>
                       <label className="block text-sm font-semibold text-charcoal-900 mb-2">
-                        Subject <span className="text-accent-500">*</span>
+                        Subject <span className="text-primary">*</span>
                       </label>
                       <select
                         name="subject"
@@ -231,7 +231,7 @@ const Contact: React.FC = () => {
                     {/* Message Textarea */}
                     <div>
                       <label className="block text-sm font-semibold text-charcoal-900 mb-2">
-                        Message <span className="text-accent-500">*</span>
+                        Message <span className="text-primary">*</span>
                       </label>
                       <textarea
                         name="message"
@@ -278,7 +278,7 @@ function ContactInfoCard({ icon: Icon, title, content, subtext }: { icon: any; t
         <motion.div 
           whileHover={{ scale: 1.1, rotate: 5 }}
           transition={{ duration: 0.3 }}
-          className="w-12 h-12 bg-gradient-to-br from-primary to-orange-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-ios group-hover:shadow-ios-lg"
+          className="w-12 h-12 bg-gradient-to-br from-primary to-red-700 rounded-lg flex items-center justify-center flex-shrink-0 shadow-ios group-hover:shadow-ios-lg"
         >
           <Icon className="w-5 h-5 text-white drop-shadow-md" />
         </motion.div>

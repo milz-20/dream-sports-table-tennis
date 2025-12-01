@@ -12,7 +12,7 @@ const Coaching: React.FC = () => {
       transition={{ duration: 0.3 }}
     >
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-charcoal-50 via-white to-charcoal-50 py-20">
+      <section className="bg-gradient-to-br from-gray-50 via-white to-gray-50 py-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -52,7 +52,7 @@ const Coaching: React.FC = () => {
       </section>
 
       {/* What You'll Learn Section */}
-      <section className="py-20 bg-gradient-to-br from-slate-900/95 via-slate-950/95 to-slate-900/95 backdrop-blur-md text-white">
+      <section className="py-20 bg-gradient-to-br from-black/95 via-gray-900/95 to-black/95 backdrop-blur-md text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -112,7 +112,7 @@ const Coaching: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-slate-50/60 to-white/60 backdrop-blur-sm">
+      <section className="py-20 bg-gradient-to-br from-gray-50/60 to-white/60 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -148,7 +148,7 @@ const programs = [
     focus: 'Basic techniques, grip, stance, and fundamental strokes',
     perfectFor: 'New players and those returning to the sport',
     features: ['Proper grip techniques', 'Basic stroke fundamentals', 'Court positioning', 'Introduction to spin'],
-    color: 'from-blue-500 to-blue-600',
+    color: 'from-primary to-red-600',
   },
   {
     icon: TrendingUp,
@@ -159,7 +159,7 @@ const programs = [
     focus: 'Advanced strokes, spin control, and match strategy',
     perfectFor: 'Players looking to compete at higher levels',
     features: ['Advanced stroke techniques', 'Spin mastery', 'Match strategies', 'Footwork optimization'],
-    color: 'from-accent-500 to-accent-600',
+    color: 'from-secondary to-black',
     featured: true,
   },
   {
@@ -182,7 +182,7 @@ const programs = [
     focus: 'Personalized one-on-one training tailored to your needs',
     perfectFor: 'Anyone seeking individual attention',
     features: ['One-on-one coaching', 'Flexible scheduling', 'Customized curriculum', 'Video analysis'],
-    color: 'from-purple-500 to-purple-600',
+    color: 'from-primary to-secondary',
   },
 ];
 
