@@ -106,14 +106,32 @@ export class TableTennisInfraStack extends cdk.Stack {
     */
 
     // AWS Amplify Hosting App
-    // Note: You'll need to connect this to a Git repository (GitHub, CodeCommit, etc.)
-    // or use manual deployment through Amplify Console
+    // Connected to GitHub repository: milz-20/dream-sports-table-tennis
     const amplifyApp = new amplify.CfnApp(this, 'TableTennisWebApp', {
       name: 'table-tennis-website',
       description: 'Table Tennis Coaching and Equipment Business Website',
       platform: 'WEB',
+      repository: 'https://github.com/milz-20/dream-sports-table-tennis',
+      accessToken: process.env.GITHUB_TOKEN, // Store in AWS Secrets Manager or SSM Parameter Store
       enableBranchAutoDeletion: true,
       iamServiceRole: this.createAmplifyRole().roleArn,
+      buildSpec: `version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - cd web
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: web/build
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - web/node_modules/**/*`,
       customRules: [
         {
           source: '/<*>',
@@ -134,12 +152,12 @@ export class TableTennisInfraStack extends cdk.Stack {
       ],
     });
 
-    // Create main branch for Amplify
+    // Create branch for Amplify (using shadCNTailwindUI branch)
     const mainBranch = new amplify.CfnBranch(this, 'MainBranch', {
       appId: amplifyApp.attrAppId,
-      branchName: 'main',
+      branchName: 'shadCNTailwindUI',
       enableAutoBuild: true,
-      enablePullRequestPreview: false,
+      enablePullRequestPreview: true,
       stage: 'PRODUCTION',
     });
 
