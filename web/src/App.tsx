@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import { Home as HomeIcon, Users, ShoppingBag, Mail } from 'lucide-react';
+import { Home as HomeIcon, Users, ShoppingBag, Mail, ShoppingCart } from 'lucide-react';
+import { CartProvider, useCart } from './contexts/CartContext';
+import CartDrawer from './components/CartDrawer';
 import Home from './pages/Home';
 import Coaching from './pages/Coaching';
 import Equipment from './pages/Equipment';
 import Contact from './pages/Contact';
 import ProductDetail from './pages/ProductDetail';
+import Checkout from './pages/Checkout';
+import OrderSuccess from './pages/OrderSuccess';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -19,15 +23,20 @@ function AnimatedRoutes() {
         <Route path="/equipment" element={<Equipment />} />
         <Route path="/equipment/:productId" element={<ProductDetail />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
       </Routes>
     </AnimatePresence>
   );
 }
 
 function App() {
+  const [isCartOpen, setIsCartOpen] = React.useState(false);
+  
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col bg-white">
+    <CartProvider>
+      <Router>
+        <div className="min-h-screen flex flex-col bg-white">
         {/* Elegant Navigation */}
         <header className="sticky top-0 z-50 glass-effect border-b border-border">
           <nav className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -50,14 +59,17 @@ function App() {
                 <NavLink to="/contact" icon={Mail} label="Contact" />
               </ul>
 
-              {/* CTA Button */}
-              <div className="hidden lg:block">
-                <Link 
-                  to="/contact" 
-                  className="elegant-button text-sm"
-                >
-                  Get Started
-                </Link>
+              {/* Cart & CTA Button */}
+              <div className="flex items-center gap-4">
+                <CartButton onOpenCart={() => setIsCartOpen(true)} />
+                <div className="hidden lg:block">
+                  <Link 
+                    to="/contact" 
+                    className="elegant-button text-sm"
+                  >
+                    Get Started
+                  </Link>
+                </div>
               </div>
             </div>
           </nav>
@@ -117,8 +129,32 @@ function App() {
             </div>
           </div>
         </footer>
+        
+        {/* Cart Drawer */}
+        <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
       </div>
     </Router>
+    </CartProvider>
+  );
+}
+
+// Cart Button Component
+function CartButton({ onOpenCart }: { onOpenCart: () => void }) {
+  const { totalItems } = useCart();
+  
+  return (
+    <button
+      onClick={onOpenCart}
+      className="relative p-2 rounded-lg hover:bg-muted transition-colors duration-200"
+      aria-label="Shopping Cart"
+    >
+      <ShoppingCart className="w-6 h-6 text-foreground" />
+      {totalItems > 0 && (
+        <span className="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+          {totalItems}
+        </span>
+      )}
+    </button>
   );
 }
 

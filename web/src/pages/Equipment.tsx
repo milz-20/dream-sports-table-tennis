@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Star, ShoppingBag, ArrowRight, ShoppingCart, Package, Zap, MapPin, TrendingUp } from 'lucide-react';
+import { Star, ShoppingBag, ArrowRight, ShoppingCart, Package, Zap, MapPin, TrendingUp, Plus, Minus } from 'lucide-react';
+import { useCart } from '../contexts/CartContext';
 
 // Import blade images
 import timoBollImg from '../assets/images/timoBoll.jpg';
@@ -883,6 +884,36 @@ function ProductCard({
   image,
   index,
 }: ProductCardProps) {
+  const { addToCart, updateQuantity, items } = useCart();
+  
+  const cartItem = items.find(item => item.id === id);
+  const quantity = cartItem?.quantity || 0;
+  
+  const handleAddToCart = () => {
+    addToCart({
+      id,
+      name,
+      category,
+      price,
+      originalPrice,
+      image,
+    });
+  };
+  
+  const handleIncrement = () => {
+    if (cartItem) {
+      updateQuantity(id, quantity + 1);
+    } else {
+      handleAddToCart();
+    }
+  };
+  
+  const handleDecrement = () => {
+    if (quantity > 0) {
+      updateQuantity(id, quantity - 1);
+    }
+  };
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -999,17 +1030,35 @@ function ProductCard({
             <span className="sm:hidden">View</span>
             <ArrowRight className="w-2.5 h-2.5 md:w-3 md:h-3 ml-1 md:ml-2 group-hover/btn:translate-x-1 transition-transform" />
           </Link>
-          <button
-            className="elegant-button py-1.5 md:py-2 px-2 md:px-4 text-[10px] sm:text-xs md:text-sm inline-flex items-center justify-center gap-1 md:gap-2 flex-1 md:flex-initial"
-            onClick={() => {
-              // Add to cart functionality will be implemented here
-              alert(`Added ${name} to cart!`);
-            }}
-          >
-            <ShoppingCart className="w-3 h-3 md:w-4 md:h-4" />
-            <span className="hidden sm:inline">Add to Cart</span>
-            <span className="sm:hidden">Add</span>
-          </button>
+          
+          {quantity === 0 ? (
+            <button
+              className="elegant-button py-1.5 md:py-2 px-2 md:px-4 text-[10px] sm:text-xs md:text-sm inline-flex items-center justify-center gap-1 md:gap-2 flex-1 md:flex-initial"
+              onClick={handleAddToCart}
+            >
+              <ShoppingCart className="w-3 h-3 md:w-4 md:h-4" />
+              <span className="hidden sm:inline">Add to Cart</span>
+              <span className="sm:hidden">Add</span>
+            </button>
+          ) : (
+            <div className="flex items-center justify-between border-2 border-primary rounded-lg px-2 md:px-3 py-1 md:py-1.5 flex-1 md:flex-initial bg-white">
+              <button
+                className="text-primary hover:bg-primary/10 rounded p-1 transition-colors"
+                onClick={handleDecrement}
+              >
+                <Minus className="w-3 h-3 md:w-4 md:h-4" />
+              </button>
+              <span className="font-bold text-sm md:text-base px-3 md:px-4 text-foreground">
+                {quantity}
+              </span>
+              <button
+                className="text-primary hover:bg-primary/10 rounded p-1 transition-colors"
+                onClick={handleIncrement}
+              >
+                <Plus className="w-3 h-3 md:w-4 md:h-4" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </motion.div>

@@ -3,16 +3,26 @@ import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { TableTennisInfraStack } from '../lib/table-tennis-stack';
 import { TableTennisBudgetStack } from '../lib/budget-stack';
+import { Route53Stack } from '../lib/route53-stack';
 
 const app = new cdk.App();
 
 // Main infrastructure stack
-new TableTennisInfraStack(app, 'TableTennisInfraStack', {
+const infraStack = new TableTennisInfraStack(app, 'TableTennisInfraStack', {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
   description: 'Table Tennis Coaching and Equipment Business Infrastructure',
+});
+
+// Route53 DNS stack
+new Route53Stack(app, 'Route53Stack', {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+  },
+  description: 'Route53 Hosted Zone for punetabletennis.in',
 });
 
 // Budget monitoring stack
