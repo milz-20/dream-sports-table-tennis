@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Zap, TrendingUp, Flame, User, Clock, Check, ArrowRight, Award, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Zap, TrendingUp, Flame, User, Clock, Check, ArrowRight, Award, ChevronLeft, ChevronRight, Trophy, Target, Users } from 'lucide-react';
 import whatWillYouLearn from '@/assets/images/whatWillYouLearn1.jpg';
 
 // Image Carousel Component
@@ -157,7 +157,6 @@ const Coaching: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="max-w-3xl mx-auto text-center"
             >
               <h2 className="font-display font-bold text-4xl lg:text-5xl mb-6">
                 What You'll Learn
@@ -187,6 +186,69 @@ const Coaching: React.FC = () => {
                     </div>
                   </motion.div>
                 ))}
+              </div>
+            </motion.div>
+
+            {/* Right side content */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="hidden lg:block space-y-6"
+            >
+              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+                <h3 className="text-xl font-bold text-white mb-4">Advanced Techniques</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start space-x-3">
+                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                    <span className="text-slate-300">Master topspin and backspin variations</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                    <span className="text-slate-300">Perfect your loop and counter-loop shots</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                    <span className="text-slate-300">Develop powerful smash techniques</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+                <h3 className="text-xl font-bold text-white mb-4">Match Strategy</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start space-x-3">
+                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                    <span className="text-slate-300">Read opponent's playing style and adapt</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                    <span className="text-slate-300">Mental preparation and focus techniques</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                    <span className="text-slate-300">Tournament preparation and tactics</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+                <h3 className="text-xl font-bold text-white mb-4">Physical Conditioning</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start space-x-3">
+                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                    <span className="text-slate-300">Footwork drills for quick movement</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                    <span className="text-slate-300">Endurance training for long matches</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                    <span className="text-slate-300">Flexibility and injury prevention</span>
+                  </li>
+                </ul>
               </div>
             </motion.div>
           </div>
@@ -280,6 +342,63 @@ const Coaching: React.FC = () => {
                   <p className="text-xs text-muted-foreground mb-1">Success Rate</p>
                   <p className="font-bold text-xl text-foreground">95%</p>
                 </div>
+              </div>
+            </motion.div>
+
+            {/* Right side - Achievements & Expertise */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="space-y-6"
+            >
+              <div className="elegant-card p-6 border-l-4 border-primary">
+                <h4 className="font-bold text-xl text-foreground mb-3">Achievements</h4>
+                <ul className="space-y-3">
+                  <li className="flex items-start space-x-3">
+                    <Trophy className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-muted-foreground">Multiple state-level tournament victories</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <Trophy className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-muted-foreground">Represented Maharashtra at national championships</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <Trophy className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-muted-foreground">Trained players who competed at state level</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="elegant-card p-6 border-l-4 border-primary">
+                <h4 className="font-bold text-xl text-foreground mb-3">Specializations</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-primary/5 rounded-lg p-3 text-center">
+                    <Target className="w-6 h-6 text-primary mx-auto mb-2" />
+                    <p className="text-sm font-medium text-foreground">Serve Techniques</p>
+                  </div>
+                  <div className="bg-primary/5 rounded-lg p-3 text-center">
+                    <Zap className="w-6 h-6 text-primary mx-auto mb-2" />
+                    <p className="text-sm font-medium text-foreground">Spin Mastery</p>
+                  </div>
+                  <div className="bg-primary/5 rounded-lg p-3 text-center">
+                    <Users className="w-6 h-6 text-primary mx-auto mb-2" />
+                    <p className="text-sm font-medium text-foreground">Match Strategy</p>
+                  </div>
+                  <div className="bg-primary/5 rounded-lg p-3 text-center">
+                    <Award className="w-6 h-6 text-primary mx-auto mb-2" />
+                    <p className="text-sm font-medium text-foreground">Mental Training</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="elegant-card p-6 bg-gradient-to-br from-primary/5 to-primary/10">
+                <h4 className="font-bold text-xl text-foreground mb-3">Coaching Philosophy</h4>
+                <p className="text-muted-foreground italic leading-relaxed">
+                  "Every player has unique potential. My role is to identify their strengths, address their weaknesses, and guide them on a personalized journey to excellence. Success in table tennis comes from mastering the fundamentals, building mental resilience, and never stopping to learn."
+                </p>
+                <p className="text-right text-primary font-semibold mt-3">- Coach Danish Aga</p>
               </div>
             </motion.div>
           </div>
