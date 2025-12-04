@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { GraduationCap, ShoppingBag, ArrowRight } from 'lucide-react';
@@ -6,6 +6,14 @@ import { Card, CardContent } from '../components/ui/card';
 
 const Home: React.FC = () => {
   const [waveOffset, setWaveOffset] = useState(0);
+
+  useEffect(() => {
+    document.title = 'Pune Table Tennis - Expert Coaching & Premium Equipment in Pune';
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Professional table tennis coaching in Pune by Commonwealth certified coach Danish Aga. Premium Butterfly, Stiga, DHS equipment. Book your session today!');
+    }
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const x = e.clientX / window.innerWidth;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, Clock, MapPin, Send, CheckCircle } from 'lucide-react';
 
@@ -12,6 +12,14 @@ const Contact: React.FC = () => {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  useEffect(() => {
+    document.title = 'Contact Us - Pune Table Tennis Coaching & Equipment';
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Contact Pune Table Tennis for coaching inquiries, equipment purchases, or trial sessions. Located in Pune, Maharashtra. Call or visit us for expert guidance on table tennis.');
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,13 +98,13 @@ const Contact: React.FC = () => {
                 <ContactInfoCard
                   icon={Mail}
                   title="Email"
-                  content="info@dreamsports-tt.com"
+                  content="dstta786@gmail.com"
                   subtext="We'll respond within 24 hours"
                 />
                 <ContactInfoCard
                   icon={Phone}
                   title="Phone"
-                  content="(555) 123-4567"
+                  content="+91 88307 71691"
                   subtext="Mon-Sat, 9AM-7PM"
                 />
                 <ContactInfoCard
@@ -107,9 +115,9 @@ const Contact: React.FC = () => {
                 />
                 <ContactInfoCard
                   icon={MapPin}
-                  title="Location"
-                  content="123 Sports Avenue"
-                  subtext="Your City, ST 12345"
+                  title="Main Location"
+                  content="Deccan Gymkhana, Pune"
+                  subtext="Other branches: R Square, Lodha Belmondo"
                 />
               </div>
 

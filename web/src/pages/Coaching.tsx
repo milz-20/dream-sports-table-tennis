@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Zap, TrendingUp, Flame, User, Clock, Check, ArrowRight, Award, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -93,6 +93,14 @@ const ImageCarousel: React.FC = () => {
 };
 
 const Coaching: React.FC = () => {
+  useEffect(() => {
+    document.title = 'Table Tennis Coaching in Pune - Commonwealth Certified Coach';
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Expert table tennis coaching in Pune by Commonwealth certified coach Danish Aga. Beginner, intermediate, advanced & private lessons. 10+ years experience. Book your trial session today!');
+    }
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -274,49 +282,6 @@ const Coaching: React.FC = () => {
                 </div>
               </div>
             </motion.div>
-
-            {/* Coach Media */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="space-y-6"
-            >
-              {/* Coach Photo */}
-              <div className="elegant-card overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1622163642998-1ea32b0bbc67?w=800&h=600&fit=crop&auto=format&q=80"
-                  alt="Coach Danish Aga"
-                  className="w-full aspect-[4/3] object-cover"
-                />
-                <div className="p-4 bg-gradient-to-br from-primary/5 to-red-700/5">
-                  <p className="text-sm font-semibold text-foreground">Coach Danish Aga in action</p>
-                  <p className="text-xs text-muted-foreground">Demonstrating professional techniques</p>
-                </div>
-              </div>
-
-              {/* Coach Video */}
-              <div className="elegant-card overflow-hidden">
-                <div className="aspect-video bg-slate-900 relative group">
-                  {/* Video placeholder - replace with actual video */}
-                  <img
-                    src="https://images.unsplash.com/photo-1611916656173-875e4277bea6?w=800&h=450&fit=crop&auto=format&q=80"
-                    alt="Coach Danish Aga Skills Video"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                    <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-lg cursor-pointer group-hover:scale-110 transition-transform">
-                      <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-white border-b-8 border-b-transparent ml-1"></div>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-4 bg-gradient-to-br from-primary/5 to-red-700/5">
-                  <p className="text-sm font-semibold text-foreground">Watch Coach Danish's Skills</p>
-                  <p className="text-xs text-muted-foreground">See professional techniques in action</p>
-                </div>
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>
@@ -353,8 +318,8 @@ const programs = [
     icon: Zap,
     title: 'Beginner Program',
     duration: '8 sessions',
-    price: '$320',
-    priceUnit: '$40 per session',
+    price: 'Custom',
+    priceUnit: 'Tailored pricing',
     focus: 'Basic techniques, grip, stance, and fundamental strokes',
     perfectFor: 'New players and those returning to the sport',
     features: ['Proper grip techniques', 'Basic stroke fundamentals', 'Court positioning', 'Introduction to spin'],
@@ -364,8 +329,8 @@ const programs = [
     icon: TrendingUp,
     title: 'Intermediate Program',
     duration: '12 sessions',
-    price: '$540',
-    priceUnit: '$45 per session',
+    price: 'Custom',
+    priceUnit: 'Tailored pricing',
     focus: 'Advanced strokes, spin control, and match strategy',
     perfectFor: 'Players looking to compete at higher levels',
     features: ['Advanced stroke techniques', 'Spin mastery', 'Match strategies', 'Footwork optimization'],
@@ -387,8 +352,8 @@ const programs = [
     icon: User,
     title: 'Private Lessons',
     duration: 'Flexible',
-    price: '$75',
-    priceUnit: 'per hour',
+    price: 'Custom',
+    priceUnit: 'Tailored pricing',
     focus: 'Personalized one-on-one training tailored to your needs',
     perfectFor: 'Anyone seeking individual attention',
     features: ['One-on-one coaching', 'Flexible scheduling', 'Customized curriculum', 'Video analysis'],

@@ -112,9 +112,10 @@ function App() {
               <div>
                 <h3 className="font-display font-semibold text-white mb-4">Contact</h3>
                 <ul className="space-y-2 text-sm text-slate-400">
-                  <li>info@dreamsports-tt.com</li>
-                  <li>(555) 123-4567</li>
+                  <li>dstta786@gmail.com</li>
+                  <li>+91 88307 71691</li>
                   <li>Mon-Sat: 9AM-7PM</li>
+                  <li className="mt-3 text-slate-300">Deccan Gymkhana, Pune</li>
                 </ul>
               </div>
             </div>

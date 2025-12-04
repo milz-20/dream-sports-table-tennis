@@ -21,26 +21,8 @@ export class Route53Stack extends cdk.Stack {
       comment: 'Hosted zone for Pune Table Tennis website',
     });
 
-    // Use the existing Amplify App ID directly
-    const amplifyAppId = 'djgag8h9oiav8'; // Your Amplify App ID
-    const branchName = 'main'; // The branch name in Amplify (manually deployed)
-
-    // Add custom domain to Amplify
-    const domain = new amplify.CfnDomain(this, 'AmplifyCustomDomain', {
-      appId: amplifyAppId,
-      domainName: 'punetabletennis.in',
-      subDomainSettings: [
-        {
-          branchName: branchName,
-          prefix: '',
-        },
-        {
-          branchName: branchName,
-          prefix: 'www',
-        },
-      ],
-      enableAutoSubDomain: false,
-    });
+    // Domain will be added manually through Amplify Console
+    // The hosted zone is ready and nameservers are configured
 
     // Output the Hosted Zone ID
     new cdk.CfnOutput(this, 'HostedZoneId', {
@@ -63,25 +45,9 @@ export class Route53Stack extends cdk.Stack {
       exportName: 'PuneTT-ZoneName',
     });
 
-    // Output domain configuration details
-    new cdk.CfnOutput(this, 'CustomDomainName', {
-      value: domain.domainName,
-      description: 'Custom domain configured for Amplify',
-    });
-
-    new cdk.CfnOutput(this, 'DomainStatus', {
-      value: domain.attrStatusReason,
-      description: 'Domain configuration status',
-    });
-
     new cdk.CfnOutput(this, 'NameServerInstructions', {
-      value: 'Update your domain registrar nameservers with the Route53 nameservers listed above',
+      value: 'Nameservers are configured. Add custom domain manually in Amplify Console.',
       description: 'Domain registrar configuration',
-    });
-
-    new cdk.CfnOutput(this, 'CustomDomainURL', {
-      value: `https://punetabletennis.in`,
-      description: 'Your custom domain URL (will be active after DNS propagation)',
     });
   }
 }

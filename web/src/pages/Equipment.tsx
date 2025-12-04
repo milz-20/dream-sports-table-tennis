@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Star, ShoppingBag, ArrowRight, ShoppingCart, Package, Zap, MapPin, TrendingUp, Plus, Minus } from 'lucide-react';
@@ -55,6 +55,15 @@ import v15ExtraImg from '../assets/images/rubbers/victas-v-15.jpg';
 
 const Equipment: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<'blades' | 'rubbers'>('blades');
+  
+  useEffect(() => {
+    document.title = 'Table Tennis Equipment Pune - Butterfly, Stiga, DHS, Yasaka Blades & Rubbers';
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Buy authentic table tennis equipment in Pune. Premium Butterfly Viscaria, Timo Boll, Tenergy rubbers. Stiga Carbonado, DHS Hurricane. Genuine products with warranty. Cash on delivery available.');
+    }
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -194,11 +203,16 @@ const Equipment: React.FC = () => {
             Our coaches can help you choose the perfect equipment for your playing style
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/contact" className="elegant-button inline-flex items-center justify-center group">
+            <a 
+              href="https://wa.me/918830771691?text=Hi%20i%20need%20help%20selecting%20a%20suitable%20equipment%20for%20me" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="elegant-button inline-flex items-center justify-center group"
+            >
               <span>Get Expert Advice</span>
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link to="/coaching" className="elegant-button-outline inline-flex items-center justify-center text-white border-white hover:bg-white hover:text-black">
+            </a>
+            <Link to="/coaching" className="inline-flex items-center justify-center px-6 py-3 border-2 border-white text-white rounded-lg font-medium hover:bg-white hover:text-black active:scale-[0.98] transition-all duration-200">
               View Coaching
             </Link>
           </div>
