@@ -535,44 +535,44 @@ function ProgramCard({ icon: Icon, title, duration, price, priceUnit, focus, per
       <motion.div 
         whileHover={{ scale: 1.1, rotate: 5 }}
         transition={{ duration: 0.3 }}
-        className={`w-16 h-16 bg-gradient-to-br ${color} rounded-xl flex items-center justify-center mb-6 shadow-ios group-hover:shadow-ios-lg`}
+        className={`w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br ${color} rounded-xl flex items-center justify-center mb-3 sm:mb-4 lg:mb-6 shadow-ios group-hover:shadow-ios-lg`}
       >
-        <Icon className="w-8 h-8 text-white drop-shadow-md" />
+        <Icon className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white drop-shadow-md" />
       </motion.div>
 
-      <h3 className="font-display font-bold text-2xl text-foreground mb-2">
+      <h3 className="font-display font-bold text-lg sm:text-xl lg:text-2xl text-foreground mb-2">
         {title}
       </h3>
 
-      <div className="flex items-baseline space-x-2 mb-6">
-        <span className="font-display font-bold text-4xl text-charcoal-950">{price}</span>
-        <span className="text-charcoal-500 text-sm">{priceUnit}</span>
+      <div className="flex items-baseline space-x-2 mb-3 sm:mb-4 lg:mb-6">
+        <span className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-charcoal-950">{price}</span>
+        <span className="text-charcoal-500 text-xs sm:text-sm">{priceUnit}</span>
       </div>
 
-      <div className="space-y-3 mb-6">
-        <div className="flex items-center space-x-2 text-sm">
-          <Clock className="w-4 h-4 text-charcoal-400" />
+      <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4 lg:mb-6">
+        <div className="flex items-center space-x-2 text-xs sm:text-sm">
+          <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-charcoal-400" />
           <span className="text-charcoal-600">{duration}</span>
         </div>
       </div>
 
-      <div className="space-y-4 mb-6">
+      <div className="space-y-2 sm:space-y-3 lg:space-y-4 mb-3 sm:mb-4 lg:mb-6">
         <div>
-          <p className="text-sm font-semibold text-charcoal-900 mb-1">Focus:</p>
-          <p className="text-charcoal-600 text-sm">{focus}</p>
+          <p className="text-xs sm:text-sm font-semibold text-charcoal-900 mb-1">Focus:</p>
+          <p className="text-charcoal-600 text-xs sm:text-sm">{focus}</p>
         </div>
         <div>
-          <p className="text-sm font-semibold text-charcoal-900 mb-1">Perfect for:</p>
-          <p className="text-charcoal-600 text-sm">{perfectFor}</p>
+          <p className="text-xs sm:text-sm font-semibold text-charcoal-900 mb-1">Perfect for:</p>
+          <p className="text-charcoal-600 text-xs sm:text-sm">{perfectFor}</p>
         </div>
       </div>
 
-      <div className="border-t border-charcoal-200 pt-6 mb-6">
-        <p className="text-sm font-semibold text-charcoal-900 mb-3">What's Included:</p>
-        <ul className="space-y-2">
+      <div className="border-t border-charcoal-200 pt-3 sm:pt-4 lg:pt-6 mb-3 sm:mb-4 lg:mb-6">
+        <p className="text-xs sm:text-sm font-semibold text-charcoal-900 mb-2 sm:mb-3">What's Included:</p>
+        <ul className="space-y-1.5 sm:space-y-2">
           {features.map((feature: string, idx: number) => (
-            <li key={idx} className="flex items-start space-x-2 text-sm text-charcoal-600">
-              <Check className="w-4 h-4 text-accent-500 flex-shrink-0 mt-0.5" />
+            <li key={idx} className="flex items-start space-x-2 text-xs sm:text-sm text-charcoal-600">
+              <Check className="w-3 h-3 sm:w-4 sm:h-4 text-accent-500 flex-shrink-0 mt-0.5" />
               <span>{feature}</span>
             </li>
           ))}
@@ -583,10 +583,10 @@ function ProgramCard({ icon: Icon, title, duration, price, priceUnit, focus, per
         to="/contact"
         className={`w-full ${
           featured ? 'elegant-button' : 'elegant-button-outline'
-        } inline-flex items-center justify-center group`}
+        } inline-flex items-center justify-center group text-sm sm:text-base`}
       >
         <span>Book Now</span>
-        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+        <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-2 group-hover:translate-x-1 transition-transform" />
       </Link>
     </motion.div>
   );
