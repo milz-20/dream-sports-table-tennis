@@ -140,7 +140,7 @@ const Coaching: React.FC = () => {
       {/* Programs Grid */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
             {programs.map((program, index) => (
               <ProgramCard key={index} {...program} index={index} />
             ))}
@@ -517,7 +517,7 @@ function ProgramCard({ icon: Icon, title, duration, price, priceUnit, focus, per
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.5 }}
       whileHover={{ y: -8, transition: { duration: 0.3 } }}
-      className={`elegant-card p-8 relative overflow-hidden group ${
+      className={`elegant-card p-4 sm:p-6 lg:p-8 relative overflow-hidden group ${
         featured ? 'ring-2 ring-primary/30 border-primary/20' : ''
       }`}
     >

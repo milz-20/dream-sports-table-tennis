@@ -288,33 +288,33 @@ const Checkout: React.FC = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="flex items-center gap-4 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary transition-colors">
+                  <label className="flex items-center gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary transition-colors">
                     <input
                       type="radio"
                       name="deliveryType"
                       value="standard"
                       checked={formData.deliveryType === 'standard'}
                       onChange={handleChange}
-                      className="w-5 h-5 text-primary"
+                      className="w-4 h-4 text-primary flex-shrink-0"
                     />
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-900">Standard Delivery - FREE</p>
-                      <p className="text-sm text-gray-600">Delivery within 24 hours</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-gray-900 text-sm sm:text-base">Standard Delivery - FREE</p>
+                      <p className="text-xs sm:text-sm text-gray-600">Delivery within 24 hours</p>
                     </div>
                   </label>
 
-                  <label className="flex items-center gap-4 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary transition-colors">
+                  <label className="flex items-center gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary transition-colors">
                     <input
                       type="radio"
                       name="deliveryType"
                       value="instant"
                       checked={formData.deliveryType === 'instant'}
                       onChange={handleChange}
-                      className="w-5 h-5 text-primary"
+                      className="w-4 h-4 text-primary flex-shrink-0"
                     />
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-900">Instant Delivery - ₹200</p>
-                      <p className="text-sm text-gray-600">Delivery within 3 hours</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-gray-900 text-sm sm:text-base">Instant Delivery - ₹200</p>
+                      <p className="text-xs sm:text-sm text-gray-600">Delivery within 3 hours</p>
                     </div>
                   </label>
                 </div>
