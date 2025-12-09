@@ -217,12 +217,12 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
   };
 
   const RatingBar = ({ label, value, color = 'bg-primary' }: { label: string; value: number; color?: string }) => (
-    <div className="space-y-2">
+    <div className="space-y-1 md:space-y-2">
       <div className="flex justify-between items-center">
-        <span className="text-sm font-medium text-gray-700">{label}</span>
-        <span className="text-lg font-bold text-gray-900">{value}/10</span>
+        <span className="text-xs md:text-sm font-medium text-gray-700">{label}</span>
+        <span className="text-base md:text-lg font-bold text-gray-900">{value}/10</span>
       </div>
-      <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+      <div className="h-2 md:h-3 bg-gray-200 rounded-full overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${(value / 10) * 100}%` }}
@@ -245,49 +245,49 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
     const Icon = Badge.icon;
 
     return (
-      <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 ${Badge.color} font-semibold text-sm`}>
-        <Icon className="w-5 h-5" />
-        {Badge.text}
+      <div className={`inline-flex items-center gap-1.5 md:gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full border-2 ${Badge.color} font-semibold text-xs md:text-sm`}>
+        <Icon className="w-4 h-4 md:w-5 md:h-5" />
+        <span className="whitespace-nowrap">{Badge.text}</span>
       </div>
     );
   };
 
   return (
-    <section className="py-12 md:py-20 bg-gradient-to-br from-gray-50 via-white to-gray-50">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <section className="py-8 md:py-12 lg:py-20 bg-gradient-to-br from-gray-50 via-white to-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-6 md:mb-12"
         >
-          <h2 className="font-display font-bold text-4xl lg:text-5xl text-black mb-4">
+          <h2 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-black mb-3 md:mb-4">
             🎯 Customize Your Racket
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-2">
             Build your perfect racket by selecting a blade and rubbers. Get instant feedback on your combination!
           </p>
         </motion.div>
 
         {/* Selection Grid */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-12">
           {/* Blade Selection */}
-          <div className="bg-white rounded-2xl p-6 border-2 border-gray-200 hover:border-primary transition-colors">
-            <h3 className="font-display font-bold text-xl mb-4 flex items-center gap-2">
-              <span className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
-              Select Blade
+          <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 border-2 border-gray-200 hover:border-primary transition-colors">
+            <h3 className="font-display font-bold text-base md:text-xl mb-3 md:mb-4 flex items-center gap-2">
+              <span className="bg-primary text-white w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm">1</span>
+              <span className="text-sm md:text-base">Select Blade</span>
             </h3>
             
             {selectedBlade ? (
-              <div className="space-y-4">
-                <img src={selectedBlade.image} alt={selectedBlade.name} className="w-full h-48 object-cover rounded-lg" />
-                <h4 className="font-bold text-lg">{selectedBlade.name}</h4>
-                <p className="text-sm text-gray-600">{selectedBlade.brand} • {selectedBlade.composition}</p>
-                <p className="text-2xl font-bold text-primary">₹{selectedBlade.price.toLocaleString('en-IN')}</p>
+              <div className="space-y-3 md:space-y-4">
+                <img src={selectedBlade.image} alt={selectedBlade.name} className="w-full h-40 md:h-48 object-cover rounded-lg" />
+                <h4 className="font-bold text-sm md:text-lg line-clamp-2">{selectedBlade.name}</h4>
+                <p className="text-xs md:text-sm text-gray-600">{selectedBlade.brand} • {selectedBlade.composition}</p>
+                <p className="text-xl md:text-2xl font-bold text-primary">₹{selectedBlade.price.toLocaleString('en-IN')}</p>
                 <button
                   onClick={() => setShowBladeSelector(!showBladeSelector)}
-                  className="w-full py-2 px-4 border-2 border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-white transition-colors"
+                  className="w-full py-2 md:py-2.5 px-3 md:px-4 border-2 border-primary text-primary rounded-lg text-sm md:text-base font-medium hover:bg-primary hover:text-white transition-colors active:scale-95"
                 >
                   Change Blade
                 </button>
@@ -295,30 +295,30 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
             ) : (
               <button
                 onClick={() => setShowBladeSelector(!showBladeSelector)}
-                className="w-full h-64 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-3 hover:border-primary hover:bg-primary/5 transition-colors"
+                className="w-full h-48 md:h-64 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-2 md:gap-3 hover:border-primary hover:bg-primary/5 transition-colors active:scale-95"
               >
-                <Plus className="w-12 h-12 text-gray-400" />
-                <span className="text-gray-600 font-medium">Click to select blade</span>
+                <Plus className="w-10 h-10 md:w-12 md:h-12 text-gray-400" />
+                <span className="text-gray-600 font-medium text-sm md:text-base px-4">Click to select blade</span>
               </button>
             )}
           </div>
 
           {/* Forehand Rubber Selection */}
-          <div className="bg-white rounded-2xl p-6 border-2 border-gray-200 hover:border-primary transition-colors">
-            <h3 className="font-display font-bold text-xl mb-4 flex items-center gap-2">
-              <span className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
-              Forehand Rubber
+          <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 border-2 border-gray-200 hover:border-primary transition-colors">
+            <h3 className="font-display font-bold text-base md:text-xl mb-3 md:mb-4 flex items-center gap-2">
+              <span className="bg-primary text-white w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm">2</span>
+              <span className="text-sm md:text-base">Forehand Rubber</span>
             </h3>
             
             {selectedForehandRubber ? (
-              <div className="space-y-4">
-                <img src={selectedForehandRubber.image} alt={selectedForehandRubber.name} className="w-full h-48 object-cover rounded-lg" />
-                <h4 className="font-bold text-lg">{selectedForehandRubber.name}</h4>
-                <p className="text-sm text-gray-600">{selectedForehandRubber.type} • {selectedForehandRubber.hardness}</p>
-                <p className="text-2xl font-bold text-primary">₹{selectedForehandRubber.price.toLocaleString('en-IN')}</p>
+              <div className="space-y-3 md:space-y-4">
+                <img src={selectedForehandRubber.image} alt={selectedForehandRubber.name} className="w-full h-40 md:h-48 object-cover rounded-lg" />
+                <h4 className="font-bold text-sm md:text-lg line-clamp-2">{selectedForehandRubber.name}</h4>
+                <p className="text-xs md:text-sm text-gray-600">{selectedForehandRubber.type} • {selectedForehandRubber.hardness}</p>
+                <p className="text-xl md:text-2xl font-bold text-primary">₹{selectedForehandRubber.price.toLocaleString('en-IN')}</p>
                 <button
                   onClick={() => setShowForehandSelector(!showForehandSelector)}
-                  className="w-full py-2 px-4 border-2 border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-white transition-colors"
+                  className="w-full py-2 md:py-2.5 px-3 md:px-4 border-2 border-primary text-primary rounded-lg text-sm md:text-base font-medium hover:bg-primary hover:text-white transition-colors active:scale-95"
                 >
                   Change Rubber
                 </button>
@@ -326,11 +326,11 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
             ) : (
               <button
                 onClick={() => setShowForehandSelector(!showForehandSelector)}
-                className="w-full h-64 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-3 hover:border-primary hover:bg-primary/5 transition-colors"
+                className="w-full h-48 md:h-64 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-2 md:gap-3 hover:border-primary hover:bg-primary/5 transition-colors active:scale-95"
                 disabled={!selectedBlade}
               >
-                <Plus className="w-12 h-12 text-gray-400" />
-                <span className="text-gray-600 font-medium">
+                <Plus className="w-10 h-10 md:w-12 md:h-12 text-gray-400" />
+                <span className="text-gray-600 font-medium text-sm md:text-base px-4 text-center">
                   {selectedBlade ? 'Click to select rubber' : 'Select blade first'}
                 </span>
               </button>
@@ -338,21 +338,21 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
           </div>
 
           {/* Backhand Rubber Selection */}
-          <div className="bg-white rounded-2xl p-6 border-2 border-gray-200 hover:border-primary transition-colors">
-            <h3 className="font-display font-bold text-xl mb-4 flex items-center gap-2">
-              <span className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span>
-              Backhand Rubber
+          <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 border-2 border-gray-200 hover:border-primary transition-colors">
+            <h3 className="font-display font-bold text-base md:text-xl mb-3 md:mb-4 flex items-center gap-2">
+              <span className="bg-primary text-white w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm">3</span>
+              <span className="text-sm md:text-base">Backhand Rubber</span>
             </h3>
             
             {selectedBackhandRubber ? (
-              <div className="space-y-4">
-                <img src={selectedBackhandRubber.image} alt={selectedBackhandRubber.name} className="w-full h-48 object-cover rounded-lg" />
-                <h4 className="font-bold text-lg">{selectedBackhandRubber.name}</h4>
-                <p className="text-sm text-gray-600">{selectedBackhandRubber.type} • {selectedBackhandRubber.hardness}</p>
-                <p className="text-2xl font-bold text-primary">₹{selectedBackhandRubber.price.toLocaleString('en-IN')}</p>
+              <div className="space-y-3 md:space-y-4">
+                <img src={selectedBackhandRubber.image} alt={selectedBackhandRubber.name} className="w-full h-40 md:h-48 object-cover rounded-lg" />
+                <h4 className="font-bold text-sm md:text-lg line-clamp-2">{selectedBackhandRubber.name}</h4>
+                <p className="text-xs md:text-sm text-gray-600">{selectedBackhandRubber.type} • {selectedBackhandRubber.hardness}</p>
+                <p className="text-xl md:text-2xl font-bold text-primary">₹{selectedBackhandRubber.price.toLocaleString('en-IN')}</p>
                 <button
                   onClick={() => setShowBackhandSelector(!showBackhandSelector)}
-                  className="w-full py-2 px-4 border-2 border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-white transition-colors"
+                  className="w-full py-2 md:py-2.5 px-3 md:px-4 border-2 border-primary text-primary rounded-lg text-sm md:text-base font-medium hover:bg-primary hover:text-white transition-colors active:scale-95"
                 >
                   Change Rubber
                 </button>
@@ -360,11 +360,11 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
             ) : (
               <button
                 onClick={() => setShowBackhandSelector(!showBackhandSelector)}
-                className="w-full h-64 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-3 hover:border-primary hover:bg-primary/5 transition-colors"
+                className="w-full h-48 md:h-64 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-2 md:gap-3 hover:border-primary hover:bg-primary/5 transition-colors active:scale-95"
                 disabled={!selectedBlade}
               >
-                <Plus className="w-12 h-12 text-gray-400" />
-                <span className="text-gray-600 font-medium">
+                <Plus className="w-10 h-10 md:w-12 md:h-12 text-gray-400" />
+                <span className="text-gray-600 font-medium text-sm md:text-base px-4 text-center">
                   {selectedBlade ? 'Click to select rubber' : 'Select blade first'}
                 </span>
               </button>
@@ -377,15 +377,15 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 bg-white rounded-2xl p-6 border-2 border-primary"
+            className="mb-4 md:mb-8 bg-white rounded-xl md:rounded-2xl p-4 md:p-6 border-2 border-primary"
           >
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-xl">Select a Blade</h3>
-              <button onClick={() => setShowBladeSelector(false)} className="text-gray-500 hover:text-gray-700">
-                <Minus className="w-6 h-6" />
+            <div className="flex justify-between items-center mb-3 md:mb-4">
+              <h3 className="font-bold text-base md:text-xl">Select a Blade</h3>
+              <button onClick={() => setShowBladeSelector(false)} className="text-gray-500 hover:text-gray-700 p-1 active:scale-95">
+                <Minus className="w-5 h-5 md:w-6 md:h-6" />
               </button>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-h-96 overflow-y-auto">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 max-h-[60vh] md:max-h-96 overflow-y-auto">
               {blades.map((blade) => (
                 <button
                   key={blade.id}
@@ -393,12 +393,12 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
                     setSelectedBlade(blade);
                     setShowBladeSelector(false);
                   }}
-                  className="text-left bg-gray-50 rounded-lg p-4 hover:bg-primary/10 border-2 border-transparent hover:border-primary transition-all"
+                  className="text-left bg-gray-50 rounded-lg p-3 md:p-4 hover:bg-primary/10 border-2 border-transparent hover:border-primary transition-all active:scale-95"
                 >
-                  <img src={blade.image} alt={blade.name} className="w-full h-32 object-cover rounded mb-2" />
-                  <h4 className="font-bold text-sm mb-1 line-clamp-2">{blade.name}</h4>
-                  <p className="text-xs text-gray-600 mb-2">{blade.brand}</p>
-                  <p className="text-lg font-bold text-primary">₹{blade.price.toLocaleString('en-IN')}</p>
+                  <img src={blade.image} alt={blade.name} className="w-full h-24 md:h-32 object-cover rounded mb-2" />
+                  <h4 className="font-bold text-xs md:text-sm mb-1 line-clamp-2">{blade.name}</h4>
+                  <p className="text-[10px] md:text-xs text-gray-600 mb-1 md:mb-2 line-clamp-1">{blade.brand}</p>
+                  <p className="text-sm md:text-lg font-bold text-primary">₹{blade.price.toLocaleString('en-IN')}</p>
                 </button>
               ))}
             </div>
@@ -410,15 +410,15 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 bg-white rounded-2xl p-6 border-2 border-primary"
+            className="mb-4 md:mb-8 bg-white rounded-xl md:rounded-2xl p-4 md:p-6 border-2 border-primary"
           >
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-xl">Select Forehand Rubber</h3>
-              <button onClick={() => setShowForehandSelector(false)} className="text-gray-500 hover:text-gray-700">
-                <Minus className="w-6 h-6" />
+            <div className="flex justify-between items-center mb-3 md:mb-4">
+              <h3 className="font-bold text-base md:text-xl">Select Forehand Rubber</h3>
+              <button onClick={() => setShowForehandSelector(false)} className="text-gray-500 hover:text-gray-700 p-1 active:scale-95">
+                <Minus className="w-5 h-5 md:w-6 md:h-6" />
               </button>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-h-96 overflow-y-auto">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 max-h-[60vh] md:max-h-96 overflow-y-auto">
               {rubbers.map((rubber) => (
                 <button
                   key={rubber.id}
@@ -426,12 +426,12 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
                     setSelectedForehandRubber(rubber);
                     setShowForehandSelector(false);
                   }}
-                  className="text-left bg-gray-50 rounded-lg p-4 hover:bg-primary/10 border-2 border-transparent hover:border-primary transition-all"
+                  className="text-left bg-gray-50 rounded-lg p-3 md:p-4 hover:bg-primary/10 border-2 border-transparent hover:border-primary transition-all active:scale-95"
                 >
-                  <img src={rubber.image} alt={rubber.name} className="w-full h-32 object-cover rounded mb-2" />
-                  <h4 className="font-bold text-sm mb-1 line-clamp-2">{rubber.name}</h4>
-                  <p className="text-xs text-gray-600 mb-2">{rubber.type}</p>
-                  <p className="text-lg font-bold text-primary">₹{rubber.price.toLocaleString('en-IN')}</p>
+                  <img src={rubber.image} alt={rubber.name} className="w-full h-24 md:h-32 object-cover rounded mb-2" />
+                  <h4 className="font-bold text-xs md:text-sm mb-1 line-clamp-2">{rubber.name}</h4>
+                  <p className="text-[10px] md:text-xs text-gray-600 mb-1 md:mb-2 line-clamp-1">{rubber.type}</p>
+                  <p className="text-sm md:text-lg font-bold text-primary">₹{rubber.price.toLocaleString('en-IN')}</p>
                 </button>
               ))}
             </div>
@@ -443,15 +443,15 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 bg-white rounded-2xl p-6 border-2 border-primary"
+            className="mb-4 md:mb-8 bg-white rounded-xl md:rounded-2xl p-4 md:p-6 border-2 border-primary"
           >
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-xl">Select Backhand Rubber</h3>
-              <button onClick={() => setShowBackhandSelector(false)} className="text-gray-500 hover:text-gray-700">
-                <Minus className="w-6 h-6" />
+            <div className="flex justify-between items-center mb-3 md:mb-4">
+              <h3 className="font-bold text-base md:text-xl">Select Backhand Rubber</h3>
+              <button onClick={() => setShowBackhandSelector(false)} className="text-gray-500 hover:text-gray-700 p-1 active:scale-95">
+                <Minus className="w-5 h-5 md:w-6 md:h-6" />
               </button>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-h-96 overflow-y-auto">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 max-h-[60vh] md:max-h-96 overflow-y-auto">
               {rubbers.map((rubber) => (
                 <button
                   key={rubber.id}
@@ -459,12 +459,12 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
                     setSelectedBackhandRubber(rubber);
                     setShowBackhandSelector(false);
                   }}
-                  className="text-left bg-gray-50 rounded-lg p-4 hover:bg-primary/10 border-2 border-transparent hover:border-primary transition-all"
+                  className="text-left bg-gray-50 rounded-lg p-3 md:p-4 hover:bg-primary/10 border-2 border-transparent hover:border-primary transition-all active:scale-95"
                 >
-                  <img src={rubber.image} alt={rubber.name} className="w-full h-32 object-cover rounded mb-2" />
-                  <h4 className="font-bold text-sm mb-1 line-clamp-2">{rubber.name}</h4>
-                  <p className="text-xs text-gray-600 mb-2">{rubber.type}</p>
-                  <p className="text-lg font-bold text-primary">₹{rubber.price.toLocaleString('en-IN')}</p>
+                  <img src={rubber.image} alt={rubber.name} className="w-full h-24 md:h-32 object-cover rounded mb-2" />
+                  <h4 className="font-bold text-xs md:text-sm mb-1 line-clamp-2">{rubber.name}</h4>
+                  <p className="text-[10px] md:text-xs text-gray-600 mb-1 md:mb-2 line-clamp-1">{rubber.type}</p>
+                  <p className="text-sm md:text-lg font-bold text-primary">₹{rubber.price.toLocaleString('en-IN')}</p>
                 </button>
               ))}
             </div>
@@ -476,47 +476,47 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl p-8 border-2 border-primary shadow-xl"
+            className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 lg:p-8 border-2 border-primary shadow-xl"
           >
-            <div className="text-center mb-8">
-              <h3 className="font-display font-bold text-3xl mb-4">Your Custom Racket</h3>
+            <div className="text-center mb-6 md:mb-8">
+              <h3 className="font-display font-bold text-xl md:text-2xl lg:text-3xl mb-3 md:mb-4">Your Custom Racket</h3>
               <RecommendationBadge level={combinedRating.recommendation.level} />
             </div>
 
             {/* Ratings Grid */}
-            <div className="grid md:grid-cols-3 gap-8 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-6 md:mb-8">
               <div className="space-y-2">
-                <div className="flex items-center gap-2 mb-4">
-                  <Zap className="w-6 h-6 text-primary" />
-                  <span className="font-bold text-lg">Speed</span>
+                <div className="flex items-center gap-1.5 md:gap-2 mb-2 md:mb-4">
+                  <Zap className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                  <span className="font-bold text-sm md:text-base lg:text-lg">Speed</span>
                 </div>
                 <RatingBar label="Overall Speed" value={combinedRating.speed} color="bg-red-500" />
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center gap-2 mb-4">
-                  <TrendingUp className="w-6 h-6 text-primary" />
-                  <span className="font-bold text-lg">Spin</span>
+                <div className="flex items-center gap-1.5 md:gap-2 mb-2 md:mb-4">
+                  <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                  <span className="font-bold text-sm md:text-base lg:text-lg">Spin</span>
                 </div>
                 <RatingBar label="Spin Generation" value={combinedRating.spin} color="bg-blue-500" />
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center gap-2 mb-4">
-                  <Target className="w-6 h-6 text-primary" />
-                  <span className="font-bold text-lg">Control</span>
+                <div className="flex items-center gap-1.5 md:gap-2 mb-2 md:mb-4">
+                  <Target className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                  <span className="font-bold text-sm md:text-base lg:text-lg">Control</span>
                 </div>
                 <RatingBar label="Ball Control" value={combinedRating.control} color="bg-green-500" />
               </div>
             </div>
 
             {/* Recommendation */}
-            <div className="bg-gray-50 rounded-xl p-6 mb-6">
-              <p className="text-lg font-semibold mb-4">{combinedRating.recommendation.message}</p>
+            <div className="bg-gray-50 rounded-lg md:rounded-xl p-4 md:p-6 mb-4 md:mb-6">
+              <p className="text-sm md:text-base lg:text-lg font-semibold mb-3 md:mb-4">{combinedRating.recommendation.message}</p>
               <ul className="space-y-2">
                 {combinedRating.recommendation.tips.map((tip, index) => (
-                  <li key={index} className="flex items-start gap-2 text-gray-700">
-                    <span className="text-primary mt-1">•</span>
+                  <li key={index} className="flex items-start gap-2 text-xs md:text-sm lg:text-base text-gray-700">
+                    <span className="text-primary mt-1 flex-shrink-0">•</span>
                     <span>{tip}</span>
                   </li>
                 ))}
@@ -524,19 +524,19 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
             </div>
 
             {/* Price and Add to Cart */}
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t-2">
-              <div>
-                <p className="text-gray-600 mb-1">Total Price</p>
-                <p className="text-4xl font-bold text-primary">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-4 md:pt-6 border-t-2">
+              <div className="text-center md:text-left">
+                <p className="text-sm md:text-base text-gray-600 mb-1">Total Price</p>
+                <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary">
                   ₹{combinedRating.totalPrice.toLocaleString('en-IN')}
                 </p>
               </div>
               <button
                 onClick={handleAddCombinationToCart}
-                className="elegant-button px-8 py-4 text-lg inline-flex items-center gap-3"
+                className="elegant-button w-full md:w-auto px-6 md:px-8 py-3 md:py-4 text-sm md:text-base lg:text-lg inline-flex items-center justify-center gap-2 md:gap-3 active:scale-95"
               >
-                <ShoppingCart className="w-6 h-6" />
-                Add Complete Set to Cart
+                <ShoppingCart className="w-5 h-5 md:w-6 md:h-6" />
+                <span className="whitespace-nowrap">Add Complete Set to Cart</span>
               </button>
             </div>
           </motion.div>
@@ -544,10 +544,10 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
 
         {/* Help Text */}
         {!combinedRating && (
-          <div className="text-center text-gray-600 bg-blue-50 rounded-xl p-8 border-2 border-blue-200">
-            <Info className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-            <p className="text-lg font-medium mb-2">Select all three components to see your racket's performance</p>
-            <p className="text-sm">Choose a blade and two rubbers to get personalized recommendations</p>
+          <div className="text-center text-gray-600 bg-blue-50 rounded-lg md:rounded-xl p-6 md:p-8 border-2 border-blue-200">
+            <Info className="w-10 h-10 md:w-12 md:h-12 text-blue-500 mx-auto mb-3 md:mb-4" />
+            <p className="text-sm md:text-base lg:text-lg font-medium mb-2">Select all three components to see your racket's performance</p>
+            <p className="text-xs md:text-sm">Choose a blade and two rubbers to get personalized recommendations</p>
           </div>
         )}
       </div>
