@@ -374,18 +374,24 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
 
         {/* Blade Selector Modal */}
         {showBladeSelector && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-4 md:mb-8 bg-white rounded-xl md:rounded-2xl p-4 md:p-6 border-2 border-primary"
-          >
-            <div className="flex justify-between items-center mb-3 md:mb-4">
-              <h3 className="font-bold text-base md:text-xl">Select a Blade</h3>
-              <button onClick={() => setShowBladeSelector(false)} className="text-gray-500 hover:text-gray-700 p-1 active:scale-95">
-                <Minus className="w-5 h-5 md:w-6 md:h-6" />
-              </button>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 max-h-[60vh] md:max-h-96 overflow-y-auto">
+          <>
+            {/* Backdrop overlay for mobile */}
+            <div 
+              className="fixed inset-0 bg-black/50 z-40 md:hidden"
+              onClick={() => setShowBladeSelector(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="fixed md:relative bottom-0 md:bottom-auto left-0 right-0 md:mb-8 bg-white rounded-t-2xl md:rounded-2xl p-4 md:p-6 border-2 border-primary z-50 md:z-auto max-h-[85vh] md:max-h-none flex flex-col"
+            >
+              <div className="flex justify-between items-center mb-3 md:mb-4 flex-shrink-0">
+                <h3 className="font-bold text-base md:text-xl">Select a Blade</h3>
+                <button onClick={() => setShowBladeSelector(false)} className="text-gray-500 hover:text-gray-700 p-1 active:scale-95">
+                  <Minus className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 overflow-y-auto flex-1">
               {blades.map((blade) => (
                 <button
                   key={blade.id}
@@ -403,22 +409,29 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
               ))}
             </div>
           </motion.div>
+          </>
         )}
 
         {/* Forehand Rubber Selector Modal */}
         {showForehandSelector && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-4 md:mb-8 bg-white rounded-xl md:rounded-2xl p-4 md:p-6 border-2 border-primary"
-          >
-            <div className="flex justify-between items-center mb-3 md:mb-4">
-              <h3 className="font-bold text-base md:text-xl">Select Forehand Rubber</h3>
-              <button onClick={() => setShowForehandSelector(false)} className="text-gray-500 hover:text-gray-700 p-1 active:scale-95">
-                <Minus className="w-5 h-5 md:w-6 md:h-6" />
-              </button>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 max-h-[60vh] md:max-h-96 overflow-y-auto">
+          <>
+            {/* Backdrop overlay for mobile */}
+            <div 
+              className="fixed inset-0 bg-black/50 z-40 md:hidden"
+              onClick={() => setShowForehandSelector(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="fixed md:relative bottom-0 md:bottom-auto left-0 right-0 md:mb-8 bg-white rounded-t-2xl md:rounded-2xl p-4 md:p-6 border-2 border-primary z-50 md:z-auto max-h-[85vh] md:max-h-none flex flex-col"
+            >
+              <div className="flex justify-between items-center mb-3 md:mb-4 flex-shrink-0">
+                <h3 className="font-bold text-base md:text-xl">Select Forehand Rubber</h3>
+                <button onClick={() => setShowForehandSelector(false)} className="text-gray-500 hover:text-gray-700 p-1 active:scale-95">
+                  <Minus className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 overflow-y-auto flex-1">
               {rubbers.map((rubber) => (
                 <button
                   key={rubber.id}
@@ -436,22 +449,29 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
               ))}
             </div>
           </motion.div>
+          </>
         )}
 
         {/* Backhand Rubber Selector Modal */}
         {showBackhandSelector && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-4 md:mb-8 bg-white rounded-xl md:rounded-2xl p-4 md:p-6 border-2 border-primary"
-          >
-            <div className="flex justify-between items-center mb-3 md:mb-4">
-              <h3 className="font-bold text-base md:text-xl">Select Backhand Rubber</h3>
-              <button onClick={() => setShowBackhandSelector(false)} className="text-gray-500 hover:text-gray-700 p-1 active:scale-95">
-                <Minus className="w-5 h-5 md:w-6 md:h-6" />
-              </button>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 max-h-[60vh] md:max-h-96 overflow-y-auto">
+          <>
+            {/* Backdrop overlay for mobile */}
+            <div 
+              className="fixed inset-0 bg-black/50 z-40 md:hidden"
+              onClick={() => setShowBackhandSelector(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="fixed md:relative bottom-0 md:bottom-auto left-0 right-0 md:mb-8 bg-white rounded-t-2xl md:rounded-2xl p-4 md:p-6 border-2 border-primary z-50 md:z-auto max-h-[85vh] md:max-h-none flex flex-col"
+            >
+              <div className="flex justify-between items-center mb-3 md:mb-4 flex-shrink-0">
+                <h3 className="font-bold text-base md:text-xl">Select Backhand Rubber</h3>
+                <button onClick={() => setShowBackhandSelector(false)} className="text-gray-500 hover:text-gray-700 p-1 active:scale-95">
+                  <Minus className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 overflow-y-auto flex-1">
               {rubbers.map((rubber) => (
                 <button
                   key={rubber.id}
@@ -469,6 +489,7 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
               ))}
             </div>
           </motion.div>
+          </>
         )}
 
         {/* Combined Rating Display */}
