@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useCart } from '../contexts/CartContext';
 import { Link, useNavigate } from 'react-router-dom';
@@ -7,6 +7,10 @@ import { ArrowLeft, ShoppingBag, MapPin, Phone, Mail, User, CreditCard, Truck, C
 const Checkout: React.FC = () => {
   const { items, totalPrice, totalSavings, clearCart } = useCart();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
   
   const [formData, setFormData] = useState({
     // Customer Info

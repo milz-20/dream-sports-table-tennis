@@ -14,6 +14,7 @@ const Contact: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     document.title = 'Contact Us - Pune Table Tennis Coaching & Equipment';
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {

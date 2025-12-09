@@ -94,6 +94,7 @@ const ImageCarousel: React.FC = () => {
 
 const Coaching: React.FC = () => {
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     document.title = 'Table Tennis Coaching in Pune - Commonwealth Certified Coach';
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {

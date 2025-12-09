@@ -1,7 +1,57 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Star, Package, Zap, MapPin, TrendingUp, ShoppingCart, MessageCircle, Shield, Truck } from 'lucide-react';
+
+// Import blade images
+import timoBollImg from '../assets/images/timoBoll.jpg';
+import zhangJikeImg from '../assets/images/zhangJike.jpg';
+import linYuJuImg from '../assets/images/linYuJuZLC.jpg';
+import viscariaImg from '../assets/images/viscaria.jpg';
+import innerforceImg from '../assets/images/innerforce.jpg';
+import harimotoImg from '../assets/images/harimotoALC.jpg';
+import mizutaniImg from '../assets/images/junMizutani.jpg';
+import hadrawImg from '../assets/images/hadraw.jpg';
+import primoracImg from '../assets/images/primoracCarbon.jpg';
+import fanZhendongImg from '../assets/images/fanzhendongALC.jpg';
+import maLongImg from '../assets/images/malongCarbon2.jpg';
+import garaydiaImg from '../assets/images/garaydia.jpg';
+import korbelImg from '../assets/images/korbel.jpg';
+import sardiusImg from '../assets/images/sardius.jpg';
+import carbonadoImg from '../assets/images/stigaCarbonado,jpg.jpg';
+import cybershapeImg from '../assets/images/cybershapeCarbon.jpg';
+import offensiveClassicImg from '../assets/images/stigaOffensiveClassic.jpg';
+import clipperWoodImg from '../assets/images/clipperwood.jpg';
+import clipperCRImg from '../assets/images/clipperCR.jpg';
+import maLinExtraImg from '../assets/images/yakasaMaLin.jpg';
+import swedenExtraImg from '../assets/images/swedenExtra.jpg';
+import ovtcharovImg from '../assets/images/DonicCarboSpeed.jpg';
+import waldnerImg from '../assets/images/DonicSensoCarbon.jpg';
+import xuXinImg from '../assets/images/xuXinSuperZlc.jpg';
+import samsonovImg from '../assets/images/samsonovForce.jpg';
+import vegaProBladeImg from '../assets/images/xiomVegaPro.jpg';
+import niwaImg from '../assets/images/kokiNiwa.jpg';
+
+// Import rubber images
+import dignics05Img from '../assets/images/rubbers/dignicsO5.jpg';
+import dignics09cImg from '../assets/images/rubbers/dignicsO9C.jpg';
+import dignics80Img from '../assets/images/rubbers/dignics80.jpg';
+import dignics64Img from '../assets/images/rubbers/dignics64.jpg';
+import tenergy05Img from '../assets/images/rubbers/tnergy05.jpg';
+import tenergy64Img from '../assets/images/rubbers/tenergy64.jpg';
+import tenergy80Img from '../assets/images/rubbers/tenergy80.jpg';
+import tenergy19Img from '../assets/images/rubbers/tenergy19.jpg';
+import rozenaImg from '../assets/images/rubbers/rozena.jpg';
+import sriverFXImg from '../assets/images/rubbers/sriverFX.jpg';
+import bryceSpeedImg from '../assets/images/rubbers/bryceHighSpeed.jpg';
+import vegaEuroDFImg from '../assets/images/rubbers/Xiom-Vega-Europe-DF-Cover.jpg';
+import vegaProImg from '../assets/images/rubbers/vegapro.jpg';
+import bluestormZ1Img from '../assets/images/rubbers/RDBZT-donic-bluestorm-z1-t-blue2.jpg';
+import evolutionMXPImg from '../assets/images/rubbers/evolutionMXP.jpg';
+import markVImg from '../assets/images/rubbers/yakasamark5.jpg';
+import rakza7Img from '../assets/images/rubbers/razka7.jpg';
+import rasantPowergripImg from '../assets/images/rubbers/rasantPowergrip.jpg';
+import v15ExtraImg from '../assets/images/rubbers/victas-v-15.jpg';
 
 interface ProductSpec {
   name: string;
@@ -48,7 +98,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Timo Boll ALC is one of the most popular professional blades in the world. Designed in collaboration with German legend Timo Boll, this blade features 5 plies of wood combined with 2 layers of Arylate Carbon fiber. The Arylate Carbon layers provide explosive power while maintaining the soft feel and excellent control that Timo Boll is known for. This blade is perfect for offensive players who want to dominate with powerful loops while maintaining precision and consistency.',
     price: 14299,
     originalPrice: 16999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/TimoBollALC_1.jpg?v=1706350573&width=800',
+    image: timoBollImg,
     features: [
       'Arylate Carbon fiber for explosive power',
       'Soft feel with excellent control',
@@ -76,7 +126,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Zhang Jike ALC is the signature blade of Olympic and World Champion Zhang Jike. This blade features a slightly harder construction compared to the Timo Boll ALC, making it faster and more suited for aggressive attacking play. The Arylate Carbon layers provide explosive power for powerful loops and smashes, while still maintaining enough control for precision placement. Perfect for players who want to dominate with aggressive topspin attacks.',
     price: 13849,
     originalPrice: 15999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/ZhangJikeALC1.jpg?v=1706361517&width=800',
+    image: zhangJikeImg,
     features: [
       'Faster than Timo Boll ALC',
       'Explosive power for aggressive attacks',
@@ -104,7 +154,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Lin Yun-Ju Super ZLC is one of the fastest blades available. Featuring Super ZL Carbon fiber, this blade provides incredible speed and power for players who want to overwhelm opponents with fast attacks. Despite its extreme speed, the blade maintains good control thanks to the quality construction. Used by rising star Lin Yun-Ju, this blade is perfect for players with excellent technique who want to play at the highest speeds.',
     price: 26499,
     originalPrice: 29999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/lin1.jpg?v=1740485439&width=800',
+    image: linYuJuImg,
     features: [
       'Super ZL Carbon for extreme speed',
       'Wide sweet spot for stability',
@@ -132,7 +182,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Viscaria is arguably the most popular professional blade ever made. Used by the legendary Jan-Ove Waldner, this blade has set the standard for offensive all-round play for decades. The Arylate Carbon layers provide excellent speed and power, while the construction maintains superb control and feel. This blade is versatile enough for players who want to loop, block, and counterhit with equal effectiveness.',
     price: 15299,
     originalPrice: 17499,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/vc.jpg?v=1711086820&width=800',
+    image: viscariaImg,
     features: [
       'Most popular pro blade worldwide',
       'Perfect balance of speed and control',
@@ -160,7 +210,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Innerforce Layer ALC features an inner carbon construction, where the Arylate Carbon layers are positioned closer to the core. This design provides excellent feeling and touch, making it easier to control the ball while still maintaining good speed. Perfect for players who prioritize control and precision over raw speed, or for players transitioning from all-wood blades to carbon blades.',
     price: 12549,
     originalPrice: 14499,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/inner1.webp?v=1735216037&width=800',
+    image: innerforceImg,
     features: [
       'Inner carbon for better feel',
       'Excellent control and touch',
@@ -188,7 +238,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Harimoto Tomokazu Innerforce ALC is the signature blade of Japanese sensation Tomokazu Harimoto. Despite featuring inner carbon construction, this blade is faster and more powerful than most outer carbon blades. The unique construction provides incredible spin generation and speed while maintaining the excellent feel of inner carbon. Perfect for aggressive players who want to generate heavy topspin with maximum speed.',
     price: 15849,
     originalPrice: 17999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/IMG-8909.jpg?v=1692577357&width=800',
+    image: harimotoImg,
     features: [
       'Fast inner carbon construction',
       'Incredible spin generation',
@@ -217,7 +267,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Butterfly Tenergy 05 is the most popular and versatile offensive rubber in the world. Featuring Spring Sponge X technology and High Tension topsheet, this rubber provides incredible spin generation and catapult effect. The 36-degree hardness makes it accessible to a wide range of players while still providing professional-level performance. Perfect for players who want to dominate with heavy topspin loops from all distances.',
     price: 4599,
     originalPrice: 5499,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_tenergy_05_cover_1_1.jpg?v=1706344500&width=800',
+    image: tenergy05Img,
     features: [
       'Spring Sponge X technology',
       'Maximum spin generation',
@@ -244,7 +294,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Butterfly Dignics 09C is the latest evolution in Butterfly\'s flagship rubber series. Featuring upgraded High Tension technology and a 40-degree hardness, this rubber provides incredible grip and control while maintaining high speed. The medium-high arc makes it easier to control powerful shots, making it perfect for players who want to combine speed with precision. Used by many top professionals worldwide.',
     price: 6549,
     originalPrice: 7499,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/butterfly-dignics-09c.jpg?v=1704533936&width=800',
+    image: dignics09cImg,
     features: [
       'Latest High Tension technology',
       'Incredible grip and control',
@@ -271,7 +321,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Butterfly Dignics 05 is the evolution of the legendary Tenergy 05. With upgraded sponge and topsheet technology, this rubber provides even better spin generation and more consistent performance. The high arc trajectory makes it easier to loop from any distance, while the improved durability means the rubber maintains its performance characteristics longer. Perfect for power loopers who want maximum spin.',
     price: 6299,
     originalPrice: 7299,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/butterfly-dignics-05.jpg?v=1704533956&width=800',
+    image: dignics05Img,
     features: [
       'Evolution of Tenergy 05',
       'Enhanced spin generation',
@@ -298,7 +348,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Butterfly Tenergy 64 is the most balanced rubber in the Tenergy series. With a medium arc trajectory and excellent control, this rubber is perfect for players who want to play close to the table with fast attacks and counterloops. The 36-degree hardness provides good speed while maintaining excellent feeling. Great for players who value consistency and versatility over raw power.',
     price: 4599,
     originalPrice: 5499,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_tenergy_64_cover_1.webp?v=1704535746&width=800',
+    image: tenergy64Img,
     features: [
       'Most balanced Tenergy',
       'Medium arc for control',
@@ -325,7 +375,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Butterfly Tenergy 80 is the fastest rubber in the Tenergy series. With a low-medium arc trajectory, this rubber provides direct and fast attacks that keep opponents under pressure. The flat trajectory makes it harder for opponents to return, but requires good technique to use effectively. Perfect for players who want to play fast and direct attacking table tennis.',
     price: 4599,
     originalPrice: 5499,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_tenergy_80_cover_1_1.jpg?v=1704535791&width=800',
+    image: tenergy80Img,
     features: [
       'Fastest Tenergy rubber',
       'Low arc for direct attacks',
@@ -352,7 +402,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Butterfly Rozena is an entry-level tensioned rubber that provides excellent value for money. With a soft 35-degree sponge, this rubber is easy to control while still providing good spin and speed. The high arc trajectory makes it forgiving for players learning proper topspin technique. Perfect for beginners and intermediate players who want to experience tensioned rubber technology without the premium price.',
     price: 3399,
     originalPrice: 3999,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_rozena_cover_1.webp?v=1704535600&width=800',
+    image: rozenaImg,
     features: [
       'Affordable tensioned rubber',
       'Easy to control',
@@ -382,7 +432,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Jun Mizutani ZLC is the signature blade of Olympic medalist Jun Mizutani. Featuring ZL Carbon fiber, this blade provides explosive power while maintaining a surprisingly light weight. The ZL Carbon layers offer excellent energy transfer and vibration dampening, making it easier to control powerful shots. Perfect for offensive players who want maximum speed without the heavy weight of traditional carbon blades.',
     price: 17899,
     originalPrice: 19999,
-    image: 'https://taurustabletennis.com/public-images/JunMizutaniZLC_1.webp',
+    image: mizutaniImg,
     features: [
       'ZL Carbon for lightweight power',
       'Used by Olympic medalist Jun Mizutani',
@@ -410,7 +460,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Hadraw Shield is designed for defensive players who need exceptional control and feel. The Arylate fiber layers provide just enough speed for counterattacks while maintaining the soft touch needed for precise chopping. This blade offers excellent control for defensive techniques while still allowing offensive shots when opportunities arise. Perfect for choppers and all-round defensive players.',
     price: 11299,
     originalPrice: 12999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/hadraw.jpg?v=1704535112&width=800',
+    image: hadrawImg,
     features: [
       'Excellent control for defensive play',
       'Perfect for chopping techniques',
@@ -438,7 +488,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Primorac Carbon is a legendary defensive blade used by Zoran Primorac throughout his illustrious career. This blade combines the control needed for defensive play with carbon layers that provide enough speed for powerful counterattacks. The construction offers excellent feel for chopping and blocking, while still maintaining the ability to attack when opportunities present themselves. A true classic for defensive and all-round players.',
     price: 10799,
     originalPrice: 12499,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/primorac.jpg?v=1704535389&width=800',
+    image: primoracImg,
     features: [
       'Used by Zoran Primorac',
       'Classic defensive blade',
@@ -466,7 +516,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Fan Zhendong ALC is the signature blade of current world number one Fan Zhendong. This blade features a slightly thicker construction that provides incredible power while maintaining excellent control. The Arylate Carbon layers enable powerful loops from all distances, while the unique construction ensures consistency and precision. Used by one of the greatest players in history, this blade is perfect for players who want to dominate with heavy topspin and aggressive attacks.',
     price: 16299,
     originalPrice: 18999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/fan.jpg?v=1704534956&width=800',
+    image: fanZhendongImg,
     features: [
       'Used by world #1 Fan Zhendong',
       'Incredible power for loops',
@@ -494,7 +544,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Ma Long Carbon 2 is the updated version of the legendary Olympic Champion Ma Long\'s blade. This blade offers the perfect balance of speed, control, and spin that Ma Long is famous for. The carbon layers provide excellent power for aggressive attacks while maintaining the soft feel needed for precise placement. This blade embodies Ma Long\'s playing style - powerful yet controlled, aggressive yet precise. Perfect for complete offensive players.',
     price: 15499,
     originalPrice: 17999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/malong.jpg?v=1704535189&width=800',
+    image: maLongImg,
     features: [
       'Used by Olympic Champion Ma Long',
       'Perfect balance of all attributes',
@@ -522,7 +572,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Xu Xin Super ZLC is designed for the unique playing style of Xu Xin, one of the best penhold players in the world. Featuring Super ZL Carbon fiber, this blade provides extreme speed and power while maintaining a light weight. The construction is optimized for the explosive attacks and creative shots that Xu Xin is famous for. Perfect for advanced penhold players or shakehand players who want maximum speed and aggression.',
     price: 24999,
     originalPrice: 27999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/xuxin.jpg?v=1704535842&width=800',
+    image: xuXinImg,
     features: [
       'Used by Xu Xin',
       'Super ZL Carbon for extreme speed',
@@ -550,7 +600,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Garaydia ALC features a thicker construction that provides incredible power for close-to-table aggressive play. The thicker blade offers a larger sweet spot and more stability for fast exchanges. The Arylate Carbon layers deliver explosive power for aggressive loops and counterloops. Perfect for players who like to play close to the table with fast, powerful attacks and quick exchanges.',
     price: 13299,
     originalPrice: 15499,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/garaydia.jpg?v=1704535042&width=800',
+    image: garaydiaImg,
     features: [
       'Thicker construction for power',
       'Excellent for close-to-table play',
@@ -578,7 +628,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Corbor is a classic 5-ply all-wood blade that offers the pure feel that many traditional players prefer. Without any synthetic fibers, this blade provides excellent touch and control for all strokes. The all-wood construction gives a soft, forgiving feel that makes it easier to develop proper technique. Perfect for intermediate players who want to experience the traditional feel of an all-wood blade while still maintaining good offensive capabilities.',
     price: 8999,
     originalPrice: 10499,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/corbor.jpg?v=1704534871&width=800',
+    image: korbelImg,
     features: [
       'Classic 5-ply all-wood construction',
       'Excellent natural feel',
@@ -606,7 +656,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Korbel is one of the most popular beginner and intermediate blades in the world. This 5-ply all-wood blade offers perfect balance and control that makes it ideal for learning fundamental techniques. The medium speed allows players to develop proper stroke mechanics without being overwhelmed by excessive speed. Used by coaches worldwide to teach proper table tennis fundamentals.',
     price: 6799,
     originalPrice: 7999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/korbel.jpg?v=1704535145&width=800',
+    image: korbelImg,
     features: [
       'Most popular beginner blade',
       'Perfect for learning fundamentals',
@@ -634,7 +684,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Petr Korbel is the upgraded version of the classic Korbel, featuring 7 plies of wood for increased speed and power. This blade maintains the excellent control that the Korbel series is famous for while providing more offensive capabilities. The 7-ply construction gives a slightly harder feel and faster tempo, making it perfect for intermediate players ready to transition to more aggressive play.',
     price: 8499,
     originalPrice: 9999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/petrkorbel.jpg?v=1704535321&width=800',
+    image: korbelImg,
     features: [
       '7-ply construction for more speed',
       'Upgrade from classic Korbel',
@@ -662,7 +712,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Butterfly Sardius is a 7-ply all-wood blade designed for players who prioritize spin over raw speed. The construction provides excellent touch and feel, making it easier to generate heavy topspin. The softer feel compared to carbon blades allows better control for spin-oriented strokes. Perfect for offensive players who want to dominate with heavy loops and precise spin variation.',
     price: 9299,
     originalPrice: 10999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/sardius.jpg?v=1704535533&width=800',
+    image: sardiusImg,
     features: [
       'Excellent for spin generation',
       'Great touch and feel',
@@ -690,7 +740,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Stiga Carbonado 290 is one of the fastest blades in the Stiga lineup. Featuring carbon layers positioned for maximum speed, this blade provides exceptional power for aggressive attacking play. The Swedish craftsmanship ensures consistent performance and quality. Perfect for advanced players who want to overwhelm opponents with fast, powerful attacks and have the technique to control such a fast blade.',
     price: 12999,
     originalPrice: 14999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/carbonado.jpg?v=1704534801&width=800',
+    image: carbonadoImg,
     features: [
       'Exceptional speed and power',
       'Premium Swedish craftsmanship',
@@ -718,7 +768,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Stiga Cybershape Carbon features an innovative teardrop-shaped blade head that provides a larger sweet spot and better weight distribution. This unique design makes it easier to hit consistent powerful shots. The carbon layers provide excellent speed while the shape enhances control. Perfect for players looking for something different that offers both power and consistency.',
     price: 11799,
     originalPrice: 13499,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/cybershape.jpg?v=1704534919&width=800',
+    image: cybershapeImg,
     features: [
       'Innovative teardrop shape',
       'Larger sweet spot',
@@ -746,7 +796,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Stiga Offensive Classic is one of the most legendary blades in table tennis history. Used by champions for decades, this 5-ply all-wood blade offers the perfect balance of offensive speed and control. The Swedish craftsmanship ensures consistent performance and excellent feel. This blade has stood the test of time and continues to be a favorite among players who appreciate traditional quality.',
     price: 7499,
     originalPrice: 8999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/offensive.jpg?v=1704535289&width=800',
+    image: offensiveClassicImg,
     features: [
       'Legendary classic blade',
       'Used by champions for decades',
@@ -774,7 +824,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Stiga Clipper Wood is arguably the most famous 7-ply blade in table tennis history. This legendary blade has been used by countless world-class players and offers perfect balance for all-round offensive play. The 7-ply construction provides excellent speed while maintaining superb control and feel. A true classic that has proven its worth over decades of top-level competition.',
     price: 8999,
     originalPrice: 10499,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/clipper.jpg?v=1704534838&width=800',
+    image: clipperWoodImg,
     features: [
       'Most famous 7-ply blade',
       'Legendary performance',
@@ -802,7 +852,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Stiga Clipper CR (Crystal) is the carbon-enhanced version of the legendary Clipper Wood. This blade maintains the famous Clipper feel while adding carbon layers for increased speed and power. The 7+2 construction provides explosive offensive capabilities while retaining the control that made the original Clipper famous. Perfect for players who love the Clipper but want more speed.',
     price: 12299,
     originalPrice: 14299,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/clippercr.jpg?v=1704534854&width=800',
+    image: clipperCRImg,
     features: [
       'Carbon upgrade of legendary Clipper',
       'Maintains famous Clipper feel',
@@ -830,7 +880,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Yasaka Ma Lin Extra Offensive is the legendary blade used by Olympic Champion Ma Lin during his dominance of the penhold style. This blade features carbon layers that provide explosive power for aggressive attacks while maintaining enough control for precise placement. Although designed for penhold, it works excellently for shakehand players who want a fast offensive blade. Perfect for aggressive attacking styles.',
     price: 10299,
     originalPrice: 11999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/malin.jpg?v=1704535206&width=800',
+    image: maLinExtraImg,
     features: [
       'Used by Olympic Champion Ma Lin',
       'Perfect for aggressive penhold play',
@@ -858,7 +908,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Yasaka Sweden Extra is a classic all-wood blade perfect for beginners and intermediate players. With excellent control and a medium speed, this blade makes it easy to develop proper stroke mechanics and learn fundamental techniques. The Swedish craftsmanship ensures quality and consistency. Perfect for players who want to build a solid foundation before moving to faster blades.',
     price: 5999,
     originalPrice: 6999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/swedenextra.jpg?v=1704535713&width=800',
+    image: swedenExtraImg,
     features: [
       'Perfect for beginners',
       'Excellent control',
@@ -886,7 +936,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Donic Ovtcharov Carbospeed is the signature blade of German superstar Dimitrij Ovtcharov. Featuring AVS (Anti Vibration System) technology, this blade provides incredible speed while reducing unwanted vibrations. The carbon layers deliver explosive power for aggressive attacks. Perfect for advanced players who want maximum speed with enhanced control through vibration dampening technology.',
     price: 13499,
     originalPrice: 15499,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/ovtcharov.jpg?v=1704535305&width=800',
+    image: ovtcharovImg,
     features: [
       'Used by Dimitrij Ovtcharov',
       'AVS technology reduces vibration',
@@ -914,7 +964,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Donic Waldner Senso Carbon is the signature blade of the legendary Jan-Ove Waldner from Donic. Featuring Senso technology for enhanced feel and touch, this blade provides excellent speed with superior control. The carbon layers deliver power while the Senso technology ensures you maintain excellent ball contact sensation. Perfect for players who want offensive speed without sacrificing feel.',
     price: 11999,
     originalPrice: 13999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/waldner.jpg?v=1704535826&width=800',
+    image: waldnerImg,
     features: [
       'Jan-Ove Waldner signature blade',
       'Senso technology for enhanced feel',
@@ -942,7 +992,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Tibhar Samsonov Force Pro is the signature blade of the legendary Vladimir Samsonov. This blade combines carbon fiber power with outstanding control, reflecting Samsonov\'s precise and powerful playing style. The construction provides excellent speed for offensive play while maintaining the control needed for precise shot placement. Perfect for advanced players who want professional-level performance.',
     price: 10799,
     originalPrice: 12499,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/samsonov.jpg?v=1704535549&width=800',
+    image: samsonovImg,
     features: [
       'Used by Vladimir Samsonov',
       'Carbon power with control',
@@ -970,7 +1020,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Xiom Vega Pro is a professional carbon blade that offers perfect balance for all-round offensive play. Korean engineering ensures consistent quality and performance. The carbon layers provide good speed while the construction maintains excellent control and feel. Perfect for intermediate to advanced players who want a balanced offensive blade at a reasonable price.',
     price: 9499,
     originalPrice: 10999,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/vega.jpg?v=1704535809&width=800',
+    image: vegaProBladeImg,
     features: [
       'Balanced offensive performance',
       'Korean engineering quality',
@@ -998,7 +1048,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'The Victas Koki Niwa Wood is the all-wood blade used by Japanese star Koki Niwa. This blade offers exceptional feel and touch that only pure wood construction can provide. The design is optimized for spin-oriented offensive play with excellent control. Perfect for players who prefer the natural feel of wood and want to generate heavy spin with precise control.',
     price: 9999,
     originalPrice: 11499,
-    image: 'https://worldoftabletennis.com/cdn/shop/files/niwa.jpg?v=1704535272&width=800',
+    image: niwaImg,
     features: [
       'Used by Koki Niwa',
       'All-wood construction',
@@ -1028,7 +1078,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Butterfly Tenergy 19 is the latest addition to the legendary Tenergy series. This rubber features an enhanced topsheet that provides even better grip and spin generation compared to previous Tenergy models. The slightly softer feel makes it easier to control while maintaining excellent spin capability. Perfect for players who prioritize spin over raw speed and want the latest technology from Butterfly.',
     price: 4899,
     originalPrice: 5699,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_tenergy_19_cover_1.jpg?v=1704535762&width=800',
+    image: tenergy19Img,
     features: [
       'Latest Tenergy technology',
       'Enhanced spin capability',
@@ -1056,7 +1106,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Butterfly Dignics 80 is the fastest rubber in the Dignics series, designed for players who prefer linear, direct attacks. The low-medium arc trajectory keeps shots flat and fast, making it difficult for opponents to return. The 40-degree hardness provides excellent speed while the Dignics topsheet maintains good grip. Perfect for players who play close to the table with fast counterattacks and flat hits.',
     price: 6549,
     originalPrice: 7499,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/butterfly-dignics-80.jpg?v=1704533972&width=800',
+    image: dignics80Img,
     features: [
       'Fastest Dignics rubber',
       'Linear trajectory for direct attacks',
@@ -1084,7 +1134,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Butterfly Dignics 64 is the most versatile rubber in the Dignics series. With balanced speed, spin, and control, this rubber allows players to execute all offensive techniques effectively. The medium arc provides a good balance between safety and aggression. Perfect for all-round offensive players who want premium performance in all aspects without extreme characteristics.',
     price: 6299,
     originalPrice: 7299,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/butterfly-dignics-64.jpg?v=1704533988&width=800',
+    image: dignics64Img,
     features: [
       'Most balanced Dignics',
       'Versatile for all techniques',
@@ -1112,7 +1162,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Butterfly Sriver FX is a classic soft rubber that has been helping beginners learn table tennis for decades. The soft 35-degree sponge makes it easy to control the ball and develop proper stroke mechanics. The high arc trajectory is forgiving and helps players learn topspin technique. Perfect for beginners and recreational players who prioritize control and consistency.',
     price: 2799,
     originalPrice: 3299,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_sriver_fx_cover_1.jpg?v=1704535680&width=800',
+    image: sriverFXImg,
     features: [
       'Classic beginner rubber',
       'Very soft and controllable',
@@ -1140,7 +1190,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Butterfly Bryce Speed combines Butterfly quality with German engineering for a high-speed offensive rubber. The medium arc provides good control while maintaining excellent speed. The 40-degree hardness gives a solid feel for powerful attacks. Perfect for players who want speed-oriented offensive play without the premium price of Tenergy or Dignics.',
     price: 3999,
     originalPrice: 4699,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_bryce_speed_cover_1.jpg?v=1704534698&width=800',
+    image: bryceSpeedImg,
     features: [
       'German technology',
       'High speed for attacks',
@@ -1168,7 +1218,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Butterfly Bryce Speed FX is the softer version of Bryce Speed, designed for players who want better control without sacrificing too much speed. The 37-degree hardness provides a softer feel that makes it easier to control loops and place shots precisely. The medium-high arc helps with consistency. Perfect for intermediate players developing their offensive game.',
     price: 3999,
     originalPrice: 4699,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_bryce_speed_fx_cover_1.jpg?v=1704534714&width=800',
+    image: bryceSpeedImg,
     features: [
       'Softer than regular Bryce Speed',
       'Better control',
@@ -1196,7 +1246,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Xiom Vega Europe DF features dynamic friction technology that provides excellent grip for topspin play. The medium arc trajectory makes it easier to control powerful shots while the harder sponge provides good speed. This rubber excels at both opening loops and counterloops. Perfect for European-style topspin play with emphasis on spin and control.',
     price: 3799,
     originalPrice: 4499,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_vega_euro_df_cover_1.jpg?v=1704535793&width=800',
+    image: vegaEuroDFImg,
     features: [
       'Dynamic friction technology',
       'Excellent topspin capability',
@@ -1224,7 +1274,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Xiom Vega Pro is the professional version of the popular Vega series. This rubber offers an excellent balance of spin, speed, and control at a competitive price point. The medium-hard sponge provides good speed while the grippy topsheet generates heavy spin. Perfect for intermediate to advanced players who want professional-level performance without the premium price.',
     price: 3599,
     originalPrice: 4299,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_vega_pro_cover_1.jpg?v=1704535775&width=800',
+    image: vegaProImg,
     features: [
       'Professional level performance',
       'Balanced characteristics',
@@ -1252,7 +1302,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Donic Bluestorm Z1 is a tournament-level tensor rubber designed for aggressive topspin play. The high arc trajectory provides safety on powerful loops while the exceptional grip generates heavy spin. The German engineering ensures consistent performance and durability. Perfect for players who want to dominate with powerful, spinny loops from all distances.',
     price: 4299,
     originalPrice: 4999,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_bluestorm_z1_cover_1.jpg?v=1704534665&width=800',
+    image: bluestormZ1Img,
     features: [
       'Tournament level quality',
       'Exceptional spin generation',
@@ -1280,7 +1330,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Tibhar Evolution MX-P is the power version of the popular Evolution series. This rubber provides maximum speed while maintaining excellent spin capability. The high arc helps keep powerful shots on the table. The German engineering ensures quality and consistency. Perfect for advanced players who want to overwhelm opponents with powerful, fast attacks.',
     price: 3899,
     originalPrice: 4599,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_evolution_mx_p_cover_1.jpg?v=1704534939&width=800',
+    image: evolutionMXPImg,
     features: [
       'Power version of Evolution',
       'Maximum speed',
@@ -1308,7 +1358,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Yasaka Mark V is one of the most legendary rubbers in table tennis history. Used by countless players to learn the fundamentals, this rubber offers excellent control and consistency. The medium hardness and high arc make it forgiving and easy to use. Perfect for beginners and recreational players who want a reliable, classic rubber that has stood the test of time.',
     price: 2299,
     originalPrice: 2799,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_mark_v_cover_1.jpg?v=1704535222&width=800',
+    image: markVImg,
     features: [
       'Legendary classic rubber',
       'Perfect for beginners',
@@ -1336,7 +1386,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Yasaka Rakza 7 is one of the most popular tensor rubbers worldwide, offering excellent value for money. This rubber provides a great balance of speed, spin, and control that makes it suitable for various playing styles. The medium-high arc gives good safety while the tensor technology provides modern speed and spin. Perfect for players wanting tensor performance at an affordable price.',
     price: 3199,
     originalPrice: 3799,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_rakza_7_cover_1.jpg?v=1704535516&width=800',
+    image: rakza7Img,
     features: [
       'Excellent value for money',
       'Balanced performance',
@@ -1364,7 +1414,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Andro Rasant Powergrip features an extremely grippy topsheet designed for maximum spin generation. The high arc trajectory provides safety on powerful loops while the excellent grip allows for heavy topspin from any position. The German engineering ensures consistent performance. Perfect for players who prioritize spin above all else and want to dominate with heavy, spinny loops.',
     price: 3499,
     originalPrice: 4199,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_rasant_powergrip_cover_1.jpg?v=1704535500&width=800',
+    image: rasantPowergripImg,
     features: [
       'Maximum spin capability',
       'Extremely grippy topsheet',
@@ -1392,7 +1442,7 @@ const allProducts: { [key: string]: ProductSpec } = {
     fullDescription: 'Victas V15 Extra is a premium Japanese tensor rubber designed for professional-level play. This rubber provides exceptional spin generation combined with good speed and excellent control. The high arc trajectory makes it easier to loop consistently from all distances. The Japanese quality ensures consistent performance and durability. Perfect for advanced players who want premium performance.',
     price: 4399,
     originalPrice: 5199,
-    image: 'https://worldoftabletennis.com/cdn/shop/products/rubber_v15_extra_cover_1.jpg?v=1704535758&width=800',
+    image: v15ExtraImg,
     features: [
       'Premium Japanese quality',
       'Exceptional spin generation',
@@ -1408,6 +1458,11 @@ const ProductDetail: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
   const product = productId ? allProducts[productId] : null;
+
+  // Scroll to top when component mounts or product changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [productId]);
 
   if (!product) {
     return (

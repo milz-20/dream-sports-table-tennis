@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Star, ShoppingBag, ArrowRight, ShoppingCart, Package, Zap, MapPin, TrendingUp, Plus, Minus } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import CustomizeRacket from '../components/CustomizeRacket';
+import { enhanceBladeData, enhanceRubberData } from '../lib/equipmentHelpers';
 
 // Import blade images
 import timoBollImg from '../assets/images/timoBoll.jpg';
@@ -55,14 +57,21 @@ import v15ExtraImg from '../assets/images/rubbers/victas-v-15.jpg';
 
 const Equipment: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<'blades' | 'rubbers'>('blades');
+  const [selectedBrand, setSelectedBrand] = useState<string>('');
+  const [showCustomizer, setShowCustomizer] = useState<boolean>(false);
   
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     document.title = 'Table Tennis Equipment Pune - Butterfly, Stiga, DHS, Yasaka Blades & Rubbers';
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', 'Buy authentic table tennis equipment in Pune. Premium Butterfly Viscaria, Timo Boll, Tenergy rubbers. Stiga Carbonado, DHS Hurricane. Genuine products with warranty. Cash on delivery available.');
     }
   }, []);
+  
+  // Enhanced data for customizer
+  const enhancedBlades = blades.map(enhanceBladeData);
+  const enhancedRubbers = rubbers.map(enhanceRubberData);
 
   return (
     <motion.div
@@ -97,53 +106,108 @@ const Equipment: React.FC = () => {
             </p>
 
             {/* Category Tabs */}
-            <div className="flex items-center justify-center gap-2 md:gap-4 mt-6 md:mt-8">
+            <div className="flex flex-col items-center gap-4 mt-6 md:mt-8">
+              <div className="flex items-center justify-center gap-2 md:gap-4">
+                <button
+                  onClick={() => { setActiveCategory('blades'); setShowCustomizer(false); }}
+                  className={`px-4 py-2 md:px-6 md:py-2.5 lg:px-8 lg:py-3 rounded-lg font-semibold text-xs md:text-sm lg:text-base transition-all duration-300 ${
+                    activeCategory === 'blades' && !showCustomizer
+                      ? 'bg-primary text-white shadow-lg'
+                      : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-primary'
+                  }`}
+                >
+                  <span className="hidden sm:inline">🏓 Professional Blades</span>
+                  <span className="sm:hidden">🏓 Blades</span>
+                </button>
+                <button
+                  onClick={() => { setActiveCategory('rubbers'); setShowCustomizer(false); }}
+                  className={`px-4 py-2 md:px-6 md:py-2.5 lg:px-8 lg:py-3 rounded-lg font-semibold text-xs md:text-sm lg:text-base transition-all duration-300 ${
+                    activeCategory === 'rubbers' && !showCustomizer
+                      ? 'bg-primary text-white shadow-lg'
+                      : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-primary'
+                  }`}
+                >
+                  <span className="hidden sm:inline">🎯 Premium Rubbers</span>
+                  <span className="sm:hidden">🎯 Rubbers</span>
+                </button>
+              </div>
+              
+              {/* Customize Racket Button */}
               <button
-                onClick={() => setActiveCategory('blades')}
-                className={`px-4 py-2 md:px-6 md:py-2.5 lg:px-8 lg:py-3 rounded-lg font-semibold text-xs md:text-sm lg:text-base transition-all duration-300 ${
-                  activeCategory === 'blades'
-                    ? 'bg-primary text-white shadow-lg'
-                    : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-primary'
+                onClick={() => setShowCustomizer(!showCustomizer)}
+                className={`px-6 py-3 md:px-8 md:py-4 rounded-lg font-bold text-sm md:text-base lg:text-lg transition-all duration-300 inline-flex items-center gap-3 ${
+                  showCustomizer
+                    ? 'bg-gradient-to-r from-primary to-primary/80 text-white shadow-2xl scale-105'
+                    : 'bg-gradient-to-r from-white to-pink-50 border-2 border-black text-black shadow-lg hover:shadow-xl hover:scale-105 hover:from-pink-50 hover:to-pink-100'
                 }`}
               >
-                <span className="hidden sm:inline">🏓 Professional Blades</span>
-                <span className="sm:hidden">🏓 Blades</span>
-              </button>
-              <button
-                onClick={() => setActiveCategory('rubbers')}
-                className={`px-4 py-2 md:px-6 md:py-2.5 lg:px-8 lg:py-3 rounded-lg font-semibold text-xs md:text-sm lg:text-base transition-all duration-300 ${
-                  activeCategory === 'rubbers'
-                    ? 'bg-primary text-white shadow-lg'
-                    : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-primary'
-                }`}
-              >
-                <span className="hidden sm:inline">🎯 Premium Rubbers</span>
-                <span className="sm:hidden">🎯 Rubbers</span>
+                <span className="text-2xl">🎯</span>
+                <span>Customize Your Racket</span>
+                {showCustomizer && <span className="text-xs bg-white/20 px-2 py-1 rounded-full">Active</span>}
               </button>
             </div>
           </motion.div>
         </div>
       </section>
 
+      {/* Customize Racket Section */}
+      {showCustomizer && (
+        <CustomizeRacket blades={enhancedBlades} rubbers={enhancedRubbers} />
+      )}
+
       {/* Products Grid */}
+      {!showCustomizer && (
       <section className="py-8 md:py-12 lg:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <h2 className="font-display font-bold text-3xl text-black mb-4 text-center">
             {activeCategory === 'blades' ? '🏓 Professional Blades' : '🎯 Premium Rubbers'}
           </h2>
-          <p className="text-gray-600 text-center mb-8 md:mb-12 max-w-2xl mx-auto text-sm md:text-base">
+          <p className="text-gray-600 text-center mb-6 md:mb-8 max-w-2xl mx-auto text-sm md:text-base">
             {activeCategory === 'blades' 
               ? 'Premium quality blades for every playing style and skill level'
               : 'High-performance rubbers for maximum spin, speed, and control'}
           </p>
 
+          {/* Brand Filter - Only show for blades */}
+          {activeCategory === 'blades' && (
+            <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 md:mb-12">
+              <button
+                onClick={() => setSelectedBrand('')}
+                className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
+                  selectedBrand === ''
+                    ? 'bg-primary text-white shadow-md'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                All Brands
+              </button>
+              {['Butterfly', 'Stiga', 'Yasaka', 'Donic'].map((brand) => (
+                <button
+                  key={brand}
+                  onClick={() => setSelectedBrand(brand)}
+                  className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
+                    selectedBrand === brand
+                      ? 'bg-primary text-white shadow-md'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {brand}
+                </button>
+              ))}
+            </div>
+          )}
+
           <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-            {(activeCategory === 'blades' ? blades : rubbers).map((product, index) => (
+            {(activeCategory === 'blades' 
+              ? blades.filter(blade => !selectedBrand || blade.brand === selectedBrand)
+              : rubbers
+            ).map((product, index) => (
               <ProductCard key={index} {...product} index={index} />
             ))}
           </div>
         </div>
       </section>
+      )}
 
       {/* Fast Delivery Section */}
       <section className="py-20 bg-gray-50">
@@ -227,6 +291,7 @@ const blades = [
   {
     id: 'butterfly-timo-boll-alc',
     name: 'Butterfly Timo Boll ALC',
+    brand: 'Butterfly',
     category: 'Blade',
     rating: 4.9,
     reviews: 187,
@@ -241,6 +306,7 @@ const blades = [
   {
     id: 'butterfly-zhang-jike-alc',
     name: 'Butterfly Zhang Jike ALC',
+    brand: 'Butterfly',
     category: 'Blade',
     rating: 4.8,
     reviews: 156,
@@ -255,6 +321,7 @@ const blades = [
   {
     id: 'butterfly-lin-yun-ju-super-zlc',
     name: 'Butterfly Lin Yun-Ju Super ZLC',
+    brand: 'Butterfly',
     category: 'Blade',
     rating: 4.9,
     reviews: 98,
@@ -269,6 +336,7 @@ const blades = [
   {
     id: 'butterfly-viscaria',
     name: 'Butterfly Viscaria',
+    brand: 'Butterfly',
     category: 'Blade',
     rating: 4.9,
     reviews: 234,
@@ -283,6 +351,7 @@ const blades = [
   {
     id: 'butterfly-innerforce-layer-alc',
     name: 'Butterfly Innerforce Layer ALC',
+    brand: 'Butterfly',
     category: 'Blade',
     rating: 4.7,
     reviews: 145,
@@ -297,6 +366,7 @@ const blades = [
   {
     id: 'butterfly-harimoto-tomokazu-innerforce-alc',
     name: 'Butterfly Harimoto Tomokazu Innerforce ALC',
+    brand: 'Butterfly',
     category: 'Blade',
     rating: 4.8,
     reviews: 112,
@@ -311,6 +381,7 @@ const blades = [
   {
     id: 'butterfly-jun-mizutani-zlc',
     name: 'Butterfly Jun Mizutani ZLC',
+    brand: 'Butterfly',
     category: 'Blade',
     rating: 4.8,
     reviews: 167,
@@ -325,6 +396,7 @@ const blades = [
   {
     id: 'butterfly-hadraw-shield',
     name: 'Butterfly Hadraw Shield',
+    brand: 'Butterfly',
     category: 'Blade',
     rating: 4.6,
     reviews: 89,
@@ -339,6 +411,7 @@ const blades = [
   {
     id: 'butterfly-primorac-carbon',
     name: 'Butterfly Primorac Carbon',
+    brand: 'Butterfly',
     category: 'Blade',
     rating: 4.7,
     reviews: 143,
@@ -353,6 +426,7 @@ const blades = [
   {
     id: 'butterfly-fan-zhendong-alc',
     name: 'Butterfly Fan Zhendong ALC',
+    brand: 'Butterfly',
     category: 'Blade',
     rating: 4.9,
     reviews: 201,
@@ -367,6 +441,7 @@ const blades = [
   {
     id: 'butterfly-ma-long-carbon-2',
     name: 'Butterfly Ma Long Carbon 2',
+    brand: 'Butterfly',
     category: 'Blade',
     rating: 4.9,
     reviews: 278,
@@ -381,6 +456,7 @@ const blades = [
   {
     id: 'butterfly-garaydia-alc',
     name: 'Butterfly Garaydia ALC',
+    brand: 'Butterfly',
     category: 'Blade',
     rating: 4.7,
     reviews: 98,
@@ -395,6 +471,7 @@ const blades = [
   {
     id: 'butterfly-petr-korbel',
     name: 'Butterfly Petr Korbel',
+    brand: 'Butterfly',
     category: 'Blade',
     rating: 4.6,
     reviews: 123,
@@ -409,6 +486,7 @@ const blades = [
   {
     id: 'butterfly-sardius',
     name: 'Butterfly Sardius',
+    brand: 'Butterfly',
     category: 'Blade',
     rating: 4.7,
     reviews: 91,
@@ -423,6 +501,7 @@ const blades = [
   {
     id: 'stiga-carbonado-290',
     name: 'Stiga Carbonado 290',
+    brand: 'Stiga',
     category: 'Blade',
     rating: 4.8,
     reviews: 167,
@@ -437,6 +516,7 @@ const blades = [
   {
     id: 'stiga-cybershape-carbon',
     name: 'Stiga Cybershape Carbon',
+    brand: 'Stiga',
     category: 'Blade',
     rating: 4.7,
     reviews: 134,
@@ -451,6 +531,7 @@ const blades = [
   {
     id: 'stiga-offensive-classic',
     name: 'Stiga Offensive Classic',
+    brand: 'Stiga',
     category: 'Blade',
     rating: 4.6,
     reviews: 198,
@@ -465,6 +546,7 @@ const blades = [
   {
     id: 'stiga-clipper-wood',
     name: 'Stiga Clipper Wood',
+    brand: 'Stiga',
     category: 'Blade',
     rating: 4.8,
     reviews: 245,
@@ -479,6 +561,7 @@ const blades = [
   {
     id: 'stiga-clipper-cr',
     name: 'Stiga Clipper CR',
+    brand: 'Stiga',
     category: 'Blade',
     rating: 4.8,
     reviews: 178,
@@ -493,6 +576,7 @@ const blades = [
   {
     id: 'yasaka-ma-lin-extra-offensive',
     name: 'Yasaka Ma Lin Extra Offensive',
+    brand: 'Yasaka',
     category: 'Blade',
     rating: 4.7,
     reviews: 143,
@@ -507,6 +591,7 @@ const blades = [
   {
     id: 'yasaka-sweden-extra',
     name: 'Yasaka Sweden Extra',
+    brand: 'Yasaka',
     category: 'Blade',
     rating: 4.6,
     reviews: 112,
@@ -521,6 +606,7 @@ const blades = [
   {
     id: 'donic-ovtcharov-carbospeed',
     name: 'Donic Ovtcharov Carbospeed',
+    brand: 'Donic',
     category: 'Blade',
     rating: 4.8,
     reviews: 156,
@@ -535,6 +621,7 @@ const blades = [
   {
     id: 'donic-waldner-senso-carbon',
     name: 'Donic Waldner Senso Carbon',
+    brand: 'Donic',
     category: 'Blade',
     rating: 4.7,
     reviews: 134,

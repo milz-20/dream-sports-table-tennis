@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useLocation, Link } from 'react-router-dom';
 import { CheckCircle, Package, Truck, Phone, Mail, Home } from 'lucide-react';
@@ -6,6 +6,10 @@ import { CheckCircle, Package, Truck, Phone, Mail, Home } from 'lucide-react';
 const OrderSuccess: React.FC = () => {
   const location = useLocation();
   const orderDetails = location.state?.orderDetails;
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   if (!orderDetails) {
     return (

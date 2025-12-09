@@ -8,6 +8,7 @@ const Home: React.FC = () => {
   const [waveOffset, setWaveOffset] = useState(0);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     document.title = 'Pune Table Tennis - Expert Coaching & Premium Equipment in Pune';
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
