@@ -2,12 +2,11 @@
 const nextConfig = {
   images: {
     domains: [],
-    unoptimized: true, // For static export if needed
+    unoptimized: false, // Enable image optimization
   },
   // Enable React strict mode
   reactStrictMode: true,
-  // Optionally enable static export
-  // output: 'export',
+  // Default Next.js output - supports SSR/ISR on Amplify Gen 2
 }
 
 module.exports = nextConfig
