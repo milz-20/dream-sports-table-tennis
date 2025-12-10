@@ -3,15 +3,16 @@ frontend:
   phases:
     preBuild:
       commands:
-        - cd web
+        - cd web-nextjs
         - npm ci
     build:
       commands:
         - npm run build
   artifacts:
-    baseDirectory: web/build
+    baseDirectory: web-nextjs/.next
     files:
       - '**/*'
   cache:
     paths:
-      - web/node_modules/**/*
+      - web-nextjs/node_modules/**/*
+      - web-nextjs/.next/cache/**/*
