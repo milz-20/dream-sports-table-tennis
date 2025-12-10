@@ -5,6 +5,9 @@ import * as amplify from 'aws-cdk-lib/aws-amplify';
 import * as iam from 'aws-cdk-lib/aws-iam';
 
 export class TableTennisInfraStack extends cdk.Stack {
+  public readonly amplifyApp: amplify.CfnApp;
+  public readonly mainBranch: amplify.CfnBranch;
+
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -106,14 +109,32 @@ export class TableTennisInfraStack extends cdk.Stack {
     */
 
     // AWS Amplify Hosting App
-    // Note: You'll need to connect this to a Git repository (GitHub, CodeCommit, etc.)
-    // or use manual deployment through Amplify Console
-    const amplifyApp = new amplify.CfnApp(this, 'TableTennisWebApp', {
+    // Connected to GitHub repository: milz-20/dream-sports-table-tennis
+    this.amplifyApp = new amplify.CfnApp(this, 'TableTennisWebApp', {
       name: 'table-tennis-website',
       description: 'Table Tennis Coaching and Equipment Business Website',
       platform: 'WEB',
+      repository: 'https://github.com/milz-20/dream-sports-table-tennis',
+      accessToken: process.env.GITHUB_TOKEN, // Store in AWS Secrets Manager or SSM Parameter Store
       enableBranchAutoDeletion: true,
       iamServiceRole: this.createAmplifyRole().roleArn,
+      buildSpec: `version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - cd web
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: web/build
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - web/node_modules/**/*`,
       customRules: [
         {
           source: '/<*>',
@@ -134,12 +155,12 @@ export class TableTennisInfraStack extends cdk.Stack {
       ],
     });
 
-    // Create main branch for Amplify
-    const mainBranch = new amplify.CfnBranch(this, 'MainBranch', {
-      appId: amplifyApp.attrAppId,
-      branchName: 'main',
+    // Create branch for Amplify (using shadCNTailwindUI branch)
+    this.mainBranch = new amplify.CfnBranch(this, 'MainBranch', {
+      appId: this.amplifyApp.attrAppId,
+      branchName: 'shadCNTailwindUI',
       enableAutoBuild: true,
-      enablePullRequestPreview: false,
+      enablePullRequestPreview: true,
       stage: 'PRODUCTION',
     });
 
@@ -172,17 +193,19 @@ export class TableTennisInfraStack extends cdk.Stack {
     */
 
     new cdk.CfnOutput(this, 'AmplifyAppId', {
-      value: amplifyApp.attrAppId,
+      value: this.amplifyApp.attrAppId,
       description: 'Amplify App ID',
+      exportName: 'TableTennis-AmplifyAppId',
     });
 
     new cdk.CfnOutput(this, 'AmplifyDefaultDomain', {
-      value: amplifyApp.attrDefaultDomain,
+      value: this.amplifyApp.attrDefaultDomain,
       description: 'Amplify Default Domain',
+      exportName: 'TableTennis-AmplifyDefaultDomain',
     });
 
     new cdk.CfnOutput(this, 'WebsiteURL', {
-      value: `https://main.${amplifyApp.attrDefaultDomain}`,
+      value: `https://main.${this.amplifyApp.attrDefaultDomain}`,
       description: 'Website URL',
     });
   }

@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Table Tennis: Red, White, Black Theme */
+    --background: 0 0% 100%; /* Pure white */
+    --foreground: 0 0% 10%; /* Deep black */
+    --card: 0 0% 100%; /* White cards */
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 0 85% 60%; /* Vibrant red */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 15%; /* Elegant black */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 96%; /* Light gray */
+    --muted-foreground: 0 0% 40%;
+    --accent: 0 85% 60%; /* Red accent */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%; /* Subtle gray border */
+    --input: 0 0% 95%;
+    --ring: 0 85% 60%; /* Red focus ring */
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    margin: 0;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .glass-effect {
+    @apply bg-background/80 backdrop-blur-md border border-border;
+  }
+  
+  .glass-section {
+    @apply bg-white/60 backdrop-blur-sm border border-border/50 rounded-2xl shadow-sm;
+  }
+  
+  .elegant-card {
+    @apply bg-card/80 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-border/40;
+  }
+  
+  .elegant-input {
+    @apply w-full px-4 py-3 border border-input rounded-lg 
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+           transition-all duration-200 bg-background;
+  }
+  
+  .elegant-button {
+    @apply px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium
+           hover:bg-primary/90 active:scale-[0.98]
+           transition-all duration-200 shadow-ios;
+  }
+  
+  .elegant-button-outline {
+    @apply px-6 py-3 border-2 border-foreground text-foreground rounded-lg font-medium
+           hover:bg-accent hover:text-accent-foreground active:scale-[0.98]
+           transition-all duration-200;
+  }
+  
+  .bg-grid-pattern {
+    background-image: 
+      linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}
