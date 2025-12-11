@@ -1,8 +1,0 @@
-{
-  "version": 1,
-  "framework": "next",
-  "imageOptimization": {
-    "path": "/_next/image",
-    "loader": "default"
-  }
-}
