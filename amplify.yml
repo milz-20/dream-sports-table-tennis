@@ -9,10 +9,9 @@ applications:
         build:
           commands:
             - npm run build
-            - echo '{"version":1,"framework":"next","imageOptimization":{"path":"/_next/image","loader":"default"}}' > .next/deploy-manifest.json
-            - cp -r .next/standalone/. .next/
             - cp -r .next/static .next/standalone/.next/
             - cp -r public .next/standalone/
+            - echo '{"version":1,"framework":"next","imageOptimization":{"path":"/_next/image","loader":"default"}}' > .next/standalone/deploy-manifest.json
       artifacts:
         baseDirectory: .next/standalone
         files:
