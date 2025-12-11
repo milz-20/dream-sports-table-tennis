@@ -138,7 +138,7 @@ applications:
           - node_modules/**/*
           - .next/cache/**/*
     app:
-      startCommand: npm run start -- --hostname 0.0.0.0 --port 3000`,
+      startCommand: npm run start -- --hostname 0.0.0.0 --port $PORT`,
       environmentVariables: [
         {
           name: 'REACT_APP_AWS_REGION',
