@@ -129,10 +129,12 @@ applications:
         build:
           commands:
             - npm run build
-            - mkdir -p .amplify-hosting
-            - echo '{"version":1,"framework":"next","imageOptimization":{"path":"/_next/image","loader":"default"}}' > .amplify-hosting/deploy-manifest.json
+            - echo '{"version":1,"framework":"next","imageOptimization":{"path":"/_next/image","loader":"default"}}' > .next/deploy-manifest.json
+            - cp -r .next/standalone/. .next/
+            - cp -r .next/static .next/standalone/.next/
+            - cp -r public .next/standalone/
       artifacts:
-        baseDirectory: .next
+        baseDirectory: .next/standalone
         files:
           - '**/*'
       cache:
@@ -140,7 +142,7 @@ applications:
           - node_modules/**/*
           - .next/cache/**/*
     app:
-      startCommand: npm run start -- --hostname 0.0.0.0 --port $PORT`,
+      startCommand: node server.js`,
       environmentVariables: [
         {
           name: 'REACT_APP_AWS_REGION',
