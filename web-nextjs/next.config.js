@@ -2,11 +2,9 @@
 const nextConfig = {
   images: {
     domains: [],
-    unoptimized: false, // Enable image optimization
+    unoptimized: false,
   },
-  // Enable React strict mode
   reactStrictMode: true,
-  // Default Next.js output - supports SSR/ISR on Amplify Gen 2
-}
+};
 
 module.exports = nextConfig

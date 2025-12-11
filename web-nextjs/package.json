@@ -10,6 +10,7 @@
     "export": "next build && next export"
   },
   "dependencies": {
+    "@aws-amplify/adapter-nextjs": "^1.6.12",
     "@aws-sdk/client-dynamodb": "^3.461.0",
     "@aws-sdk/lib-dynamodb": "^3.461.0",
     "class-variance-authority": "^0.7.1",
