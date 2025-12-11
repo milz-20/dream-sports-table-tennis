@@ -129,6 +129,8 @@ applications:
         build:
           commands:
             - npm run build
+            - mkdir -p .amplify-hosting
+            - echo '{"version":1,"framework":"next","imageOptimization":{"path":"/_next/image","loader":"default"}}' > .amplify-hosting/deploy-manifest.json
       artifacts:
         baseDirectory: .next
         files:
