@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverActions: { allowedOrigins: ['*'] },
+  },
   images: {
     domains: [],
     unoptimized: false,
@@ -7,4 +10,4 @@ const nextConfig = {
   reactStrictMode: true,
 };
 
-module.exports = nextConfig
+module.exports = nextConfig;
