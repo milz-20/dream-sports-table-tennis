@@ -110,43 +110,35 @@ export class TableTennisInfraStack extends cdk.Stack {
 
     // AWS Amplify Hosting App
     // Connected to GitHub repository: milz-20/dream-sports-table-tennis
-    this.amplifyApp = new amplify.CfnApp(this, 'TableTennisWebApp', {
+    this.amplifyApp = new amplify.CfnApp(this, 'TableTennisWebAppV2', {
       name: 'table-tennis-website',
       description: 'Table Tennis Coaching and Equipment Business Website',
-      platform: 'WEB',
+      platform: 'WEB_COMPUTE',
       repository: 'https://github.com/milz-20/dream-sports-table-tennis',
       accessToken: process.env.GITHUB_TOKEN, // Store in AWS Secrets Manager or SSM Parameter Store
       enableBranchAutoDeletion: true,
       iamServiceRole: this.createAmplifyRole().roleArn,
       buildSpec: `version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - cd web
-        - npm ci
-    build:
-      commands:
-        - npm run build
-  artifacts:
-    baseDirectory: web/build
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - web/node_modules/**/*`,
-      customRules: [
-        {
-          source: '/<*>',
-          target: '/index.html',
-          status: '404-200',
-        },
-        {
-          source: '</^[^.]+$|\\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|ttf|map|json)$)([^.]+$)/>',
-          target: '/index.html',
-          status: '200',
-        },
-      ],
+applications:
+  - appRoot: web-nextjs
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm ci
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: .next
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+          - .next/cache/**/*
+    app:
+      startCommand: npm run start -- --hostname 0.0.0.0 --port 3000`,
       environmentVariables: [
         {
           name: 'REACT_APP_AWS_REGION',
@@ -156,7 +148,7 @@ frontend:
     });
 
     // Create branch for Amplify (using shadCNTailwindUI branch)
-    this.mainBranch = new amplify.CfnBranch(this, 'MainBranch', {
+    this.mainBranch = new amplify.CfnBranch(this, 'MainBranchV2', {
       appId: this.amplifyApp.attrAppId,
       branchName: 'shadCNTailwindUI',
       enableAutoBuild: true,

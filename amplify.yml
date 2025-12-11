@@ -17,4 +17,6 @@ applications:
         paths:
           - node_modules/**/*
           - .next/cache/**/*
+    app:
+      startCommand: npm run start -- --hostname 0.0.0.0 --port 3000
     platform: WEB_COMPUTE
