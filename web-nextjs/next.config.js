@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
   experimental: {
     serverActions: { allowedOrigins: ['*'] },
   },
   images: {
-    domains: [],
-    unoptimized: false,
+    unoptimized: true,
   },
   reactStrictMode: true,
 };

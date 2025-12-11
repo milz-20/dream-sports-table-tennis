@@ -15,9 +15,6 @@ export const metadata: Metadata = {
   },
 };
 
-// Force dynamic rendering for SSR
-export const dynamic = 'force-dynamic';
-
 export default function Home() {
   return <HomeClient />;
 }
