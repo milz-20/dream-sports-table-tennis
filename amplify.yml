@@ -11,7 +11,38 @@ applications:
             - npm run build
             - cp -r .next/static .next/standalone/.next/
             - cp -r public .next/standalone/
-            - echo '{"version":1,"framework":"next","imageOptimization":{"path":"/_next/image","loader":"default"}}' > .next/standalone/deploy-manifest.json
+            - |
+              cat > .next/standalone/deploy-manifest.json << 'EOF'
+              {
+                "version": 1,
+                "framework": {
+                  "name": "next",
+                  "version": "14.2.33"
+                },
+                "imageOptimization": {
+                  "path": "/_next/image",
+                  "loader": "default"
+                },
+                "routes": [
+                  {
+                    "path": "/_next/static/*",
+                    "target": "static",
+                    "headers": {
+                      "cache-control": "public,max-age=31536000,immutable"
+                    }
+                  },
+                  {
+                    "path": "/_next/image*",
+                    "target": "compute"
+                  },
+                  {
+                    "path": "/*",
+                    "target": "compute",
+                    "fallback": "index"
+                  }
+                ]
+              }
+              EOF
       artifacts:
         baseDirectory: .next/standalone
         files:
