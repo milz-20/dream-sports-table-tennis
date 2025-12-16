@@ -10,6 +10,7 @@
     "export": "next build && next export"
   },
   "dependencies": {
+    "@aws-amplify/adapter-nextjs": "^1.6.12",
     "@aws-sdk/client-dynamodb": "^3.461.0",
     "@aws-sdk/lib-dynamodb": "^3.461.0",
     "class-variance-authority": "^0.7.1",
@@ -22,6 +23,7 @@
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
+    "@aws-amplify/backend-cli": "^1.8.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

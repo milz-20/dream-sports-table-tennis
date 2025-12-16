@@ -1,12 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    domains: [],
-    unoptimized: false, // Enable image optimization
+  output: 'export',
+  experimental: {
+    serverActions: { allowedOrigins: ['*'] },
   },
-  // Enable React strict mode
+  images: {
+    unoptimized: true,
+  },
   reactStrictMode: true,
-  // Default Next.js output - supports SSR/ISR on Amplify Gen 2
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

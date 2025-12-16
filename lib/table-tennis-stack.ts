@@ -5,11 +5,15 @@ import * as amplify from 'aws-cdk-lib/aws-amplify';
 import * as iam from 'aws-cdk-lib/aws-iam';
 
 export class TableTennisInfraStack extends cdk.Stack {
-  public readonly amplifyApp: amplify.CfnApp;
+  public readonly amplifyAppId: string;
   public readonly mainBranch: amplify.CfnBranch;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+
+    // Use existing Amplify app ID from ap-south-1 region
+    // App: dream-sports-table-tennis (d34u3bzjibnwqi)
+    this.amplifyAppId = 'd34u3bzjibnwqi';
 
     // DynamoDB Tables - COMMENTED OUT FOR NOW
     /*
@@ -108,60 +112,30 @@ export class TableTennisInfraStack extends cdk.Stack {
     });
     */
 
-    // AWS Amplify Hosting App
+    // AWS Amplify - Managing existing app: dream-sports-table-tennis
+    // App ID: d34u3bzjibnwqi in ap-south-1 region
     // Connected to GitHub repository: milz-20/dream-sports-table-tennis
-    this.amplifyApp = new amplify.CfnApp(this, 'TableTennisWebApp', {
-      name: 'table-tennis-website',
-      description: 'Table Tennis Coaching and Equipment Business Website',
-      platform: 'WEB',
-      repository: 'https://github.com/milz-20/dream-sports-table-tennis',
-      accessToken: process.env.GITHUB_TOKEN, // Store in AWS Secrets Manager or SSM Parameter Store
-      enableBranchAutoDeletion: true,
-      iamServiceRole: this.createAmplifyRole().roleArn,
-      buildSpec: `version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - cd web
-        - npm ci
-    build:
-      commands:
-        - npm run build
-  artifacts:
-    baseDirectory: web/build
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - web/node_modules/**/*`,
-      customRules: [
-        {
-          source: '/<*>',
-          target: '/index.html',
-          status: '404-200',
-        },
-        {
-          source: '</^[^.]+$|\\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|ttf|map|json)$)([^.]+$)/>',
-          target: '/index.html',
-          status: '200',
-        },
-      ],
-      environmentVariables: [
-        {
-          name: 'REACT_APP_AWS_REGION',
-          value: this.region,
-        },
-      ],
-    });
+    
+    // Note: The existing branch 'shadCNTailwindUI' is already configured in the console
+    // We'll manage the custom domain through CDK
+    // To manage the branch through CDK, you would need to import it or create a CfnBranch
+    // For now, we'll just manage the domain association
 
-    // Create branch for Amplify (using shadCNTailwindUI branch)
-    this.mainBranch = new amplify.CfnBranch(this, 'MainBranch', {
-      appId: this.amplifyApp.attrAppId,
-      branchName: 'shadCNTailwindUI',
-      enableAutoBuild: true,
-      enablePullRequestPreview: true,
-      stage: 'PRODUCTION',
+    // Add custom domain: allabouttabletennis.in to existing Amplify app
+    const customDomain = new amplify.CfnDomain(this, 'CustomDomain', {
+      appId: this.amplifyAppId,
+      domainName: 'allabouttabletennis.in',
+      enableAutoSubDomain: false,
+      subDomainSettings: [
+        {
+          branchName: 'shadCNTailwindUI', // Existing branch name
+          prefix: '', // Root domain
+        },
+        {
+          branchName: 'shadCNTailwindUI',
+          prefix: 'www', // www subdomain
+        },
+      ],
     });
 
     // CloudFormation Outputs
@@ -193,33 +167,31 @@ frontend:
     */
 
     new cdk.CfnOutput(this, 'AmplifyAppId', {
-      value: this.amplifyApp.attrAppId,
+      value: this.amplifyAppId,
       description: 'Amplify App ID',
       exportName: 'TableTennis-AmplifyAppId',
     });
 
     new cdk.CfnOutput(this, 'AmplifyDefaultDomain', {
-      value: this.amplifyApp.attrDefaultDomain,
+      value: 'd34u3bzjibnwqi.amplifyapp.com',
       description: 'Amplify Default Domain',
       exportName: 'TableTennis-AmplifyDefaultDomain',
     });
 
     new cdk.CfnOutput(this, 'WebsiteURL', {
-      value: `https://main.${this.amplifyApp.attrDefaultDomain}`,
-      description: 'Website URL',
-    });
-  }
-
-  private createAmplifyRole(): iam.Role {
-    const role = new iam.Role(this, 'AmplifyRole', {
-      assumedBy: new iam.ServicePrincipal('amplify.amazonaws.com'),
-      description: 'IAM role for Amplify to access AWS resources',
+      value: 'https://shadcntailwindui.d34u3bzjibnwqi.amplifyapp.com',
+      description: 'Current Website URL',
     });
 
-    role.addManagedPolicy(
-      iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess-Amplify')
-    );
+    new cdk.CfnOutput(this, 'CustomDomainName', {
+      value: 'allabouttabletennis.in',
+      description: 'Custom Domain Name',
+      exportName: 'TableTennis-CustomDomain',
+    });
 
-    return role;
+    new cdk.CfnOutput(this, 'CustomDomainStatus', {
+      value: customDomain.attrStatusReason,
+      description: 'Custom Domain Status',
+    });
   }
 }
