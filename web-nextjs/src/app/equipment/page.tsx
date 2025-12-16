@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { blades, rubbers } from '@/data/equipmentData';
 import { enhanceBladeData, enhanceRubberData } from '@/lib/equipmentHelpers';
 import EquipmentClient from './EquipmentClient';
@@ -14,11 +15,15 @@ export default function EquipmentPage() {
   const enhancedRubbers = rubbers.map(enhanceRubberData);
 
   return (
-    <EquipmentClient 
-      blades={blades} 
-      rubbers={rubbers}
-      enhancedBlades={enhancedBlades}
-      enhancedRubbers={enhancedRubbers}
-    />
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+    </div>}>
+      <EquipmentClient 
+        blades={blades} 
+        rubbers={rubbers}
+        enhancedBlades={enhancedBlades}
+        enhancedRubbers={enhancedRubbers}
+      />
+    </Suspense>
   );
 }
