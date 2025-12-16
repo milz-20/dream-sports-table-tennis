@@ -124,66 +124,138 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
             {/* Specifications */}
             <div className="bg-gray-50 rounded-2xl p-6 mb-8 space-y-4">
-              <h3 className="font-bold text-xl mb-4">Specifications</h3>
+              <h3 className="font-bold text-xl mb-4">
+                {product.category === 'Pre-Owned Racket' ? 'Condition Report' : 'Specifications'}
+              </h3>
               
-              {product.composition && (
-                <div className="flex items-center gap-3">
-                  <Package className="w-5 h-5 text-primary" />
-                  <div>
-                    <span className="text-gray-500 text-sm">Composition:</span>
-                    <p className="font-medium">{product.composition}</p>
-                  </div>
-                </div>
+              {/* Pre-Owned Specific Fields */}
+              {product.category === 'Pre-Owned Racket' && (
+                <>
+                  {product.condition && (
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-amber-600 mt-0.5" />
+                      <div>
+                        <span className="text-gray-500 text-sm">Overall Condition:</span>
+                        <p className="font-medium text-amber-700">{product.condition}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {product.bladeCondition && (
+                    <div className="flex items-start gap-3">
+                      <Package className="w-5 h-5 text-primary" />
+                      <div>
+                        <span className="text-gray-500 text-sm">Blade Condition:</span>
+                        <p className="font-medium">{product.bladeCondition}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {product.rubberCondition && (
+                    <div className="flex items-start gap-3">
+                      <Zap className="w-5 h-5 text-primary" />
+                      <div>
+                        <span className="text-gray-500 text-sm">Rubber Condition:</span>
+                        <p className="font-medium">{product.rubberCondition}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {product.inspection && (
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                      <div>
+                        <span className="text-gray-500 text-sm">Inspection:</span>
+                        <p className="font-medium text-green-700">{product.inspection}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {product.quantity && (
+                    <div className="flex items-start gap-3">
+                      <Package className="w-5 h-5 text-orange-600" />
+                      <div>
+                        <span className="text-gray-500 text-sm">Availability:</span>
+                        <p className="font-medium text-orange-700">{product.quantity}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {product.warranty && (
+                    <div className="flex items-start gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                      <span className="text-amber-600 font-bold text-lg">⚠️</span>
+                      <div>
+                        <span className="text-gray-500 text-sm">Warranty Policy:</span>
+                        <p className="font-bold text-amber-800">{product.warranty}</p>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
 
-              {product.speed && (
-                <div className="flex items-center gap-3">
-                  <Zap className="w-5 h-5 text-primary" />
-                  <div>
-                    <span className="text-gray-500 text-sm">Speed:</span>
-                    <p className="font-medium">{product.speed}</p>
-                  </div>
-                </div>
-              )}
+              {/* Regular Product Fields */}
+              {product.category !== 'Pre-Owned Racket' && (
+                <>
+                  {product.composition && (
+                    <div className="flex items-center gap-3">
+                      <Package className="w-5 h-5 text-primary" />
+                      <div>
+                        <span className="text-gray-500 text-sm">Composition:</span>
+                        <p className="font-medium">{product.composition}</p>
+                      </div>
+                    </div>
+                  )}
 
-              {product.origin && (
-                <div className="flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-primary" />
-                  <div>
-                    <span className="text-gray-500 text-sm">Origin:</span>
-                    <p className="font-medium">{product.origin}</p>
-                  </div>
-                </div>
-              )}
+                  {product.speed && (
+                    <div className="flex items-center gap-3">
+                      <Zap className="w-5 h-5 text-primary" />
+                      <div>
+                        <span className="text-gray-500 text-sm">Speed:</span>
+                        <p className="font-medium">{product.speed}</p>
+                      </div>
+                    </div>
+                  )}
 
-              {product.type && (
-                <div className="flex items-center gap-3">
-                  <Package className="w-5 h-5 text-primary" />
-                  <div>
-                    <span className="text-gray-500 text-sm">Type:</span>
-                    <p className="font-medium">{product.type}</p>
-                  </div>
-                </div>
-              )}
+                  {product.origin && (
+                    <div className="flex items-center gap-3">
+                      <MapPin className="w-5 h-5 text-primary" />
+                      <div>
+                        <span className="text-gray-500 text-sm">Origin:</span>
+                        <p className="font-medium">{product.origin}</p>
+                      </div>
+                    </div>
+                  )}
 
-              {product.hardness && (
-                <div className="flex items-center gap-3">
-                  <Zap className="w-5 h-5 text-primary" />
-                  <div>
-                    <span className="text-gray-500 text-sm">Hardness:</span>
-                    <p className="font-medium">{product.hardness}</p>
-                  </div>
-                </div>
-              )}
+                  {product.type && (
+                    <div className="flex items-center gap-3">
+                      <Package className="w-5 h-5 text-primary" />
+                      <div>
+                        <span className="text-gray-500 text-sm">Type:</span>
+                        <p className="font-medium">{product.type}</p>
+                      </div>
+                    </div>
+                  )}
 
-              {product.arc && (
-                <div className="flex items-center gap-3">
-                  <TrendingUp className="w-5 h-5 text-primary" />
-                  <div>
-                    <span className="text-gray-500 text-sm">Arc:</span>
-                    <p className="font-medium">{product.arc}</p>
-                  </div>
-                </div>
+                  {product.hardness && (
+                    <div className="flex items-center gap-3">
+                      <Zap className="w-5 h-5 text-primary" />
+                      <div>
+                        <span className="text-gray-500 text-sm">Hardness:</span>
+                        <p className="font-medium">{product.hardness}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {product.arc && (
+                    <div className="flex items-center gap-3">
+                      <TrendingUp className="w-5 h-5 text-primary" />
+                      <div>
+                        <span className="text-gray-500 text-sm">Arc:</span>
+                        <p className="font-medium">{product.arc}</p>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
 

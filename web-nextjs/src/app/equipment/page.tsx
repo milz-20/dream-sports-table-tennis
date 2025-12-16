@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { blades, rubbers } from '@/data/equipmentData';
+import { blades, rubbers, shoes, preOwnedRackets } from '@/data/equipmentData';
 import { enhanceBladeData, enhanceRubberData } from '@/lib/equipmentHelpers';
 import EquipmentClient from './EquipmentClient';
 import { Metadata } from 'next';
@@ -21,6 +21,8 @@ export default function EquipmentPage() {
       <EquipmentClient 
         blades={blades} 
         rubbers={rubbers}
+        shoes={shoes}
+        preOwnedRackets={preOwnedRackets}
         enhancedBlades={enhancedBlades}
         enhancedRubbers={enhancedRubbers}
       />

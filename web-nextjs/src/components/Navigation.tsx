@@ -16,17 +16,18 @@ export default function Navigation() {
   const [isAccessoriesOpen, setIsAccessoriesOpen] = useState(false);
 
   const collectionsLinks = [
-    { href: '/?category=blades', label: 'Blades' },
-    { href: '/?category=rubbers', label: 'Rubbers' },
-    { href: '/?category=shoes', label: 'Shoes' },
-    { href: '/?category=balls', label: 'Balls' },
-    { href: '/?category=tables', label: 'Tables' },
+    { href: '/equipment?category=blades', label: 'Blades' },
+    { href: '/equipment?category=rubbers', label: 'Rubbers' },
+    { href: '/equipment?category=shoes', label: 'Shoes' },
+    { href: '/equipment?category=balls', label: 'Balls' },
+    { href: '/equipment?category=tables', label: 'Tables' },
+    { href: '/equipment?category=preowned', label: 'Pre-Owned Rackets' },
   ];
 
   const accessoriesLinks = [
-    { href: '/?category=side-tape', label: 'Side Tape' },
-    { href: '/?category=racket-cleaner', label: 'Racket Cleaner' },
-    { href: '/?category=handle-grip', label: 'Handle Grip' },
+    { href: '/equipment?category=accessories', label: 'Edge Tape' },
+    { href: '/equipment?category=accessories', label: 'Racket Cleaner' },
+    { href: '/equipment?category=accessories', label: 'Handle Grip' },
   ];
 
   const isActive = (path: string) => pathname === path;
@@ -46,12 +47,86 @@ export default function Navigation() {
               </span>
             </Link>
 
-            {/* Desktop Navigation - Hidden, only mobile menu */}
-            <div className="hidden md:flex items-center space-x-4">
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center space-x-1">
+              {/* Home Link */}
+              <Link
+                href="/"
+                className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-2 ${
+                  isActive('/')
+                    ? 'bg-primary text-white'
+                    : 'text-foreground hover:bg-muted'
+                }`}
+              >
+                <HomeIcon className="w-4 h-4" />
+                <span>Home</span>
+              </Link>
+
+              {/* Collections Dropdown */}
+              <div className="relative group">
+                <button
+                  className="px-3 py-2 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-2 text-foreground hover:bg-muted"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>Collections</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                <div className="absolute left-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="py-2">
+                    {collectionsLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Accessories Dropdown */}
+              <div className="relative group">
+                <button
+                  className="px-3 py-2 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-2 text-foreground hover:bg-muted"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>Accessories</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                <div className="absolute left-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="py-2">
+                    {accessoriesLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Link */}
+              <Link
+                href="/contact"
+                className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-2 ${
+                  isActive('/contact')
+                    ? 'bg-primary text-white'
+                    : 'text-foreground hover:bg-muted'
+                }`}
+              >
+                <Mail className="w-4 h-4" />
+                <span>Contact</span>
+              </Link>
+
               {/* Cart Button */}
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="relative px-4 py-2 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-2 text-foreground hover:bg-muted"
+                className="relative px-3 py-2 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-2 text-foreground hover:bg-muted"
               >
                 <ShoppingCart className="w-4 h-4" />
                 <span>Cart</span>
@@ -63,10 +138,10 @@ export default function Navigation() {
               </button>
             </div>
 
-            {/* Hamburger Menu Button - Always visible */}
+            {/* Hamburger Menu Button - Visible on tablet and mobile */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg hover:bg-muted transition-colors"
+              className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
             >
               {isMobileMenuOpen ? (
                 <X className="w-6 h-6" />

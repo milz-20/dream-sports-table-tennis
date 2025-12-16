@@ -52,7 +52,7 @@ const categories: CategoryCard[] = [
     icon: '👟',
     description: 'Professional footwear for optimal performance',
     href: '/equipment?category=shoes',
-    available: false,
+    available: true,
     gradient: 'from-green-500 to-green-600',
     image: '/assets/images/shoes.jpg'
   },
@@ -75,6 +75,26 @@ const categories: CategoryCard[] = [
     available: false,
     gradient: 'from-purple-500 to-purple-600',
     image: '/assets/images/table.webp'
+  },
+  {
+    id: 'accessories',
+    title: 'Accessories',
+    icon: '🎨',
+    description: 'Essential accessories for your equipment',
+    href: '/equipment?category=accessories',
+    available: true,
+    gradient: 'from-pink-500 to-pink-600',
+    image: '/assets/images/edge-tape/joola.webp'
+  },
+  {
+    id: 'preowned',
+    title: 'Pre-Owned Rackets',
+    icon: '♻️',
+    description: 'Quality inspected used rackets at great prices',
+    href: '/equipment?category=preowned',
+    available: true,
+    gradient: 'from-amber-500 to-amber-600',
+    image: '/assets/images/viscaria.jpg'
   }
 ];
 

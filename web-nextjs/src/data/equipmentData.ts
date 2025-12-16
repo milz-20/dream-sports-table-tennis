@@ -48,6 +48,10 @@ const rakza7Img = '/assets/images/rubbers/razka7.jpg';
 const rasantPowergripImg = '/assets/images/rubbers/rasantPowergrip.jpg';
 const v15ExtraImg = '/assets/images/rubbers/victas-v-15.jpg';
 
+// Shoes images
+const butterflyLezolineZeroImg = '/assets/images/shoes/butterfly_lezoline_zero.jpg';
+const joolaProJuniorImg = '/assets/images/shoes/Joola_pro_junior.webp';
+
 export const blades = [
   {
     id: 'butterfly-timo-boll-alc',
@@ -707,5 +711,97 @@ export const rubbers = [
     price: 4399,
     originalPrice: 5199,
     image: v15ExtraImg,
+  },
+];
+
+// Table Tennis Shoes
+export const shoes = [
+  {
+    id: 'butterfly-lezoline-zero',
+    name: 'Butterfly Lezoline Zero',
+    brand: 'Butterfly',
+    category: 'Shoes',
+    rating: 4.8,
+    reviews: 142,
+    size: 'Available in UK 6-11',
+    material: 'Synthetic Leather + Mesh',
+    sole: 'Rubber Non-Marking',
+    description: 'Professional table tennis shoes with excellent grip and stability. Lightweight design for quick movements and superior comfort.',
+    price: 5000,
+    originalPrice: 6500,
+    image: butterflyLezolineZeroImg,
+  },
+  {
+    id: 'joola-pro-junior',
+    name: 'JOOLA Pro Junior',
+    brand: 'JOOLA',
+    category: 'Shoes',
+    rating: 4.6,
+    reviews: 98,
+    size: 'Available in UK 3-6',
+    material: 'Breathable Mesh',
+    sole: 'EVA Cushion + Rubber',
+    description: 'Perfect shoes for junior players. Comfortable fit with excellent support for growing feet. Great traction on indoor surfaces.',
+    price: 3700,
+    originalPrice: 4800,
+    image: joolaProJuniorImg,
+  },
+];
+
+// Pre-Owned Rackets - Professionally Inspected & Verified
+export const preOwnedRackets = [
+  {
+    id: 'preowned-viscaria-tenergy05',
+    name: 'Butterfly Viscaria + Tenergy 05 (Both Sides)',
+    brand: 'Butterfly',
+    category: 'Pre-Owned Racket',
+    rating: 4.9,
+    reviews: 12,
+    condition: 'Excellent - Lightly Used',
+    bladeCondition: 'No structural damage, minor cosmetic wear',
+    rubberCondition: '80-85% rubber life remaining',
+    warranty: 'Final Sale - No Returns',
+    inspection: 'Professionally Inspected & Verified',
+    quantity: 'Limited: Only 1 Available',
+    description: 'Premium pre-owned setup. Blade shows minimal wear with no structural issues. Rubbers have excellent grip and spin remaining. Perfect for intermediate to advanced players looking for pro-level equipment at great value.',
+    price: 8999,
+    originalPrice: 18000,
+    image: viscariaImg,
+  },
+  {
+    id: 'preowned-timo-boll-dignics',
+    name: 'Butterfly Timo Boll ALC + Dignics 09C (FH) + Tenergy 64 (BH)',
+    brand: 'Butterfly',
+    category: 'Pre-Owned Racket',
+    rating: 4.8,
+    reviews: 8,
+    condition: 'Very Good - Well Maintained',
+    bladeCondition: 'Excellent condition, no damage',
+    rubberCondition: '75-80% rubber life remaining',
+    warranty: 'Final Sale - No Returns',
+    inspection: 'Professionally Inspected & Verified',
+    quantity: 'Limited: Only 1 Available',
+    description: 'High-end pre-owned setup with top-tier rubbers. Blade is in excellent shape. Rubbers still provide great spin and speed. Ideal for competitive players.',
+    price: 10999,
+    originalPrice: 22000,
+    image: timoBollImg,
+  },
+  {
+    id: 'preowned-zhang-jike-tenergy80',
+    name: 'Butterfly Zhang Jike ZLC + Tenergy 80 (Both Sides)',
+    brand: 'Butterfly',
+    category: 'Pre-Owned Racket',
+    rating: 4.7,
+    reviews: 15,
+    condition: 'Good - Regular Use',
+    bladeCondition: 'Solid structure, minor surface wear',
+    rubberCondition: '70-75% rubber life remaining',
+    warranty: 'Final Sale - No Returns',
+    inspection: 'Professionally Inspected & Verified',
+    quantity: 'Limited: Only 1 Available',
+    description: 'Affordable entry into premium equipment. Blade structure is perfect with some cosmetic aging. Rubbers still perform well for training and casual matches.',
+    price: 7499,
+    originalPrice: 19000,
+    image: zhangJikeImg,
   },
 ];

@@ -1,17 +1,17 @@
-import { blades, rubbers } from '@/data/equipmentData';
+import { blades, rubbers, shoes, preOwnedRackets } from '@/data/equipmentData';
 import ProductDetailClient from './ProductDetailClient';
 import { notFound } from 'next/navigation';
 
 export async function generateStaticParams() {
   // Generate static pages for all products
-  const allProducts = [...blades, ...rubbers];
+  const allProducts = [...blades, ...rubbers, ...shoes, ...preOwnedRackets];
   return allProducts.map((product) => ({
     productId: product.id,
   }));
 }
 
 export default function ProductDetailPage({ params }: { params: { productId: string } }) {
-  const allProducts = [...blades, ...rubbers];
+  const allProducts = [...blades, ...rubbers, ...shoes, ...preOwnedRackets];
   const product = allProducts.find(p => p.id === params.productId);
 
   if (!product) {
