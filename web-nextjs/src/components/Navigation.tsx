@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home as HomeIcon, Users, ShoppingBag, Mail, ShoppingCart, Menu, X } from 'lucide-react';
+import { Home as HomeIcon, ShoppingBag, Mail, ShoppingCart, Menu, X, ChevronDown, ChevronRight } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import CartDrawer from './CartDrawer';
 
@@ -12,12 +12,21 @@ export default function Navigation() {
   const { getTotalItems } = useCart();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCollectionsOpen, setIsCollectionsOpen] = useState(false);
+  const [isAccessoriesOpen, setIsAccessoriesOpen] = useState(false);
 
-  const navLinks = [
-    { href: '/', label: 'Home', icon: HomeIcon },
-    { href: '/coaching', label: 'Coaching', icon: Users },
-    { href: '/equipment', label: 'Equipment', icon: ShoppingBag },
-    { href: '/contact', label: 'Contact', icon: Mail },
+  const collectionsLinks = [
+    { href: '/?category=blades', label: 'Blades' },
+    { href: '/?category=rubbers', label: 'Rubbers' },
+    { href: '/?category=shoes', label: 'Shoes' },
+    { href: '/?category=balls', label: 'Balls' },
+    { href: '/?category=tables', label: 'Tables' },
+  ];
+
+  const accessoriesLinks = [
+    { href: '/?category=side-tape', label: 'Side Tape' },
+    { href: '/?category=racket-cleaner', label: 'Racket Cleaner' },
+    { href: '/?category=handle-grip', label: 'Handle Grip' },
   ];
 
   const isActive = (path: string) => pathname === path;
@@ -29,34 +38,16 @@ export default function Navigation() {
           <div className="flex items-center justify-between h-20">
             {/* Brand */}
             <Link href="/" className="group flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-red-700 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300">
-                <span className="text-white font-bold text-xl drop-shadow-md">PT</span>
+              <div className="w-12 h-10 bg-gradient-to-br from-primary to-red-700 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300">
+                <span className="text-white font-bold text-sm drop-shadow-md tracking-tight">AATT</span>
               </div>
               <span className="font-display font-bold text-xl text-black tracking-tight">
-                Pune Table Tennis
+                All About Table Tennis
               </span>
             </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-1">
-              {navLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-2 ${
-                      isActive(link.href)
-                        ? 'bg-primary text-white shadow-md'
-                        : 'text-foreground hover:bg-muted'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{link.label}</span>
-                  </Link>
-                );
-              })}
-
+            {/* Desktop Navigation - Hidden, only mobile menu */}
+            <div className="hidden md:flex items-center space-x-4">
               {/* Cart Button */}
               <button
                 onClick={() => setIsCartOpen(true)}
@@ -72,10 +63,10 @@ export default function Navigation() {
               </button>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Hamburger Menu Button - Always visible */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+              className="p-2 rounded-lg hover:bg-muted transition-colors"
             >
               {isMobileMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -85,30 +76,103 @@ export default function Navigation() {
             </button>
           </div>
 
-          {/* Mobile Menu */}
+          {/* Hamburger Menu */}
           {isMobileMenuOpen && (
-            <div className="md:hidden py-4 border-t border-border">
+            <div className="py-4 border-t border-border">
               <div className="flex flex-col space-y-2">
-                {navLinks.map((link) => {
-                  const Icon = link.icon;
-                  return (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`px-4 py-3 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-3 ${
-                        isActive(link.href)
-                          ? 'bg-primary text-white'
-                          : 'text-foreground hover:bg-muted'
-                      }`}
-                    >
-                      <Icon className="w-5 h-5" />
-                      <span>{link.label}</span>
-                    </Link>
-                  );
-                })}
+                {/* Home Link */}
+                <Link
+                  href="/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`px-4 py-3 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-3 ${
+                    isActive('/')
+                      ? 'bg-primary text-white'
+                      : 'text-foreground hover:bg-muted'
+                  }`}
+                >
+                  <HomeIcon className="w-5 h-5" />
+                  <span>Home</span>
+                </Link>
 
-                {/* Mobile Cart Button */}
+                {/* Collections Dropdown */}
+                <div>
+                  <button
+                    onClick={() => setIsCollectionsOpen(!isCollectionsOpen)}
+                    className="w-full px-4 py-3 rounded-lg font-medium transition-all duration-200 inline-flex items-center justify-between text-foreground hover:bg-muted"
+                  >
+                    <div className="inline-flex items-center space-x-3">
+                      <ShoppingBag className="w-5 h-5" />
+                      <span>Collections</span>
+                    </div>
+                    {isCollectionsOpen ? (
+                      <ChevronDown className="w-5 h-5" />
+                    ) : (
+                      <ChevronRight className="w-5 h-5" />
+                    )}
+                  </button>
+                  {isCollectionsOpen && (
+                    <div className="ml-8 mt-2 space-y-1">
+                      {collectionsLinks.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block px-4 py-2 rounded-lg text-sm text-foreground hover:bg-muted transition-colors"
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Accessories Dropdown */}
+                <div>
+                  <button
+                    onClick={() => setIsAccessoriesOpen(!isAccessoriesOpen)}
+                    className="w-full px-4 py-3 rounded-lg font-medium transition-all duration-200 inline-flex items-center justify-between text-foreground hover:bg-muted"
+                  >
+                    <div className="inline-flex items-center space-x-3">
+                      <ShoppingBag className="w-5 h-5" />
+                      <span>Accessories</span>
+                    </div>
+                    {isAccessoriesOpen ? (
+                      <ChevronDown className="w-5 h-5" />
+                    ) : (
+                      <ChevronRight className="w-5 h-5" />
+                    )}
+                  </button>
+                  {isAccessoriesOpen && (
+                    <div className="ml-8 mt-2 space-y-1">
+                      {accessoriesLinks.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block px-4 py-2 rounded-lg text-sm text-foreground hover:bg-muted transition-colors"
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Contact Link */}
+                <Link
+                  href="/contact"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`px-4 py-3 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-3 ${
+                    isActive('/contact')
+                      ? 'bg-primary text-white'
+                      : 'text-foreground hover:bg-muted'
+                  }`}
+                >
+                  <Mail className="w-5 h-5" />
+                  <span>Contact</span>
+                </Link>
+
+                {/* Cart Button */}
                 <button
                   onClick={() => {
                     setIsCartOpen(true);

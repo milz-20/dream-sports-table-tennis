@@ -1,4 +1,4 @@
-# Next.js Migration - Pune Table Tennis
+# Next.js Migration - All About Table Tennis
 
 This folder contains the Next.js version of the Table Tennis website with Server-Side Rendering (SSR).
 

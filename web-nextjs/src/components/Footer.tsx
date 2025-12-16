@@ -11,15 +11,15 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-red-700 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">PT</span>
+              <div className="w-12 h-10 bg-gradient-to-br from-primary to-red-700 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm tracking-tight">AATT</span>
               </div>
               <span className="font-display font-bold text-lg">
-                Pune Table Tennis
+                All About Table Tennis
               </span>
             </div>
             <p className="text-gray-400 text-sm">
-              Professional table tennis coaching and equipment in Pune
+              Premium table tennis equipment and accessories in India
             </p>
           </div>
 
@@ -30,11 +30,8 @@ export default function Footer() {
               <Link href="/" className="block text-gray-400 hover:text-white transition-colors">
                 Home
               </Link>
-              <Link href="/coaching" className="block text-gray-400 hover:text-white transition-colors">
-                Coaching
-              </Link>
               <Link href="/equipment" className="block text-gray-400 hover:text-white transition-colors">
-                Equipment
+                Shop
               </Link>
               <Link href="/contact" className="block text-gray-400 hover:text-white transition-colors">
                 Contact
@@ -54,15 +51,15 @@ export default function Footer() {
                 <span>+91 88307 71691</span>
               </a>
               <a
-                href="mailto:contact@dreamtabletennis.com"
+                href="mailto:contact@allabouttabletennis.in"
                 className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors"
               >
                 <Mail className="w-4 h-4" />
-                <span>contact@dreamtabletennis.com</span>
+                <span>contact@allabouttabletennis.in</span>
               </a>
               <div className="flex items-start space-x-2 text-gray-400">
                 <MapPin className="w-4 h-4 mt-1 flex-shrink-0" />
-                <span>Pune, Maharashtra, India</span>
+                <span>India</span>
               </div>
             </div>
           </div>
@@ -94,7 +91,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 mt-12 pt-8 text-center text-gray-400 text-sm">
-          <p>&copy; {new Date().getFullYear()} Pune Table Tennis. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} All About Table Tennis. All rights reserved.</p>
         </div>
       </div>
     </footer>

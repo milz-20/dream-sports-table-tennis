@@ -15,10 +15,10 @@ export class Route53Stack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: Route53StackProps) {
     super(scope, id, props);
 
-    // Create Route53 Public Hosted Zone for punetabletennis.in
+    // Create Route53 Public Hosted Zone for allabouttabletennis.in
     this.hostedZone = new route53.PublicHostedZone(this, 'PuneTTHostedZone', {
-      zoneName: 'punetabletennis.in',
-      comment: 'Hosted zone for Pune Table Tennis website',
+      zoneName: 'allabouttabletennis.in',
+      comment: 'Hosted zone for All About Table Tennis website',
     });
 
     // Domain will be added manually through Amplify Console

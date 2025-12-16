@@ -4,8 +4,8 @@ import EquipmentClient from './EquipmentClient';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Table Tennis Equipment Pune - Butterfly, Stiga, DHS, Yasaka Blades & Rubbers',
-  description: 'Buy authentic table tennis equipment in Pune. Premium Butterfly Viscaria, Timo Boll, Tenergy rubbers. Stiga Carbonado, DHS Hurricane. Genuine products with warranty. Cash on delivery available.',
+  title: 'Table Tennis Equipment - Butterfly, Stiga, DHS, Yasaka Blades & Rubbers',
+  description: 'Buy authentic table tennis equipment in India. Premium Butterfly Viscaria, Timo Boll, Tenergy rubbers. Stiga Carbonado, DHS Hurricane. Genuine products with warranty. Cash on delivery available.',
 };
 
 export default function EquipmentPage() {

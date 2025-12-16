@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Star, ShoppingBag, ArrowRight, ShoppingCart, Package, Zap, MapPin, TrendingUp, Plus, Minus } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import CustomizeRacket from '@/components/CustomizeRacket';
@@ -21,13 +22,28 @@ export default function EquipmentClient({
   enhancedBlades,
   enhancedRubbers 
 }: EquipmentClientProps) {
-  const [activeCategory, setActiveCategory] = useState<'blades' | 'rubbers'>('blades');
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams.get('category');
+  
+  const [activeCategory, setActiveCategory] = useState<'blades' | 'rubbers' | 'shoes' | 'balls' | 'tables'>('blades');
   const [selectedBrand, setSelectedBrand] = useState<string>('');
   const [showCustomizer, setShowCustomizer] = useState<boolean>(false);
   
   useEffect(() => {
+    // Set category from URL parameter
+    if (categoryParam === 'rubbers') {
+      setActiveCategory('rubbers');
+    } else if (categoryParam === 'blades') {
+      setActiveCategory('blades');
+    } else if (categoryParam === 'shoes') {
+      setActiveCategory('shoes');
+    } else if (categoryParam === 'balls') {
+      setActiveCategory('balls');
+    } else if (categoryParam === 'tables') {
+      setActiveCategory('tables');
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  }, [categoryParam]);
 
   return (
     <motion.div
@@ -55,10 +71,10 @@ export default function EquipmentClient({
               <span>Premium Quality Equipment</span>
             </motion.div>
             <h1 className="font-display font-bold text-5xl lg:text-6xl text-black mb-6">
-              Table Tennis Equipment in Pune
+              Premium Table Tennis Equipment
             </h1>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed mb-8">
-              Professional Butterfly, Stiga table tennis equipment with fast delivery in Pune. Shop professional blades and rubbers used by champions.
+              Professional Butterfly, Stiga table tennis equipment with fast delivery across India. Shop professional blades and rubbers used by champions.
             </p>
 
             {/* Category Tabs */}
@@ -116,12 +132,18 @@ export default function EquipmentClient({
       <section className="py-8 md:py-12 lg:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <h2 className="font-display font-bold text-3xl text-black mb-4 text-center">
-            {activeCategory === 'blades' ? '🏓 Professional Blades' : '🎯 Premium Rubbers'}
+            {activeCategory === 'blades' && '🏓 Professional Blades'}
+            {activeCategory === 'rubbers' && '🎯 Premium Rubbers'}
+            {activeCategory === 'shoes' && '👟 Table Tennis Shoes'}
+            {activeCategory === 'balls' && '⚪ Competition Balls'}
+            {activeCategory === 'tables' && '🏓 Table Tennis Tables'}
           </h2>
           <p className="text-gray-600 text-center mb-6 md:mb-8 max-w-2xl mx-auto text-sm md:text-base">
-            {activeCategory === 'blades' 
-              ? 'Premium quality blades for every playing style and skill level'
-              : 'High-performance rubbers for maximum spin, speed, and control'}
+            {activeCategory === 'blades' && 'Premium quality blades for every playing style and skill level'}
+            {activeCategory === 'rubbers' && 'High-performance rubbers for maximum spin, speed, and control'}
+            {activeCategory === 'shoes' && 'Professional table tennis footwear for optimal performance'}
+            {activeCategory === 'balls' && 'Competition grade balls for training and tournaments'}
+            {activeCategory === 'tables' && 'Professional quality table tennis tables'}
           </p>
 
           {/* Brand Filter - Only show for blades */}
@@ -153,14 +175,37 @@ export default function EquipmentClient({
             </div>
           )}
 
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-            {(activeCategory === 'blades' 
-              ? blades.filter(blade => !selectedBrand || blade.brand === selectedBrand)
-              : rubbers
-            ).map((product, index) => (
-              <ProductCard key={product.id} {...product} index={index} />
-            ))}
-          </div>
+          {(activeCategory === 'shoes' || activeCategory === 'balls' || activeCategory === 'tables') ? (
+            <div className="text-center py-16">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-6">
+                <ShoppingBag className="w-10 h-10 text-gray-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                Coming Soon!
+              </h3>
+              <p className="text-gray-600 mb-6">
+                We're working on adding {activeCategory === 'shoes' ? 'shoes' : activeCategory === 'balls' ? 'balls' : 'tables'} to our inventory.
+              </p>
+              <a 
+                href="https://wa.me/918830771691?text=Hi%20I%20am%20interested%20in%20table%20tennis%20equipment" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="elegant-button inline-flex items-center justify-center group"
+              >
+                <span>Contact Us for Availability</span>
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </a>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+              {(activeCategory === 'blades' 
+                ? blades.filter(blade => !selectedBrand || blade.brand === selectedBrand)
+                : rubbers
+              ).map((product, index) => (
+                <ProductCard key={product.id} {...product} index={index} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
       )}
@@ -169,7 +214,7 @@ export default function EquipmentClient({
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <h2 className="font-display font-bold text-3xl text-black mb-12 text-center">
-            🚚 Fast Delivery in Pune
+            🚚 Fast Delivery Across India
           </h2>
           <p className="text-gray-600 text-center mb-12">
             Get your equipment delivered quickly and safely
@@ -183,9 +228,9 @@ export default function EquipmentClient({
               className="bg-white rounded-2xl p-8 border-2 border-gray-200"
             >
               <h3 className="font-display font-bold text-2xl text-black mb-2">Standard Delivery</h3>
-              <p className="text-4xl font-bold text-primary mb-4">24 Hours</p>
+              <p className="text-4xl font-bold text-primary mb-4">2-3 Days</p>
               <p className="text-gray-600">
-                Free delivery within Pune city limits. Order today and receive your equipment tomorrow!
+                Fast and reliable delivery across India. Order today and receive your equipment within 2-3 business days!
               </p>
             </motion.div>
 
@@ -197,18 +242,18 @@ export default function EquipmentClient({
               className="bg-primary rounded-2xl p-8 border-2 border-primary text-white relative overflow-hidden"
             >
               <div className="absolute top-4 right-4 bg-white text-primary text-xs font-bold px-3 py-1 rounded-full">
-                FASTEST
+                PREMIUM
               </div>
-              <h3 className="font-display font-bold text-2xl mb-2">Instant Delivery</h3>
-              <p className="text-4xl font-bold mb-4">3 Hours</p>
+              <h3 className="font-display font-bold text-2xl mb-2">Express Delivery</h3>
+              <p className="text-4xl font-bold mb-4">Next Day</p>
               <p className="text-white/90">
-                Need it urgently? Get instant delivery within 3 hours anywhere in Pune!
+                Need it urgently? Get express delivery and receive your order the next day in major cities!
               </p>
             </motion.div>
           </div>
 
           <p className="text-center text-sm text-gray-500 mt-8">
-            * Delivery times applicable for orders placed within Pune city limits. Contact us for delivery outside Pune.
+            * Delivery times may vary based on location. Free shipping on orders above ₹2000. Contact us for more details.
           </p>
         </div>
       </section>
@@ -220,7 +265,7 @@ export default function EquipmentClient({
             Need Expert Advice?
           </h2>
           <p className="text-lg text-gray-300 mb-8">
-            Our coaches can help you choose the perfect equipment for your playing style
+            Our team can help you choose the perfect equipment for your playing style
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
@@ -229,12 +274,9 @@ export default function EquipmentClient({
               rel="noopener noreferrer"
               className="elegant-button inline-flex items-center justify-center group"
             >
-              <span>Get Expert Advice</span>
+              <span>Contact Us on WhatsApp</span>
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </a>
-            <Link href="/coaching" className="inline-flex items-center justify-center px-6 py-3 border-2 border-white text-white rounded-lg font-medium hover:bg-white hover:text-black active:scale-[0.98] transition-all duration-200">
-              View Coaching
-            </Link>
           </div>
         </div>
       </section>

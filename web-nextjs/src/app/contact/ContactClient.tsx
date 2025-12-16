@@ -31,7 +31,7 @@ export default function ContactClient() {
             Get in Touch
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Have questions about coaching or equipment? We're here to help!
+            Have questions about our products or equipment? We're here to help!
           </p>
         </motion.div>
 

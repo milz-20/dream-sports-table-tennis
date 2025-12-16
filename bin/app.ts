@@ -7,11 +7,11 @@ import { Route53Stack } from '../lib/route53-stack';
 
 const app = new cdk.App();
 
-// Main infrastructure stack
+// Main infrastructure stack - Using ap-south-1 (Mumbai) where Amplify app exists
 const infraStack = new TableTennisInfraStack(app, 'TableTennisInfraStack', {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION,
+    region: 'ap-south-1', // Mumbai region where existing Amplify app is located
   },
   description: 'Table Tennis Coaching and Equipment Business Infrastructure',
 });
@@ -22,7 +22,7 @@ new Route53Stack(app, 'Route53Stack', {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
-  description: 'Route53 Hosted Zone for punetabletennis.in',
+  description: 'Route53 Hosted Zone for allabouttabletennis.in',
 });
 
 // Budget monitoring stack

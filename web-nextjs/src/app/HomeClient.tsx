@@ -1,18 +1,90 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { GraduationCap, ShoppingBag, ArrowRight } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import Link from 'next/link';
+import { ShoppingBag, ArrowRight, Package, Zap, Headphones } from 'lucide-react';
+import CustomizeRacket from '@/components/CustomizeRacket';
+import type { BladeData, RubberData } from '@/components/CustomizeRacket';
 
-export default function HomeClient() {
-  const [waveOffset, setWaveOffset] = useState(0);
+interface HomeClientProps {
+  blades: any[];
+  rubbers: any[];
+  enhancedBlades: BladeData[];
+  enhancedRubbers: RubberData[];
+}
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const x = e.clientX / window.innerWidth;
-    setWaveOffset(x * 20 - 10);
-  };
+interface CategoryCard {
+  id: string;
+  title: string;
+  icon: string;
+  description: string;
+  href: string;
+  available: boolean;
+  gradient: string;
+  image: string;
+}
+
+const categories: CategoryCard[] = [
+  {
+    id: 'blades',
+    title: 'Blades',
+    icon: '🏓',
+    description: 'Professional blades for every playing style',
+    href: '/equipment?category=blades',
+    available: true,
+    gradient: 'from-blue-500 to-blue-600',
+    image: '/assets/images/blades_table_tennis.jpg'
+  },
+  {
+    id: 'rubbers',
+    title: 'Rubbers',
+    icon: '🎯',
+    description: 'High-performance rubbers for maximum spin',
+    href: '/equipment?category=rubbers',
+    available: true,
+    gradient: 'from-red-500 to-red-600',
+    image: '/assets/images/rubbers/rubbers.webp'
+  },
+  {
+    id: 'shoes',
+    title: 'Shoes',
+    icon: '👟',
+    description: 'Professional footwear for optimal performance',
+    href: '/equipment?category=shoes',
+    available: false,
+    gradient: 'from-green-500 to-green-600',
+    image: '/assets/images/shoes.jpg'
+  },
+  {
+    id: 'balls',
+    title: 'Balls',
+    icon: '⚪',
+    description: 'Competition grade balls for training',
+    href: '/equipment?category=balls',
+    available: false,
+    gradient: 'from-orange-500 to-orange-600',
+    image: '/assets/images/balls.webp'
+  },
+  {
+    id: 'tables',
+    title: 'Tables',
+    icon: '🏓',
+    description: 'Professional quality table tennis tables',
+    href: '/equipment?category=tables',
+    available: false,
+    gradient: 'from-purple-500 to-purple-600',
+    image: '/assets/images/table.webp'
+  }
+];
+
+export default function HomeClient({ 
+  blades, 
+  rubbers,
+  enhancedBlades,
+  enhancedRubbers 
+}: HomeClientProps) {
+  const [showCustomizer, setShowCustomizer] = useState<boolean>(false);
 
   return (
     <motion.div
@@ -20,142 +92,263 @@ export default function HomeClient() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-white"
-      onMouseMove={handleMouseMove}
     >
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        {/* Welcome Message */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="text-center mb-6"
-        >
-          <h1 
-            className="font-display font-bold text-5xl lg:text-7xl mb-10 text-black relative"
-            style={{
-              textShadow: `
-                0 1px 0 #ccc,
-                0 2px 0 #c9c9c9,
-                0 3px 0 #bbb,
-                0 4px 0 #b9b9b9,
-                0 5px 0 #aaa,
-                0 6px 1px rgba(0,0,0,.1),
-                0 0 5px rgba(0,0,0,.1),
-                0 1px 3px rgba(0,0,0,.3),
-                0 3px 5px rgba(0,0,0,.2),
-                0 5px 10px rgba(0,0,0,.25),
-                0 10px 10px rgba(0,0,0,.2),
-                0 20px 20px rgba(0,0,0,.15),
-                inset 0 -2px 5px rgba(255,255,255,0.3)
-              `,
-              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
-            }}
-          >
-            Welcome to <span className="text-primary" style={{
-              textShadow: `
-                0 1px 0 #cc5555,
-                0 2px 0 #c95555,
-                0 3px 0 #bb4444,
-                0 4px 0 #b94444,
-                0 5px 0 #aa3333,
-                0 6px 1px rgba(0,0,0,.1),
-                0 0 5px rgba(239,68,68,.3),
-                0 1px 3px rgba(0,0,0,.3),
-                0 3px 5px rgba(239,68,68,.2),
-                0 5px 10px rgba(0,0,0,.25),
-                0 10px 10px rgba(0,0,0,.2),
-                0 20px 20px rgba(0,0,0,.15),
-                inset 0 -2px 5px rgba(255,255,255,0.4)
-              `,
-            }}>Pune Table Tennis</span>
-          </h1>
-          <h2 
-            className="text-2xl lg:text-4xl text-gray-700"
-            style={{
-              textShadow: `
-                0 1px 0 #999,
-                0 2px 0 #888,
-                0 3px 0 #777,
-                0 4px 1px rgba(0,0,0,.1),
-                0 0 5px rgba(0,0,0,.1),
-                0 1px 3px rgba(0,0,0,.3),
-                0 3px 5px rgba(0,0,0,.2),
-                0 5px 10px rgba(0,0,0,.15),
-                inset 0 -1px 3px rgba(255,255,255,0.3)
-              `,
-              filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))',
-            }}
-          >
-            What are you looking for?
-          </h2>
-        </motion.div>
-
-        {/* Cards */}
-        <div className="grid md:grid-cols-2 gap-8 mt-8">
-          {/* Coaching Card */}
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-gray-50 via-white to-gray-50 py-12 md:py-20 lg:py-24">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="text-center mb-12"
           >
-            <Link href="/coaching" className="block group">
-              <Card className="h-full hover:shadow-2xl transition-all duration-300 border-2 hover:border-primary overflow-hidden">
-                <CardContent className="p-16 flex flex-col items-center text-center space-y-10">
-                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-red-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <GraduationCap className="w-16 h-16 text-white" />
-                  </div>
-                  
-                  <div>
-                    <h3 className="font-display font-bold text-4xl text-black mb-4">
-                      Coaching
-                    </h3>
-                    <p className="text-gray-700 text-xl">
-                      Professional training programs for all skill levels
-                    </p>
-                  </div>
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="inline-flex items-center space-x-2 bg-primary/10 text-primary border border-primary/20 px-4 py-2 rounded-full text-sm font-medium mb-6"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              <span>Premium Quality Equipment</span>
+            </motion.div>
+            <h1 className="font-display font-bold text-5xl lg:text-7xl text-black mb-6">
+              All About Table Tennis
+            </h1>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10">
+              Professional Butterfly, Stiga, and other premium table tennis equipment with fast delivery across India. 
+              Shop professional gear used by champions.
+            </p>
 
-                  <div className="flex items-center text-primary font-bold text-lg group-hover:translate-x-2 transition-transform duration-300">
-                    <span>Explore Programs</span>
-                    <ArrowRight className="w-6 h-6 ml-2" />
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          </motion.div>
-
-          {/* Equipment Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-          >
-            <Link href="/equipment" className="block group">
-              <Card className="h-full hover:shadow-2xl transition-all duration-300 border-2 hover:border-secondary overflow-hidden">
-                <CardContent className="p-16 flex flex-col items-center text-center space-y-10">
-                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-secondary to-black flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <ShoppingBag className="w-16 h-16 text-white" />
-                  </div>
-                  
-                  <div>
-                    <h3 className="font-display font-bold text-4xl text-black mb-4">
-                      Equipment
-                    </h3>
-                    <p className="text-gray-700 text-xl">
-                      Premium table tennis gear and accessories
-                    </p>
-                  </div>
-
-                  <div className="flex items-center text-secondary font-bold text-lg group-hover:translate-x-2 transition-transform duration-300">
-                    <span>Browse Shop</span>
-                    <ArrowRight className="w-6 h-6 ml-2" />
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
+            {/* Customize Racket Button */}
+            <button
+              onClick={() => setShowCustomizer(!showCustomizer)}
+              className={`px-8 py-4 md:px-10 md:py-5 rounded-xl font-bold text-base md:text-lg transition-all duration-300 inline-flex items-center gap-3 ${
+                showCustomizer
+                  ? 'bg-gradient-to-r from-primary to-primary/80 text-white shadow-2xl scale-105'
+                  : 'bg-gradient-to-r from-white to-pink-50 border-2 border-black text-black shadow-lg hover:shadow-xl hover:scale-105 hover:from-pink-50 hover:to-pink-100'
+              }`}
+            >
+              <span className="text-2xl">🎯</span>
+              <span>Customize Your Racket</span>
+              {showCustomizer && <span className="text-xs bg-white/20 px-2 py-1 rounded-full">Active</span>}
+            </button>
           </motion.div>
         </div>
-      </div>
+      </section>
+
+      {/* Customize Racket Section */}
+      {showCustomizer && (
+        <CustomizeRacket blades={enhancedBlades} rubbers={enhancedRubbers} />
+      )}
+
+      {/* Shop by Category */}
+      {!showCustomizer && (
+      <section className="py-16 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="font-display font-bold text-4xl text-black mb-4">
+              Shop by Category
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Explore our premium collection of table tennis equipment
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {categories.map((category, index) => (
+              <motion.div
+                key={category.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Link
+                  href={category.available ? category.href : '#'}
+                  className={`block group relative overflow-hidden rounded-2xl border-2 transition-all duration-500 ${
+                    category.available
+                      ? 'border-gray-200 hover:border-primary hover:shadow-2xl hover:-translate-y-2'
+                      : 'border-gray-200 opacity-75 cursor-not-allowed'
+                  }`}
+                >
+                  {/* Background Image */}
+                  <div className="relative h-80 overflow-hidden">
+                    <img
+                      src={category.image}
+                      alt={category.title}
+                      className={`w-full h-full object-cover transition-all duration-500 ${
+                        category.available 
+                          ? 'group-hover:scale-110 group-hover:brightness-110' 
+                          : 'grayscale'
+                      }`}
+                    />
+                    
+                    {/* Dark Gradient Overlay */}
+                    <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-opacity duration-500 ${
+                      category.available ? 'group-hover:from-black/70' : ''
+                    }`} />
+                    
+                    {/* Coming Soon Badge */}
+                    {!category.available && (
+                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-800 px-4 py-2 rounded-full text-sm font-bold">
+                        Coming Soon
+                      </div>
+                    )}
+                    
+                    {/* Category Title - Bottom Left */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                      <h3 className={`font-display font-bold text-4xl text-white mb-2 transition-all duration-300 ${
+                        category.available ? 'group-hover:underline decoration-4 underline-offset-8' : ''
+                      }`}>
+                        {category.title}
+                      </h3>
+                      <p className="text-white/90 text-sm mb-4">
+                        {category.description}
+                      </p>
+                      
+                      {category.available && (
+                        <div className="inline-flex items-center text-white font-semibold gap-2 group-hover:gap-3 transition-all">
+                          <span>Shop Now</span>
+                          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+      )}
+
+      {/* Why Choose Us */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <h2 className="font-display font-bold text-3xl text-black mb-12 text-center">
+            Why Choose Us?
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
+                <Package className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="font-bold text-xl mb-2">Premium Quality</h3>
+              <p className="text-gray-600">
+                Authentic products from top brands like Butterfly, Stiga, and more
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-center"
+            >
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
+                <Zap className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="font-bold text-xl mb-2">Fast Delivery</h3>
+              <p className="text-gray-600">
+                Quick delivery across India - get your gear in 2-3 days
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-center"
+            >
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
+                <Headphones className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="font-bold text-xl mb-2">Expert Support</h3>
+              <p className="text-gray-600">
+                Get personalized recommendations from our expert team
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Fast Delivery Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <h2 className="font-display font-bold text-3xl text-black mb-12 text-center">
+            🚚 Fast Delivery Across India
+          </h2>
+          <p className="text-gray-600 text-center mb-12">
+            Get your equipment delivered quickly and safely
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-2xl p-8 border-2 border-gray-200"
+            >
+              <h3 className="font-display font-bold text-2xl text-black mb-2">Standard Delivery</h3>
+              <p className="text-4xl font-bold text-primary mb-4">2-3 Days</p>
+              <p className="text-gray-600">
+                Fast and reliable delivery across India. Order today and receive your equipment within 2-3 business days!
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="bg-primary rounded-2xl p-8 border-2 border-primary text-white relative overflow-hidden"
+            >
+              <div className="absolute top-4 right-4 bg-white text-primary text-xs font-bold px-3 py-1 rounded-full">
+                PREMIUM
+              </div>
+              <h3 className="font-display font-bold text-2xl mb-2">Express Delivery</h3>
+              <p className="text-4xl font-bold mb-4">Next Day</p>
+              <p className="text-white/90">
+                Need it urgently? Get express delivery and receive your order the next day in major cities!
+              </p>
+            </motion.div>
+          </div>
+
+          <p className="text-center text-sm text-gray-500 mt-8">
+            * Delivery times may vary based on location. Free shipping on orders above ₹2000. Contact us for more details.
+          </p>
+        </div>
+      </section>
+
+      {/* Expert Advice Section */}
+      <section className="py-20 bg-gradient-to-br from-black via-gray-900 to-black text-white">
+        <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+          <h2 className="font-display font-bold text-4xl mb-6">
+            Need Expert Advice?
+          </h2>
+          <p className="text-lg text-gray-300 mb-8">
+            Our team can help you choose the perfect equipment for your playing style
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a 
+              href="https://wa.me/918830771691?text=Hi%20i%20need%20help%20selecting%20a%20suitable%20equipment%20for%20me" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="elegant-button inline-flex items-center justify-center group"
+            >
+              <span>Contact Us on WhatsApp</span>
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            </a>
+          </div>
+        </div>
+      </section>
     </motion.div>
   );
 }

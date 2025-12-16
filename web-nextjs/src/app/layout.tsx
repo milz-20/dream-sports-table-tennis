@@ -12,14 +12,14 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Pune Table Tennis - Professional Coaching & Equipment',
-  description: 'Professional table tennis coaching and equipment in Pune. Expert coaches, premium Butterfly & Stiga equipment. Join our academy for world-class training.',
-  keywords: 'table tennis pune, table tennis coaching pune, butterfly equipment pune, stiga blades pune, tt coaching, table tennis academy',
+  title: 'All About Table Tennis - Premium Equipment & Accessories',
+  description: 'Premium table tennis equipment and accessories in India. Genuine Butterfly, Stiga, DHS products with fast delivery.',
+  keywords: 'table tennis india, tt equipment, butterfly blades, stiga equipment, table tennis shop',
   openGraph: {
-    title: 'Pune Table Tennis - Professional Coaching & Equipment',
-    description: 'Professional table tennis coaching and equipment in Pune',
-    url: 'https://dreamtabletennis.com',
-    siteName: 'Pune Table Tennis',
+    title: 'All About Table Tennis - Premium Equipment & Accessories',
+    description: 'Premium table tennis equipment and accessories',
+    url: 'https://allabouttabletennis.in',
+    siteName: 'All About Table Tennis',
     locale: 'en_IN',
     type: 'website',
   },
