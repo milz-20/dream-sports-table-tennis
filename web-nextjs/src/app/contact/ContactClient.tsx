@@ -16,7 +16,7 @@ export default function ContactClient() {
     e.preventDefault();
     // Handle form submission - could send to API or WhatsApp
     const whatsappMessage = `Name: ${formData.name}%0AEmail: ${formData.email}%0APhone: ${formData.phone}%0AMessage: ${formData.message}`;
-    window.open(`https://wa.me/918830771691?text=${whatsappMessage}`, '_blank');
+    window.open(`https://wa.me/919325173787?text=${whatsappMessage}`, '_blank');
   };
 
   return (
@@ -63,8 +63,8 @@ export default function ContactClient() {
                 </div>
                 <div>
                   <h3 className="font-bold text-xl mb-2">Call Us</h3>
-                  <a href="tel:+918830771691" className="text-gray-600 hover:text-primary transition-colors">
-                    +91 88307 71691
+                  <a href="tel:+919325173787" className="text-gray-600 hover:text-primary transition-colors">
+                    +91 93251 73787
                   </a>
                 </div>
               </div>
@@ -174,8 +174,8 @@ export default function ContactClient() {
 
                 <p className="text-sm text-gray-500 text-center">
                   Or WhatsApp us directly at{' '}
-                  <a href="https://wa.me/918830771691" className="text-primary hover:underline">
-                    +91 88307 71691
+                  <a href="https://wa.me/919325173787" className="text-primary hover:underline">
+                    +91 93251 73787
                   </a>
                 </p>
               </div>

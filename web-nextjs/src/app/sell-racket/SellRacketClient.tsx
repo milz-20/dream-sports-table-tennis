@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import { Upload, Camera, Package, Clock, AlertCircle, CheckCircle, DollarSign, Send, ArrowRight } from 'lucide-react';
 
 interface RacketSubmission {
@@ -119,7 +120,7 @@ ${formData.additionalNotes || 'None'}
 Note: Images will be shared separately.
     `.trim();
 
-    const whatsappUrl = `https://wa.me/918830771691?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/919325173787?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
     
     setSubmitted(true);

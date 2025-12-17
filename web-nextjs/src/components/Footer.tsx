@@ -7,7 +7,7 @@ export default function Footer() {
   return (
     <footer className="bg-black text-white mt-auto">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand */}
           <div>
             <div className="flex items-center space-x-3 mb-4">
@@ -36,6 +36,28 @@ export default function Footer() {
               <Link href="/contact" className="block text-gray-400 hover:text-white transition-colors">
                 Contact
               </Link>
+              <Link href="/sell-racket" className="block text-gray-400 hover:text-white transition-colors">
+                Sell Your Racket
+              </Link>
+            </div>
+          </div>
+
+          {/* Policies */}
+          <div>
+            <h3 className="font-bold mb-4">Policies</h3>
+            <div className="space-y-2">
+              <Link href="/privacy-policy" className="block text-gray-400 hover:text-white transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/terms-conditions" className="block text-gray-400 hover:text-white transition-colors">
+                Terms & Conditions
+              </Link>
+              <Link href="/shipping-policy" className="block text-gray-400 hover:text-white transition-colors">
+                Shipping Policy
+              </Link>
+              <Link href="/refund-policy" className="block text-gray-400 hover:text-white transition-colors">
+                Refund Policy
+              </Link>
             </div>
           </div>
 
@@ -44,11 +66,11 @@ export default function Footer() {
             <h3 className="font-bold mb-4">Contact Us</h3>
             <div className="space-y-3">
               <a
-                href="tel:+918830771691"
+                href="tel:+919325173787"
                 className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors"
               >
                 <Phone className="w-4 h-4" />
-                <span>+91 88307 71691</span>
+                <span>+91 93251 73787</span>
               </a>
               <a
                 href="mailto:contact@allabouttabletennis.in"
