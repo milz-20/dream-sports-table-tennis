@@ -1,0 +1,56 @@
+name: Deploy CDK Infrastructure
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'lib/**'
+      - 'bin/**'
+      - 'cdk.json'
+      - 'package.json'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  deploy:
+    name: Deploy to AWS
+    runs-on: ubuntu-latest
+    
+    permissions:
+      id-token: write # Required for OIDC
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+          role-session-name: GitHubActions-CDK-Deploy
+
+      - name: Build CDK
+        run: npm run build
+
+      - name: CDK Diff
+        run: npx cdk diff --all
+        continue-on-error: true
+
+      - name: Deploy CDK Stacks
+        run: npx cdk deploy --all --require-approval never
+
+      - name: Output deployment info
+        run: |
+          echo "✅ Deployment completed successfully"
+          npx cdk list
