@@ -82,6 +82,60 @@ export class IamDevelopersStack extends cdk.Stack {
 
     backendDevsGroup.attachInlinePolicy(readOnlyInfraPolicy);
 
+    // Allow users to manage their own credentials
+    const selfManagePolicy = new iam.Policy(this, 'SelfManageCredentials', {
+      policyName: 'SelfManageCredentials',
+      statements: [
+        // Allow users to change their own password
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            'iam:ChangePassword',
+            'iam:GetUser',
+          ],
+          resources: ['arn:aws:iam::*:user/${aws:username}'],
+        }),
+        // Allow users to manage their own MFA
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            'iam:CreateVirtualMFADevice',
+            'iam:DeleteVirtualMFADevice',
+            'iam:EnableMFADevice',
+            'iam:ResyncMFADevice',
+            'iam:DeactivateMFADevice',
+          ],
+          resources: [
+            'arn:aws:iam::*:user/${aws:username}',
+            'arn:aws:iam::*:mfa/${aws:username}',
+          ],
+        }),
+        // Allow users to list their own MFA devices
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            'iam:ListMFADevices',
+            'iam:ListVirtualMFADevices',
+            'iam:ListUsers',
+          ],
+          resources: ['*'],
+        }),
+        // Allow users to manage their own access keys
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            'iam:CreateAccessKey',
+            'iam:DeleteAccessKey',
+            'iam:ListAccessKeys',
+            'iam:UpdateAccessKey',
+          ],
+          resources: ['arn:aws:iam::*:user/${aws:username}'],
+        }),
+      ],
+    });
+
+    backendDevsGroup.attachInlinePolicy(selfManagePolicy);
+
     // Deny dangerous actions and infrastructure changes
     const denyPolicy = new iam.Policy(this, 'DenyDangerousActions', {
       policyName: 'DenyDangerousActions',
