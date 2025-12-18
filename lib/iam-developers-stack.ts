@@ -138,13 +138,13 @@ export class IamDevelopersStack extends cdk.Stack {
     // Create IAM Users for Developers
     const developer1 = new iam.User(this, 'dev-sarv', {
       userName: 'dev-sarv',
-      password: cdk.SecretValue.unsafePlainText('ChangeMe123!'), // Change after first login
+      password: cdk.SecretValue.unsafePlainText('TempPass123!@#Sarv'), // Change after first login
       passwordResetRequired: true,
     });
 
     const developer2 = new iam.User(this, 'dev-pat', {
       userName: 'dev-pat',
-      password: cdk.SecretValue.unsafePlainText('ChangeMe456!'), // Change after first login
+      password: cdk.SecretValue.unsafePlainText('TempPass456!@#Pat'), // Change after first login
       passwordResetRequired: true,
     });
 
