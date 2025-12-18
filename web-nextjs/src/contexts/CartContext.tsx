@@ -10,6 +10,8 @@ export interface CartItem {
   originalPrice: number;
   image: string;
   quantity: number;
+  isCustomized?: boolean; // True if part of a customized racket combination
+  customizationNote?: string; // Note for customized items
 }
 
 interface CartContextType {

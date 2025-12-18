@@ -86,8 +86,8 @@ export default function OrderSuccessClient() {
             </p>
             <p className="text-blue-700 text-sm">
               WhatsApp us at{' '}
-              <a href="https://wa.me/918830771691" className="font-bold hover:underline">
-                +91 88307 71691
+              <a href="https://wa.me/919325173787" className="font-bold hover:underline">
+                +91 93251 73787
               </a>
             </p>
           </div>

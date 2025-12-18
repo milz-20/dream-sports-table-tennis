@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus, ShoppingCart, AlertCircle, CheckCircle2, TrendingUp, Zap, Target, Info } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 
@@ -58,6 +58,7 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
   const [showBladeSelector, setShowBladeSelector] = useState(false);
   const [showForehandSelector, setShowForehandSelector] = useState(false);
   const [showBackhandSelector, setShowBackhandSelector] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   
   const { addToCart } = useCart();
 
@@ -186,35 +187,47 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
 
   const handleAddCombinationToCart = () => {
     if (selectedBlade && selectedForehandRubber && selectedBackhandRubber) {
+      const customizationId = `custom-${Date.now()}`;
+      
       // Add blade
       addToCart({
-        id: selectedBlade.id,
+        id: selectedBlade.id + '-' + customizationId,
         name: selectedBlade.name,
         category: 'Blade',
         price: selectedBlade.price,
         originalPrice: selectedBlade.price,
         image: selectedBlade.image,
+        isCustomized: true,
+        customizationNote: '🎯 Assembled racket - blade and rubbers will be pasted together',
       });
 
       // Add forehand rubber
       addToCart({
-        id: selectedForehandRubber.id + '-forehand',
+        id: selectedForehandRubber.id + '-forehand-' + customizationId,
         name: `${selectedForehandRubber.name} (Forehand)`,
         category: 'Rubber',
         price: selectedForehandRubber.price,
         originalPrice: selectedForehandRubber.price,
         image: selectedForehandRubber.image,
+        isCustomized: true,
+        customizationNote: '🎯 Assembled racket - blade and rubbers will be pasted together',
       });
 
       // Add backhand rubber
       addToCart({
-        id: selectedBackhandRubber.id + '-backhand',
+        id: selectedBackhandRubber.id + '-backhand-' + customizationId,
         name: `${selectedBackhandRubber.name} (Backhand)`,
         category: 'Rubber',
         price: selectedBackhandRubber.price,
         originalPrice: selectedBackhandRubber.price,
         image: selectedBackhandRubber.image,
+        isCustomized: true,
+        customizationNote: '🎯 Assembled racket - blade and rubbers will be pasted together',
       });
+
+      // Show success message
+      setShowSuccessMessage(true);
+      setTimeout(() => setShowSuccessMessage(false), 4000);
     }
   };
 
@@ -257,6 +270,24 @@ const CustomizeRacket: React.FC<CustomizeRacketProps> = ({ blades, rubbers }) =>
   return (
     <section className="py-8 md:py-12 lg:py-20 bg-gradient-to-br from-gray-50 via-white to-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Success Message */}
+        <AnimatePresence>
+          {showSuccessMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -50 }}
+              className="fixed top-24 right-6 z-50 bg-green-500 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 max-w-md"
+            >
+              <CheckCircle2 className="w-6 h-6 flex-shrink-0" />
+              <div>
+                <p className="font-bold text-lg">Added to Cart! 🎉</p>
+                <p className="text-sm text-green-100">Your customized racket will be assembled and ready to play!</p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

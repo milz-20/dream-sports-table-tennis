@@ -4,6 +4,7 @@ import * as cdk from 'aws-cdk-lib';
 import { TableTennisInfraStack } from '../lib/table-tennis-stack';
 import { TableTennisBudgetStack } from '../lib/budget-stack';
 import { Route53Stack } from '../lib/route53-stack';
+import { IamDevelopersStack } from '../lib/iam-developers-stack';
 
 const app = new cdk.App();
 
@@ -36,6 +37,15 @@ new TableTennisBudgetStack(app, 'TableTennisBudgetStack', {
   budgetAmount: 1,
   currency: 'USD',
   email: 'milindkelkar00@gmail.com',
+});
+
+// IAM users and permissions for developers
+new IamDevelopersStack(app, 'IamDevelopersStack', {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+  },
+  description: 'IAM users and groups for backend developers',
 });
 
 app.synth();

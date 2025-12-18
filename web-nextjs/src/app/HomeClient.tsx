@@ -57,26 +57,6 @@ const categories: CategoryCard[] = [
     image: '/assets/images/shoes.jpg'
   },
   {
-    id: 'balls',
-    title: 'Balls',
-    icon: '⚪',
-    description: 'Competition grade balls for training',
-    href: '/equipment?category=balls',
-    available: false,
-    gradient: 'from-orange-500 to-orange-600',
-    image: '/assets/images/balls.webp'
-  },
-  {
-    id: 'tables',
-    title: 'Tables',
-    icon: '🏓',
-    description: 'Professional quality table tennis tables',
-    href: '/equipment?category=tables',
-    available: false,
-    gradient: 'from-purple-500 to-purple-600',
-    image: '/assets/images/table.webp'
-  },
-  {
     id: 'accessories',
     title: 'Accessories',
     icon: '🎨',
@@ -95,6 +75,36 @@ const categories: CategoryCard[] = [
     available: true,
     gradient: 'from-amber-500 to-amber-600',
     image: '/assets/images/viscaria.jpg'
+  },
+  {
+    id: 'sell',
+    title: 'Sell Your Racket',
+    icon: '💰',
+    description: 'Get instant quote for your used equipment',
+    href: '/sell-racket',
+    available: true,
+    gradient: 'from-emerald-500 to-emerald-600',
+    image: '/assets/images/Sell_racket.avif'
+  },
+  {
+    id: 'balls',
+    title: 'Balls',
+    icon: '⚪',
+    description: 'Competition grade balls for training',
+    href: '/equipment?category=balls',
+    available: false,
+    gradient: 'from-orange-500 to-orange-600',
+    image: '/assets/images/balls.webp'
+  },
+  {
+    id: 'tables',
+    title: 'Tables',
+    icon: '🏓',
+    description: 'Professional quality table tennis tables',
+    href: '/equipment?category=tables',
+    available: false,
+    gradient: 'from-purple-500 to-purple-600',
+    image: '/assets/images/table.webp'
   }
 ];
 
@@ -358,7 +368,7 @@ export default function HomeClient({
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
-              href="https://wa.me/918830771691?text=Hi%20i%20need%20help%20selecting%20a%20suitable%20equipment%20for%20me" 
+              href="https://wa.me/919325173787?text=Hi%20i%20need%20help%20selecting%20a%20suitable%20equipment%20for%20me" 
               target="_blank" 
               rel="noopener noreferrer"
               className="elegant-button inline-flex items-center justify-center group"

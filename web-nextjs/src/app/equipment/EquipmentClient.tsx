@@ -254,7 +254,7 @@ export default function EquipmentClient({
                 We're working on adding {activeCategory === 'balls' ? 'balls' : activeCategory === 'tables' ? 'tables' : 'accessories'} to our inventory.
               </p>
               <a 
-                href="https://wa.me/918830771691?text=Hi%20I%20am%20interested%20in%20table%20tennis%20equipment" 
+                href="https://wa.me/919325173787?text=Hi%20I%20am%20interested%20in%20table%20tennis%20equipment" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="elegant-button inline-flex items-center justify-center group"
@@ -340,7 +340,7 @@ export default function EquipmentClient({
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
-              href="https://wa.me/918830771691?text=Hi%20i%20need%20help%20selecting%20a%20suitable%20equipment%20for%20me" 
+              href="https://wa.me/919325173787?text=Hi%20i%20need%20help%20selecting%20a%20suitable%20equipment%20for%20me" 
               target="_blank" 
               rel="noopener noreferrer"
               className="elegant-button inline-flex items-center justify-center group"

@@ -110,6 +110,19 @@ export default function Navigation() {
                 </div>
               </div>
 
+              {/* Sell Racket Link */}
+              <Link
+                href="/sell-racket"
+                className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-2 ${
+                  isActive('/sell-racket')
+                    ? 'bg-emerald-600 text-white'
+                    : 'text-emerald-600 hover:bg-emerald-50 border border-emerald-600'
+                }`}
+              >
+                <span>💰</span>
+                <span>Sell Racket</span>
+              </Link>
+
               {/* Contact Link */}
               <Link
                 href="/contact"
@@ -232,6 +245,20 @@ export default function Navigation() {
                     </div>
                   )}
                 </div>
+
+                {/* Sell Racket Link */}
+                <Link
+                  href="/sell-racket"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`px-4 py-3 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-3 ${
+                    isActive('/sell-racket')
+                      ? 'bg-emerald-600 text-white'
+                      : 'text-emerald-600 hover:bg-emerald-50 border-2 border-emerald-600'
+                  }`}
+                >
+                  <span>💰</span>
+                  <span>Sell Your Racket</span>
+                </Link>
 
                 {/* Contact Link */}
                 <Link

@@ -102,6 +102,15 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                           </h4>
                           <p className="text-xs text-gray-500 mb-2">{item.category}</p>
                           
+                          {/* Customization Note */}
+                          {item.isCustomized && item.customizationNote && (
+                            <div className="bg-amber-50 border border-amber-200 rounded-lg px-2 py-1 mb-2">
+                              <p className="text-xs text-amber-800 font-medium">
+                                {item.customizationNote}
+                              </p>
+                            </div>
+                          )}
+                          
                           <div className="flex items-center gap-2 mb-2">
                             <span className="font-bold text-primary">
                               ₹{item.price.toLocaleString('en-IN')}
