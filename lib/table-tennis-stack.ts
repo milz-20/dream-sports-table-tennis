@@ -36,10 +36,8 @@ export class TableTennisInfraStack extends cdk.Stack {
     // Create Order Lambda Function
     const createOrderFunction = new lambda.Function(this, 'CreateOrderFunction', {
       runtime: lambda.Runtime.NODEJS_18_X,
-      handler: 'dist/create-order.handler',
-      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda'), {
-        exclude: ['*.ts', 'tsconfig.json'],
-      }),
+      handler: 'create-order.handler',
+      code: lambda.Code.fromAsset(path.resolve(__dirname, '../../lambda/dist')),
       timeout: cdk.Duration.seconds(30),
       memorySize: 256,
       environment: {
@@ -50,10 +48,8 @@ export class TableTennisInfraStack extends cdk.Stack {
     // Payment Webhook Lambda Function
     const webhookFunction = new lambda.Function(this, 'PaymentWebhookFunction', {
       runtime: lambda.Runtime.NODEJS_18_X,
-      handler: 'dist/verify-payment.handler',
-      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda'), {
-        exclude: ['*.ts', 'tsconfig.json'],
-      }),
+      handler: 'verify-payment.handler',
+      code: lambda.Code.fromAsset(path.resolve(__dirname, '../../lambda/dist')),
       timeout: cdk.Duration.seconds(30),
       memorySize: 256,
       environment: {

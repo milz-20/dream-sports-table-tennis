@@ -51,7 +51,17 @@ export default function CheckoutClient() {
       }
 
       // Get API Gateway URL from environment or use default
-      const apiUrl = process.env.NEXT_PUBLIC_PAYMENT_API_URL || 'YOUR_API_GATEWAY_URL';
+      const apiUrl = process.env.NEXT_PUBLIC_PAYMENT_API_URL;
+      
+      if (!apiUrl || apiUrl === 'YOUR_API_GATEWAY_URL') {
+        alert('Payment API is not configured. Please restart the dev server after adding .env.local file.');
+        console.error('NEXT_PUBLIC_PAYMENT_API_URL not set. Current value:', apiUrl);
+        setIsProcessing(false);
+        return;
+      }
+      
+      console.log('API URL:', apiUrl);
+      console.log('Creating order with amount:', getTotalPrice());
       
       // Create order on backend
       const orderResponse = await fetch(`${apiUrl}/payment/create-order`, {
@@ -80,7 +90,9 @@ export default function CheckoutClient() {
         }),
       });
 
+      console.log('Order response status:', orderResponse.status);
       const orderData = await orderResponse.json();
+      console.log('Order data:', orderData);
 
       if (!orderData.success) {
         throw new Error(orderData.error || 'Failed to create order');
@@ -123,7 +135,8 @@ export default function CheckoutClient() {
       razorpay.open();
     } catch (error) {
       console.error('Payment error:', error);
-      alert('Payment failed. Please try again.');
+      console.error('Error details:', error instanceof Error ? error.message : error);
+      alert(`Payment failed: ${error instanceof Error ? error.message : 'Please try again.'}`);
       setIsProcessing(false);
     }
   };

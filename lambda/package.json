@@ -4,7 +4,8 @@
   "description": "Lambda functions for Razorpay integration",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy-modules",
+    "copy-modules": "xcopy node_modules dist\\node_modules\\ /E /I /Y",
     "watch": "tsc -w"
   },
   "dependencies": {
