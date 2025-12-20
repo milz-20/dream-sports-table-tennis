@@ -202,9 +202,24 @@ export class IamDevelopersStack extends cdk.Stack {
       passwordResetRequired: true,
     });
 
+    const developer3 = new iam.User(this, 'dev-hari', {
+      userName: 'dev-hari',
+      password: cdk.SecretValue.unsafePlainText('TempPass789!@#Hari'), // Change after first login
+      passwordResetRequired: true,
+    });
+
+    const developer4 = new iam.User(this, 'dev-shub', {
+      userName: 'dev-shub',
+      password: cdk.SecretValue.unsafePlainText('TempPass789!@#Shub'), // Change after first login
+      passwordResetRequired: true,
+    });
+
+
     // Add users to the group
     developer1.addToGroup(backendDevsGroup);
     developer2.addToGroup(backendDevsGroup);
+    developer3.addToGroup(backendDevsGroup);
+    developer4.addToGroup(backendDevsGroup);
 
     // Create access keys for CLI/CDK usage
     const dev1AccessKey = new iam.CfnAccessKey(this, 'Developer1AccessKey', {
