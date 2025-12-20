@@ -6,9 +6,16 @@ import { motion } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 import { ShoppingBag, CreditCard, MapPin, Phone, Mail } from 'lucide-react';
 
+// Razorpay types
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
 export default function CheckoutClient() {
   const router = useRouter();
-  const { items, getTotalPrice } = useCart();
+  const { items, getTotalPrice, clearCart } = useCart();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,14 +23,137 @@ export default function CheckoutClient() {
     address: '',
     city: 'Pune',
     pincode: '',
-    paymentMethod: 'cod',
+    paymentMethod: 'online',
   });
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Load Razorpay script
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handlePayment = async () => {
+    setIsProcessing(true);
+
+    try {
+      // Load Razorpay script
+      const isLoaded = await loadRazorpayScript();
+      if (!isLoaded) {
+        alert('Failed to load Razorpay SDK. Please check your connection.');
+        setIsProcessing(false);
+        return;
+      }
+
+      // Get API Gateway URL from environment or use default
+      const apiUrl = process.env.NEXT_PUBLIC_PAYMENT_API_URL;
+      
+      if (!apiUrl || apiUrl === 'YOUR_API_GATEWAY_URL') {
+        alert('Payment API is not configured. Please restart the dev server after adding .env.local file.');
+        console.error('NEXT_PUBLIC_PAYMENT_API_URL not set. Current value:', apiUrl);
+        setIsProcessing(false);
+        return;
+      }
+      
+      console.log('API URL:', apiUrl);
+      console.log('Creating order with amount:', getTotalPrice());
+      
+      // Create order on backend
+      const orderResponse = await fetch(`${apiUrl}/payment/create-order`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: getTotalPrice(),
+          currency: 'INR',
+          receipt: `order_${Date.now()}`,
+          notes: {
+            customerName: formData.name,
+            customerEmail: formData.email,
+            customerPhone: formData.phone,
+            customerAddress: formData.address,
+            customerCity: formData.city,
+            customerPincode: formData.pincode,
+            items: JSON.stringify(items.map(item => ({
+              id: item.id,
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price,
+            }))),
+          },
+        }),
+      });
+
+      console.log('Order response status:', orderResponse.status);
+      const orderData = await orderResponse.json();
+      console.log('Order data:', orderData);
+
+      if (!orderData.success) {
+        throw new Error(orderData.error || 'Failed to create order');
+      }
+
+      // Razorpay options
+      const options = {
+        key: orderData.key_id,
+        amount: orderData.order.amount,
+        currency: orderData.order.currency,
+        name: 'All About Table Tennis',
+        description: 'Table Tennis Equipment Purchase',
+        order_id: orderData.order.id,
+        prefill: {
+          name: formData.name,
+          email: formData.email,
+          contact: formData.phone,
+        },
+        theme: {
+          color: '#dc2626',
+        },
+        handler: function (response: any) {
+          // Payment successful
+          console.log('Payment successful:', response);
+          
+          // Clear cart
+          clearCart();
+          
+          // Redirect to success page
+          router.push(`/order-success?orderId=${orderData.order.id}&paymentId=${response.razorpay_payment_id}`);
+        },
+        modal: {
+          ondismiss: function () {
+            setIsProcessing(false);
+          },
+        },
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      console.error('Payment error:', error);
+      console.error('Error details:', error instanceof Error ? error.message : error);
+      alert(`Payment failed: ${error instanceof Error ? error.message : 'Please try again.'}`);
+      setIsProcessing(false);
+    }
+  };
+
+  const handleCODOrder = () => {
+    // Handle Cash on Delivery
+    router.push('/order-success');
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would send to an API
-    // For now, redirect to order success
-    router.push('/order-success');
+    
+    if (formData.paymentMethod === 'online') {
+      handlePayment();
+    } else {
+      handleCODOrder();
+    }
   };
 
   if (items.length === 0) {
@@ -147,6 +277,20 @@ export default function CheckoutClient() {
                       <input
                         type="radio"
                         name="payment"
+                        value="online"
+                        checked={formData.paymentMethod === 'online'}
+                        onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
+                        className="w-5 h-5 text-primary"
+                      />
+                      <div className="flex-1">
+                        <span className="font-medium">Online Payment (Razorpay)</span>
+                        <p className="text-sm text-gray-600">Pay securely with UPI, Cards, Netbanking</p>
+                      </div>
+                    </label>
+                    <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary transition-colors">
+                      <input
+                        type="radio"
+                        name="payment"
                         value="cod"
                         checked={formData.paymentMethod === 'cod'}
                         onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
@@ -154,24 +298,15 @@ export default function CheckoutClient() {
                       />
                       <span className="font-medium">Cash on Delivery</span>
                     </label>
-                    <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary transition-colors opacity-50">
-                      <input
-                        type="radio"
-                        name="payment"
-                        value="online"
-                        disabled
-                        className="w-5 h-5 text-primary"
-                      />
-                      <span className="font-medium">Online Payment (Coming Soon)</span>
-                    </label>
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  className="elegant-button w-full py-4 text-lg"
+                  disabled={isProcessing}
+                  className="elegant-button w-full py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Place Order
+                  {isProcessing ? 'Processing...' : formData.paymentMethod === 'online' ? 'Proceed to Payment' : 'Place Order'}
                 </button>
               </div>
             </form>
