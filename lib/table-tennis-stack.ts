@@ -222,14 +222,24 @@ export class TableTennisInfraStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'verify-payment.handler',
       code: lambda.Code.fromAsset(path.resolve(__dirname, '../../lambda/dist')),
-      timeout: cdk.Duration.seconds(30),
-      memorySize: 256,
+      timeout: cdk.Duration.seconds(60), // Increased for shipment creation
+      memorySize: 512, // Increased for additional processing
       environment: {
         RAZORPAY_SECRET_NAME: 'test_secret',
         ORDERS_TABLE_NAME: this.ordersTable.tableName,
         PAYMENTS_TABLE_NAME: this.paymentsTable.tableName,
         PRODUCTS_TABLE_NAME: this.productsTable.tableName,
         SELLERS_TABLE_NAME: this.sellersTable.tableName,
+        CUSTOMERS_TABLE_NAME: this.customersTable.tableName,
+        ADDRESSES_TABLE_NAME: this.addressesTable.tableName,
+        SHIPMENTS_TABLE_NAME: this.shipmentsTable.tableName,
+        // Shiprocket configuration
+        USE_AWS_SECRETS: 'true',
+        SHIPROCKET_SECRET_NAME: 'shipRocket-delivery-credentials',
+        SHIPROCKET_DRY_RUN: 'true', // Set to 'false' in production
+        SHIPROCKET_PICKUP_LOCATION: 'Default Pickup',
+        SHIPROCKET_CHANNEL_ID: '1',
+        SHIPROCKET_PICKUP_TIME: '10:00-18:00',
       },
     });
 
@@ -243,14 +253,20 @@ export class TableTennisInfraStack extends cdk.Stack {
     webhookFunction.addToRolePolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: ['secretsmanager:GetSecretValue'],
-      resources: [`arn:aws:secretsmanager:${this.region}:${this.account}:secret:test_secret-*`],
+      resources: [
+        `arn:aws:secretsmanager:${this.region}:${this.account}:secret:test_secret-*`,
+        `arn:aws:secretsmanager:${this.region}:${this.account}:secret:shipRocket-delivery-credentials-*`,
+      ],
     }));
 
     // Grant DynamoDB write permissions to webhook function
-    this.ordersTable.grantWriteData(webhookFunction);
-    this.paymentsTable.grantWriteData(webhookFunction);
-    this.productsTable.grantWriteData(webhookFunction);
-    this.sellersTable.grantWriteData(webhookFunction);
+    this.ordersTable.grantReadWriteData(webhookFunction);
+    this.paymentsTable.grantReadWriteData(webhookFunction);
+    this.productsTable.grantReadWriteData(webhookFunction);
+    this.sellersTable.grantReadWriteData(webhookFunction);
+    this.customersTable.grantReadData(webhookFunction); // Read customer details for shipment
+    this.addressesTable.grantReadData(webhookFunction); // Read address for shipment
+    this.shipmentsTable.grantReadWriteData(webhookFunction); // Create and update shipments
     
     // Grant read permissions to get product and seller details
     this.productsTable.grantReadData(webhookFunction);

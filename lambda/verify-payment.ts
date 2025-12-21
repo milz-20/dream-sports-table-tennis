@@ -4,6 +4,12 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand, UpdateCommand, GetCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import * as crypto from 'crypto';
 
+// Import delivery integration
+import { runDelivery } from './delivery/delivery-controller';
+import { createDynamoAdapter } from './delivery/storage-adapter-dynamo';
+import { getOrderWithDetails } from './order-fetcher';
+import { createDeliveryFailureTicket, createPaymentFailureTicket } from './jira/jira-stub';
+
 // AWS_REGION is automatically set by Lambda runtime
 const secretsManager = new SecretsManagerClient({ region: process.env.AWS_REGION });
 const dynamoDbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
@@ -298,12 +304,110 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         await updateProductStockAndSellerSales(orderItems);
       }
 
+      // 4. TRIGGER SHIPMENT CREATION
+      console.log(`[webhook] Triggering shipment creation for order ${orderId}`);
+      let shipmentResult = null;
+      try {
+        // Fetch complete order data with customer and address details
+        const orderData = await getOrderWithDetails(orderId, createdAt);
+        
+        if (!orderData) {
+          console.error(`[webhook] Failed to fetch order data for ${orderId}`);
+          await createDeliveryFailureTicket(
+            orderId,
+            'shipment_creation',
+            new Error('Order data not found in DynamoDB'),
+            {
+              orderId,
+              customerId: payment.notes?.customerId,
+              razorpayOrderId: payment.order_id,
+              amount: payment.amount,
+            }
+          );
+        } else {
+          // Call runDelivery with DynamoDB storage adapter
+          const storageAdapter = createDynamoAdapter();
+          shipmentResult = await runDelivery(orderData, {
+            notifyPhone: orderData.customer.phone,
+            storage: storageAdapter,
+          });
+
+          if (!shipmentResult.ok) {
+            console.error(`[webhook] Delivery creation failed for ${orderId}:`, shipmentResult.error);
+            await createDeliveryFailureTicket(
+              orderId,
+              'shipment_creation',
+              new Error(shipmentResult.error || 'Unknown delivery error'),
+              {
+                orderId,
+                customerId: orderData.customerId,
+                customerEmail: orderData.customer.email,
+                customerPhone: orderData.customer.phone,
+                orderAmount: orderData.totalAmount,
+                paymentMethod: payment.method,
+              }
+            );
+          } else {
+            console.log(`[webhook] Shipment created successfully for ${orderId}:`, {
+              shipmentId: shipmentResult.shiprocket?.shipment_id,
+              awb: shipmentResult.shiprocket?.awb_code,
+              fromCache: shipmentResult.fromCache,
+            });
+
+            // 5. Update order with shipment details
+            try {
+              await docClient.send(
+                new UpdateCommand({
+                  TableName: process.env.ORDERS_TABLE_NAME || 'table-tennis-orders',
+                  Key: {
+                    orderId: orderId,
+                    createdAt: createdAt,
+                  },
+                  UpdateExpression: 'SET shipmentId = :shipmentId, awb = :awb, shipmentStatus = :shipmentStatus, shipmentCreatedAt = :timestamp',
+                  ExpressionAttributeValues: {
+                    ':shipmentId': shipmentResult.shiprocket?.shipment_id || null,
+                    ':awb': shipmentResult.shiprocket?.awb_code || null,
+                    ':shipmentStatus': 'pending_pickup',
+                    ':timestamp': new Date().toISOString(),
+                  },
+                })
+              );
+              console.log(`[webhook] Order ${orderId} updated with shipment details`);
+            } catch (updateError) {
+              console.error(`[webhook] Failed to update order with shipment details:`, updateError);
+              // Non-blocking - shipment was created, just failed to update order record
+            }
+          }
+        }
+      } catch (deliveryError: any) {
+        console.error(`[webhook] Unexpected error during shipment creation for ${orderId}:`, deliveryError);
+        await createDeliveryFailureTicket(
+          orderId,
+          'shipment_creation',
+          deliveryError,
+          {
+            orderId,
+            razorpayOrderId: payment.order_id,
+            paymentId: payment.id,
+            errorMessage: deliveryError.message,
+            errorStack: deliveryError.stack,
+          }
+        );
+        // Don't fail the webhook - payment was successful and order is confirmed
+      }
+
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({
           success: true,
-          message: 'Payment captured, order confirmed, stock updated',
+          message: 'Payment captured, order confirmed, stock updated, shipment initiated',
+          shipment: shipmentResult ? {
+            created: shipmentResult.ok,
+            shipmentId: shipmentResult.shiprocket?.shipment_id,
+            awb: shipmentResult.shiprocket?.awb_code,
+            fromCache: shipmentResult.fromCache,
+          } : null,
         }),
       };
     }
