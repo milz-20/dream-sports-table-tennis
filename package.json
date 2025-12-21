@@ -9,10 +9,7 @@
     "deploy": "cdk deploy",
     "destroy": "cdk destroy",
     "synth": "cdk synth",
-    "bootstrap": "cdk bootstrap",
-    "shiprocket:test": "ts-node lib/delivery/shiprocket-test.ts",
-    "delivery:smoke": "ts-node lib/delivery/smoke-test.ts",
-    "delivery:test-duplicate": "ts-node lib/delivery/test-duplicate-prevention.ts"
+    "bootstrap": "cdk bootstrap"
   },
   "keywords": [
     "table-tennis",
