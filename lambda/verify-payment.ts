@@ -10,6 +10,15 @@ import { createDynamoAdapter } from './delivery/storage-adapter-dynamo';
 import { getOrderWithDetails } from './order-fetcher';
 import { createDeliveryFailureTicket, createPaymentFailureTicket } from './jira/jira-stub';
 
+// Import notification services
+import {
+  sendCustomerOrderConfirmation,
+  sendSellerOrderNotification,
+  sendShipmentCreatedNotification,
+  sendPaymentFailedNotification,
+} from './notifications/twilio-whatsapp';
+import { groupOrderItemsBySeller, getSellerDetails } from './notifications/notification-helper';
+
 // AWS_REGION is automatically set by Lambda runtime
 const secretsManager = new SecretsManagerClient({ region: process.env.AWS_REGION });
 const dynamoDbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
@@ -396,12 +405,84 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         // Don't fail the webhook - payment was successful and order is confirmed
       }
 
+      // 6. SEND WHATSAPP NOTIFICATIONS
+      console.log(`[webhook] Sending WhatsApp notifications for order ${orderId}`);
+      try {
+        // Fetch complete order data for notifications
+        const orderData = await getOrderWithDetails(orderId, createdAt);
+        
+        if (orderData) {
+          // Send customer notification
+          const customerNotification = await sendCustomerOrderConfirmation({
+            phone: orderData.customer.phone,
+            firstName: orderData.customer.firstName,
+            orderId: orderData.id,
+            orderAmount: orderData.totalAmount,
+            orderItems: orderData.items,
+            estimatedDelivery: '3-5 business days',
+          });
+
+          if (customerNotification.success) {
+            console.log(`[webhook] Customer notification sent successfully, SID: ${customerNotification.sid}`);
+          } else {
+            console.error(`[webhook] Customer notification failed:`, customerNotification.error);
+          }
+
+          // Send seller notifications (group by seller)
+          const sellerGroups = await groupOrderItemsBySeller(orderData.orderItems);
+          
+          for (const [sellerId, sellerItems] of sellerGroups.entries()) {
+            const sellerDetails = await getSellerDetails(sellerId);
+            
+            if (sellerDetails && sellerDetails.phone) {
+              const sellerNotification = await sendSellerOrderNotification({
+                phone: sellerDetails.phone,
+                sellerName: sellerDetails.name,
+                orderId: orderData.id,
+                orderAmount: sellerItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+                customerName: `${orderData.customer.firstName} ${orderData.customer.lastName || ''}`.trim(),
+                orderItems: sellerItems,
+                shippingAddress: orderData.shippingAddress,
+              });
+
+              if (sellerNotification.success) {
+                console.log(`[webhook] Seller notification sent to ${sellerId}, SID: ${sellerNotification.sid}`);
+              } else {
+                console.error(`[webhook] Seller notification failed for ${sellerId}:`, sellerNotification.error);
+              }
+            } else {
+              console.warn(`[webhook] Seller ${sellerId} details not found or missing phone`);
+            }
+          }
+
+          // Send shipment created notification (if shipment was created)
+          if (shipmentResult && shipmentResult.ok && shipmentResult.shiprocket?.awb_code) {
+            const shipmentNotification = await sendShipmentCreatedNotification({
+              phone: orderData.customer.phone,
+              firstName: orderData.customer.firstName,
+              orderId: orderData.id,
+              awb: shipmentResult.shiprocket.awb_code,
+              courierName: shipmentResult.shiprocket.courier_name,
+            });
+
+            if (shipmentNotification.success) {
+              console.log(`[webhook] Shipment notification sent, SID: ${shipmentNotification.sid}`);
+            } else {
+              console.error(`[webhook] Shipment notification failed:`, shipmentNotification.error);
+            }
+          }
+        }
+      } catch (notificationError: any) {
+        console.error(`[webhook] Error sending notifications for ${orderId}:`, notificationError);
+        // Non-blocking - don't fail the webhook if notifications fail
+      }
+
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({
           success: true,
-          message: 'Payment captured, order confirmed, stock updated, shipment initiated',
+          message: 'Payment captured, order confirmed, stock updated, shipment initiated, notifications sent',
           shipment: shipmentResult ? {
             created: shipmentResult.ok,
             shipmentId: shipmentResult.shiprocket?.shipment_id,
@@ -441,12 +522,29 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         'failed'
       );
 
+      // Send payment failed notification to customer
+      try {
+        const orderData = await getOrderWithDetails(orderId, createdAt);
+        if (orderData) {
+          await sendPaymentFailedNotification({
+            phone: orderData.customer.phone,
+            firstName: orderData.customer.firstName,
+            orderId: orderData.id,
+            amount: orderData.totalAmount,
+          });
+          console.log(`[webhook] Payment failed notification sent for order ${orderId}`);
+        }
+      } catch (notificationError) {
+        console.error(`[webhook] Failed to send payment failed notification:`, notificationError);
+        // Non-blocking
+      }
+
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({
           success: true,
-          message: 'Payment failed, order updated',
+          message: 'Payment failed, order updated, notification sent',
         }),
       };
     }

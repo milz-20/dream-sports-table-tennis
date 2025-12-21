@@ -222,7 +222,7 @@ export class TableTennisInfraStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'verify-payment.handler',
       code: lambda.Code.fromAsset(path.resolve(__dirname, '../../lambda/dist')),
-      timeout: cdk.Duration.seconds(60), // Increased for shipment creation
+      timeout: cdk.Duration.seconds(60), // Increased for shipment creation + notifications
       memorySize: 512, // Increased for additional processing
       environment: {
         RAZORPAY_SECRET_NAME: 'test_secret',
@@ -240,6 +240,9 @@ export class TableTennisInfraStack extends cdk.Stack {
         SHIPROCKET_PICKUP_LOCATION: 'Default Pickup',
         SHIPROCKET_CHANNEL_ID: '1',
         SHIPROCKET_PICKUP_TIME: '10:00-18:00',
+        // Twilio WhatsApp configuration
+        TWILIO_SECRET_NAME: 'twilio-whatsapp-credentials',
+        APP_URL: 'https://yourdomain.com', // Update with your actual domain
       },
     });
 
@@ -256,6 +259,7 @@ export class TableTennisInfraStack extends cdk.Stack {
       resources: [
         `arn:aws:secretsmanager:${this.region}:${this.account}:secret:test_secret-*`,
         `arn:aws:secretsmanager:${this.region}:${this.account}:secret:shipRocket-delivery-credentials-*`,
+        `arn:aws:secretsmanager:${this.region}:${this.account}:secret:twilio-whatsapp-credentials-*`,
       ],
     }));
 
