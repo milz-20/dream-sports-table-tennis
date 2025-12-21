@@ -27,6 +27,15 @@ export default function CheckoutClient() {
   });
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // TEMPORARY: Use test customer ID for testing
+  // This will be replaced by actual login/signup later
+  const getCustomerId = () => {
+    // Use test customer ID (already exists in database)
+    // You can change this to test different customers:
+    // cst_test001, cst_test002, cst_test003
+    return 'cst_test001';
+  };
+
   // Load Razorpay script
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
@@ -63,6 +72,10 @@ export default function CheckoutClient() {
       console.log('API URL:', apiUrl);
       console.log('Creating order with amount:', getTotalPrice());
       
+      // Get customer ID (temporary until login/signup is implemented)
+      const customerId = getCustomerId();
+      console.log('Using customer ID:', customerId);
+      
       // Create order on backend
       const orderResponse = await fetch(`${apiUrl}/payment/create-order`, {
         method: 'POST',
@@ -74,6 +87,7 @@ export default function CheckoutClient() {
           currency: 'INR',
           receipt: `order_${Date.now()}`,
           notes: {
+            customerId: customerId, // Pass existing customer ID
             customerName: formData.name,
             customerEmail: formData.email,
             customerPhone: formData.phone,

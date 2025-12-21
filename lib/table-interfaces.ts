@@ -30,7 +30,7 @@ export interface CustomerItem {
 // 3. Addresses Table Interface
 export interface AddressItem {
   addressId: string; // PK: Unique address identifier
-  customerId?: string; // Reference to customer (not PK/SK)
+  ownerId: string; // Can be customerId (cst_) or sellerId (sell_)
   address: string;
   city: string;
   pincode: string;

@@ -27,6 +27,7 @@ export class TableTennisInfraStack extends cdk.Stack {
   public readonly ordersTable: dynamodb.Table;
   public readonly paymentsTable: dynamodb.Table;
   public readonly shipmentsTable: dynamodb.Table;
+  public readonly sellersTable: dynamodb.Table;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -93,6 +94,13 @@ export class TableTennisInfraStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.RETAIN,
       pointInTimeRecovery: true,
       encryption: dynamodb.TableEncryption.AWS_MANAGED,
+    });
+
+    // GSI for owner lookup (customers or sellers)
+    this.addressesTable.addGlobalSecondaryIndex({
+      indexName: 'OwnerIndex',
+      partitionKey: { name: 'ownerId', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
     });
 
     // 4. Orders Table
@@ -164,6 +172,23 @@ export class TableTennisInfraStack extends cdk.Stack {
       projectionType: dynamodb.ProjectionType.ALL,
     });
 
+    // 7. Sellers Table
+    this.sellersTable = new dynamodb.Table(this, 'SellersTable', {
+      tableName: 'table-tennis-sellers',
+      partitionKey: { name: 'sellerId', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      pointInTimeRecovery: true,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+    });
+
+    // GSI for email lookup
+    this.sellersTable.addGlobalSecondaryIndex({
+      indexName: 'EmailIndex',
+      partitionKey: { name: 'email', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
     // ========================================
     // LAMBDA FUNCTIONS FOR PAYMENT
     // ========================================
@@ -202,6 +227,9 @@ export class TableTennisInfraStack extends cdk.Stack {
       environment: {
         RAZORPAY_SECRET_NAME: 'test_secret',
         ORDERS_TABLE_NAME: this.ordersTable.tableName,
+        PAYMENTS_TABLE_NAME: this.paymentsTable.tableName,
+        PRODUCTS_TABLE_NAME: this.productsTable.tableName,
+        SELLERS_TABLE_NAME: this.sellersTable.tableName,
       },
     });
 
@@ -220,6 +248,13 @@ export class TableTennisInfraStack extends cdk.Stack {
 
     // Grant DynamoDB write permissions to webhook function
     this.ordersTable.grantWriteData(webhookFunction);
+    this.paymentsTable.grantWriteData(webhookFunction);
+    this.productsTable.grantWriteData(webhookFunction);
+    this.sellersTable.grantWriteData(webhookFunction);
+    
+    // Grant read permissions to get product and seller details
+    this.productsTable.grantReadData(webhookFunction);
+    this.sellersTable.grantReadData(webhookFunction);
 
     // API Gateway
     const api = new apigateway.RestApi(this, 'PaymentApi', {
