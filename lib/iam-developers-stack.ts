@@ -82,6 +82,60 @@ export class IamDevelopersStack extends cdk.Stack {
 
     backendDevsGroup.attachInlinePolicy(readOnlyInfraPolicy);
 
+    // Allow users to manage their own credentials
+    const selfManagePolicy = new iam.Policy(this, 'SelfManageCredentials', {
+      policyName: 'SelfManageCredentials',
+      statements: [
+        // Allow users to change their own password
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            'iam:ChangePassword',
+            'iam:GetUser',
+          ],
+          resources: ['arn:aws:iam::*:user/${aws:username}'],
+        }),
+        // Allow users to manage their own MFA
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            'iam:CreateVirtualMFADevice',
+            'iam:DeleteVirtualMFADevice',
+            'iam:EnableMFADevice',
+            'iam:ResyncMFADevice',
+            'iam:DeactivateMFADevice',
+          ],
+          resources: [
+            'arn:aws:iam::*:user/${aws:username}',
+            'arn:aws:iam::*:mfa/${aws:username}',
+          ],
+        }),
+        // Allow users to list their own MFA devices
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            'iam:ListMFADevices',
+            'iam:ListVirtualMFADevices',
+            'iam:ListUsers',
+          ],
+          resources: ['*'],
+        }),
+        // Allow users to manage their own access keys
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            'iam:CreateAccessKey',
+            'iam:DeleteAccessKey',
+            'iam:ListAccessKeys',
+            'iam:UpdateAccessKey',
+          ],
+          resources: ['arn:aws:iam::*:user/${aws:username}'],
+        }),
+      ],
+    });
+
+    backendDevsGroup.attachInlinePolicy(selfManagePolicy);
+
     // Deny dangerous actions and infrastructure changes
     const denyPolicy = new iam.Policy(this, 'DenyDangerousActions', {
       policyName: 'DenyDangerousActions',
@@ -138,19 +192,34 @@ export class IamDevelopersStack extends cdk.Stack {
     // Create IAM Users for Developers
     const developer1 = new iam.User(this, 'dev-sarv', {
       userName: 'dev-sarv',
-      password: cdk.SecretValue.unsafePlainText('ChangeMe123!'), // Change after first login
+      password: cdk.SecretValue.unsafePlainText('TempPass123!@#Sarv'), // Change after first login
       passwordResetRequired: true,
     });
 
     const developer2 = new iam.User(this, 'dev-pat', {
       userName: 'dev-pat',
-      password: cdk.SecretValue.unsafePlainText('ChangeMe456!'), // Change after first login
+      password: cdk.SecretValue.unsafePlainText('TempPass456!@#Pat'), // Change after first login
       passwordResetRequired: true,
     });
+
+    const developer3 = new iam.User(this, 'dev-hari', {
+      userName: 'dev-hari',
+      password: cdk.SecretValue.unsafePlainText('TempPass789!@#Hari'), // Change after first login
+      passwordResetRequired: true,
+    });
+
+    const developer4 = new iam.User(this, 'dev-shub', {
+      userName: 'dev-shub',
+      password: cdk.SecretValue.unsafePlainText('TempPass789!@#Shub'), // Change after first login
+      passwordResetRequired: true,
+    });
+
 
     // Add users to the group
     developer1.addToGroup(backendDevsGroup);
     developer2.addToGroup(backendDevsGroup);
+    developer3.addToGroup(backendDevsGroup);
+    developer4.addToGroup(backendDevsGroup);
 
     // Create access keys for CLI/CDK usage
     const dev1AccessKey = new iam.CfnAccessKey(this, 'Developer1AccessKey', {
