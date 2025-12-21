@@ -15,6 +15,7 @@ type AuthResponse = { token: string };
 
 const SHIPROCKET_AUTH = "https://apiv2.shiprocket.in/v1/external/auth/login";
 const SHIPROCKET_SHIPMENTS = "https://apiv2.shiprocket.in/v1/external/shipments";
+const SHIPROCKET_PICKUP = "https://apiv2.shiprocket.in/v1/external/courier/generate/shipments";
 
 const DRY_RUN = (process.env.SHIPROCKET_DRY_RUN ?? "true") === "true";
 
@@ -82,7 +83,45 @@ export async function createShipment(payload: any): Promise<any> {
   return res.data;
 }
 
+/**
+ * createPickup - schedule a pickup for one or more shipments
+ * Note: Shiprocket has separate pickup endpoints; the exact endpoint/path may vary by account or API version.
+ * This implementation mirrors createShipment's dry-run behavior and provides a safe stub when DRY_RUN=true.
+ *
+ * Expected payload example:
+ * {
+ *   pickup_date: 'YYYY-MM-DD',
+ *   pickup_time: '10:00-18:00',
+ *   pickup_location: 'Default Pickup',
+ *   shipments: [{shipment_id: '123'}, {order_id: 'ORDER-...'}]
+ * }
+ */
+export async function createPickup(payload: any): Promise<any> {
+  if (DRY_RUN) {
+    console.log("[shiprocket-client] DRY RUN - would send pickup payload:", JSON.stringify(payload, null, 2));
+    return {
+      ok: true,
+      dryRun: true,
+      payload,
+      message: "Dry-run mode: no pickup API call was made",
+    };
+  }
+
+  const token = await authenticate();
+
+  // NOTE: Shiprocket pickup/create endpoint may differ; replace with the correct endpoint if you have it.
+  const res = await axios.post(SHIPROCKET_PICKUP, payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  return res.data;
+}
+
 export default {
   authenticate,
   createShipment,
+  createPickup,
 };

@@ -56,16 +56,39 @@ export async function processShipment(order: any, options: { notifyPhone?: strin
 		throw err;
 	}
 
-	// Send a notification with shipment result
+	// Attempt to schedule a pickup (dry-run safe)
+	let pickupRes: any = null;
+	try {
+		// Determine a usable shipment identifier. Shiprocket responses vary; prefer shipment_id or awb when available.
+		const shipmentIdentifier = shipRes?.dryRun
+			? (shipRes.payload?.order_id ?? payload.order_id)
+			: (shipRes?.data?.shipment_id || shipRes?.shipment_id || shipRes?.id || shipRes?.awb_code || payload.order_id);
+
+		const pickupPayload = {
+			pickup_date: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
+			pickup_time: process.env.SHIPROCKET_PICKUP_TIME ?? "10:00-18:00",
+			pickup_location: process.env.SHIPROCKET_PICKUP_LOCATION ?? payload.pickup_location,
+			shipments: [{ shipment_id: shipmentIdentifier, order_id: payload.order_id }],
+		};
+
+		pickupRes = await client.createPickup(pickupPayload);
+	} catch (err) {
+		const msg = `Pickup scheduling failed for order ${payload.order_id}: ${err instanceof Error ? err.message : String(err)}`;
+		await whatsapp.notify(options.notifyPhone ?? payload.billing_phone, msg);
+		// don't throw - pickup failure should not block the overall flow in many cases
+	}
+
+	// Send a notification with shipment and pickup result
 	const successMsg = shipRes && shipRes.dryRun
-		? `Shipment for order ${payload.order_id} prepared (dry-run).`
-		: `Shipment created for order ${payload.order_id}. Response: ${JSON.stringify(shipRes)}`;
+		? `Shipment for order ${payload.order_id} prepared (dry-run). Pickup: ${pickupRes && pickupRes.dryRun ? 'prepared (dry-run)' : JSON.stringify(pickupRes)}`
+		: `Shipment created for order ${payload.order_id}. Shipment response: ${JSON.stringify(shipRes)} Pickup response: ${JSON.stringify(pickupRes)}`;
 
 	await whatsapp.notify(options.notifyPhone ?? payload.billing_phone, successMsg);
 
 	return {
 		ok: true,
 		shiprocket: shipRes,
+		pickup: pickupRes,
 	};
 }
 

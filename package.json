@@ -10,7 +10,9 @@
     "destroy": "cdk destroy",
     "synth": "cdk synth",
     "bootstrap": "cdk bootstrap",
-    "shiprocket:test": "ts-node lib/delivery/shiprocket-test.ts"
+    "shiprocket:test": "ts-node lib/delivery/shiprocket-test.ts",
+    "delivery:smoke": "ts-node lib/delivery/smoke-test.ts",
+    "delivery:test-duplicate": "ts-node lib/delivery/test-duplicate-prevention.ts"
   },
   "keywords": [
     "table-tennis",
@@ -33,6 +35,8 @@
     "source-map-support": "^0.5.21",
     "axios": "^1.4.0",
     "dotenv": "^16.3.1",
-    "@aws-sdk/client-secrets-manager": "^3.447.0"
+    "@aws-sdk/client-secrets-manager": "^3.447.0",
+    "@aws-sdk/client-dynamodb": "^3.447.0",
+    "@aws-sdk/lib-dynamodb": "^3.447.0"
   }
 }
