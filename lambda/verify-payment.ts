@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, PutCommand, UpdateCommand, GetCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import * as crypto from 'crypto';
 
 // AWS_REGION is automatically set by Lambda runtime
@@ -57,36 +57,155 @@ function verifyWebhookSignature(body: string, signature: string, secret: string)
   return expectedSignature === signature;
 }
 
-async function saveOrderToDatabase(payment: any, orderDetails: any) {
-  const ordersTableName = process.env.ORDERS_TABLE_NAME || 'table-tennis-orders';
+/**
+ * Update payment record with method and status
+ */
+async function updatePaymentRecord(razorpayOrderId: string, paymentMethod: string, status: string) {
+  const paymentsTableName = process.env.PAYMENTS_TABLE_NAME || 'table-tennis-payments';
   
-  const orderItem = {
-    orderId: payment.order_id,
-    orderDate: new Date().toISOString(),
-    paymentId: payment.id,
-    amount: payment.amount / 100, // Convert from paise to rupees
-    currency: payment.currency,
-    status: payment.status === 'captured' ? 'paid' : payment.status,
-    paymentMethod: payment.method,
-    customerEmail: payment.email,
-    customerPhone: payment.contact,
-    notes: payment.notes || {},
-    createdAt: new Date(payment.created_at * 1000).toISOString(),
-    updatedAt: new Date().toISOString(),
-    ...orderDetails,
-  };
-
   try {
-    await docClient.send(
-      new PutCommand({
-        TableName: ordersTableName,
-        Item: orderItem,
+    // Query by razorpayOrderId using GSI to get the payment record
+    const queryResult = await docClient.send(
+      new QueryCommand({
+        TableName: paymentsTableName,
+        IndexName: 'RazorpayIndex',
+        KeyConditionExpression: 'razorpayOrderId = :razorpayOrderId',
+        ExpressionAttributeValues: {
+          ':razorpayOrderId': razorpayOrderId,
+        },
       })
     );
-    console.log('Order saved to database:', orderItem.orderId);
+
+    if (!queryResult.Items || queryResult.Items.length === 0) {
+      console.error('Payment record not found for razorpayOrderId:', razorpayOrderId);
+      return;
+    }
+
+    const paymentRecord = queryResult.Items[0];
+    
+    // Update the payment record with actual keys
+    await docClient.send(
+      new UpdateCommand({
+        TableName: paymentsTableName,
+        Key: {
+          paymentId: paymentRecord.paymentId,
+          orderId: paymentRecord.orderId,
+        },
+        UpdateExpression: 'SET #method = :method, #status = :status, updatedAt = :updatedAt',
+        ExpressionAttributeNames: {
+          '#method': 'method',
+          '#status': 'status',
+        },
+        ExpressionAttributeValues: {
+          ':method': paymentMethod,
+          ':status': status,
+          ':updatedAt': new Date().toISOString(),
+        },
+      })
+    );
+    console.log('Payment record updated:', paymentRecord.paymentId);
   } catch (error) {
-    console.error('Error saving order to database:', error);
+    console.error('Error updating payment record:', error);
     throw error;
+  }
+}
+
+/**
+ * Update order status
+ */
+async function updateOrderStatus(orderId: string, createdAt: string, status: string, paymentStatus: string) {
+  const ordersTableName = process.env.ORDERS_TABLE_NAME || 'table-tennis-orders';
+  
+  try {
+    await docClient.send(
+      new UpdateCommand({
+        TableName: ordersTableName,
+        Key: {
+          orderId: orderId,
+          createdAt: createdAt,
+        },
+        UpdateExpression: 'SET #status = :status, paymentStatus = :paymentStatus',
+        ExpressionAttributeNames: {
+          '#status': 'status',
+        },
+        ExpressionAttributeValues: {
+          ':status': status,
+          ':paymentStatus': paymentStatus,
+        },
+      })
+    );
+    console.log('Order status updated:', orderId);
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    throw error;
+  }
+}
+
+/**
+ * Decrement product stock and increment seller totalSales
+ */
+async function updateProductStockAndSellerSales(orderItems: any[]) {
+  const productsTableName = process.env.PRODUCTS_TABLE_NAME || 'table-tennis-products';
+  const sellersTableName = process.env.SELLERS_TABLE_NAME || 'table-tennis-sellers';
+
+  for (const item of orderItems) {
+    try {
+      // Query product by productId to get all details including sellerId
+      // Since Products table has productId (PK) and sellerId (SK), we need to query
+      const productQuery = await docClient.send(
+        new QueryCommand({
+          TableName: productsTableName,
+          KeyConditionExpression: 'productId = :productId',
+          ExpressionAttributeValues: {
+            ':productId': item.productId,
+          },
+          Limit: 1,
+        })
+      );
+
+      if (!productQuery.Items || productQuery.Items.length === 0) {
+        console.error('Product not found:', item.productId);
+        continue;
+      }
+
+      const product = productQuery.Items[0];
+      const sellerId = product.sellerId;
+
+      // Decrement product stock
+      await docClient.send(
+        new UpdateCommand({
+          TableName: productsTableName,
+          Key: {
+            productId: item.productId,
+            sellerId: sellerId,
+          },
+          UpdateExpression: 'SET stock = stock - :quantity',
+          ExpressionAttributeValues: {
+            ':quantity': item.quantity,
+          },
+        })
+      );
+      console.log(`Product stock decremented: ${item.productId} by ${item.quantity}`);
+
+      // Increment seller totalSales
+      const saleAmount = item.price * item.quantity;
+      await docClient.send(
+        new UpdateCommand({
+          TableName: sellersTableName,
+          Key: {
+            sellerId: sellerId,
+          },
+          UpdateExpression: 'SET totalSales = totalSales + :amount',
+          ExpressionAttributeValues: {
+            ':amount': saleAmount,
+          },
+        })
+      );
+      console.log(`Seller totalSales incremented: ${sellerId} by ${saleAmount}`);
+    } catch (error) {
+      console.error(`Error updating product/seller for item ${item.productId}:`, error);
+      // Continue processing other items even if one fails
+    }
   }
 }
 
@@ -144,26 +263,47 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         orderId: payment.order_id,
         amount: payment.amount,
         status: payment.status,
+        method: payment.method,
       });
 
-      // Extract order details from notes if available
-      const orderDetails = {
-        customerName: payment.notes?.customerName || '',
-        customerAddress: payment.notes?.customerAddress || '',
-        customerCity: payment.notes?.customerCity || '',
-        customerPincode: payment.notes?.customerPincode || '',
-        items: payment.notes?.items || '',
-      };
+      // Extract orderId and orderItems from notes
+      const notes = payment.notes || {};
+      const orderId = notes.orderId || payment.order_id;
+      const createdAt = notes.createdAt || new Date().toISOString();
+      let orderItems: any[] = [];
+      
+      try {
+        orderItems = notes.items ? JSON.parse(notes.items) : [];
+      } catch (e) {
+        console.error('Failed to parse order items from notes:', e);
+      }
 
-      // Save order to DynamoDB
-      await saveOrderToDatabase(payment, orderDetails);
+      // 1. Update payment record with method and status
+      await updatePaymentRecord(
+        payment.order_id,
+        payment.method, // card, upi, netbanking, wallet, etc.
+        'completed'
+      );
+
+      // 2. Update order status to confirmed and payment status to paid
+      await updateOrderStatus(
+        orderId,
+        createdAt,
+        'confirmed',
+        'paid'
+      );
+
+      // 3. Decrement product stock and increment seller totalSales
+      if (orderItems.length > 0) {
+        await updateProductStockAndSellerSales(orderItems);
+      }
 
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({
           success: true,
-          message: 'Payment captured and order saved',
+          message: 'Payment captured, order confirmed, stock updated',
         }),
       };
     }
@@ -178,8 +318,33 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         status: payment.status,
       });
 
-      // You can add logic here to handle failed payments
-      // e.g., send notification, update database, etc.
+      const notes = payment.notes || {};
+      const orderId = notes.orderId || payment.order_id;
+      const createdAt = notes.createdAt || new Date().toISOString();
+
+      // Update payment status to failed
+      await updatePaymentRecord(
+        payment.order_id,
+        payment.method || 'unknown',
+        'failed'
+      );
+
+      // Update order status to failed
+      await updateOrderStatus(
+        orderId,
+        createdAt,
+        'failed',
+        'failed'
+      );
+
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          success: true,
+          message: 'Payment failed, order updated',
+        }),
+      };
     }
 
     // Acknowledge other events
