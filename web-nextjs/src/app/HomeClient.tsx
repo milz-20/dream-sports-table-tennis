@@ -31,7 +31,7 @@ const categories: CategoryCard[] = [
     title: 'Blades',
     icon: '🏓',
     description: 'Professional blades for every playing style',
-    href: '/equipment?category=blades',
+    href: '/equipment/blades',
     available: true,
     gradient: 'from-blue-500 to-blue-600',
     image: '/assets/images/blades_table_tennis.jpg'
@@ -41,7 +41,7 @@ const categories: CategoryCard[] = [
     title: 'Rubbers',
     icon: '🎯',
     description: 'High-performance rubbers for maximum spin',
-    href: '/equipment?category=rubbers',
+    href: '/equipment/rubbers',
     available: true,
     gradient: 'from-red-500 to-red-600',
     image: '/assets/images/rubbers/rubbers.webp'
@@ -51,7 +51,7 @@ const categories: CategoryCard[] = [
     title: 'Shoes',
     icon: '👟',
     description: 'Professional footwear for optimal performance',
-    href: '/equipment?category=shoes',
+    href: '/equipment/shoes',
     available: true,
     gradient: 'from-green-500 to-green-600',
     image: '/assets/images/shoes.jpg'
@@ -61,7 +61,7 @@ const categories: CategoryCard[] = [
     title: 'Accessories',
     icon: '🎨',
     description: 'Essential accessories for your equipment',
-    href: '/equipment?category=accessories',
+    href: '/equipment/accessories',
     available: true,
     gradient: 'from-pink-500 to-pink-600',
     image: '/assets/images/edge-tape/joola.webp'
@@ -71,7 +71,7 @@ const categories: CategoryCard[] = [
     title: 'Pre-Owned Rackets',
     icon: '♻️',
     description: 'Quality inspected used rackets at great prices',
-    href: '/equipment?category=preowned',
+    href: '/equipment/preowned',
     available: true,
     gradient: 'from-amber-500 to-amber-600',
     image: '/assets/images/viscaria.jpg'
@@ -91,7 +91,7 @@ const categories: CategoryCard[] = [
     title: 'Balls',
     icon: '⚪',
     description: 'Competition grade balls for training',
-    href: '/equipment?category=balls',
+    href: '/equipment/balls',
     available: false,
     gradient: 'from-orange-500 to-orange-600',
     image: '/assets/images/balls.webp'
@@ -101,7 +101,7 @@ const categories: CategoryCard[] = [
     title: 'Tables',
     icon: '🏓',
     description: 'Professional quality table tennis tables',
-    href: '/equipment?category=tables',
+    href: '/equipment/tables',
     available: false,
     gradient: 'from-purple-500 to-purple-600',
     image: '/assets/images/table.webp'

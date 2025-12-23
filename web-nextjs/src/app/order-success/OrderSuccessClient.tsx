@@ -1,17 +1,17 @@
 'use client';
 
-import React, { useEffect, Suspense } from 'react';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, Package, Truck, Phone } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 
-function OrderSuccessContent() {
+type OrderSuccessParams = {
+  orderId: string | null;
+  paymentId: string | null;
+};
+
+function OrderSuccessContent({ orderId, paymentId }: OrderSuccessParams) {
   const { clearCart } = useCart();
-  const searchParams = useSearchParams();
-  const orderId = searchParams.get('orderId');
-  const paymentId = searchParams.get('paymentId');
 
   useEffect(() => {
     // Clear cart after order is placed
@@ -78,7 +78,7 @@ function OrderSuccessContent() {
               <Truck className="w-12 h-12 text-primary mx-auto mb-4" />
               <h3 className="font-bold text-lg mb-2">Fast Delivery</h3>
               <p className="text-sm text-gray-600">
-                Delivery within 24 hours in Pune
+                Delivery across India
               </p>
             </motion.div>
 
@@ -109,12 +109,12 @@ function OrderSuccessContent() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/equipment" className="elegant-button inline-flex items-center justify-center">
+            <a href="/equipment" className="elegant-button inline-flex items-center justify-center">
               Continue Shopping
-            </Link>
-            <Link href="/" className="elegant-button-outline inline-flex items-center justify-center">
+            </a>
+            <a href="/" className="elegant-button-outline inline-flex items-center justify-center">
               Back to Home
-            </Link>
+            </a>
           </div>
         </motion.div>
       </div>
@@ -123,16 +123,28 @@ function OrderSuccessContent() {
 }
 
 export default function OrderSuccessClient() {
-  return (
-    <Suspense fallback={
+  const [params, setParams] = useState<OrderSuccessParams>({ orderId: null, paymentId: null });
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    const currentParams = new URLSearchParams(window.location.search);
+    setParams({
+      orderId: currentParams.get('orderId'),
+      paymentId: currentParams.get('paymentId'),
+    });
+    setIsReady(true);
+  }, []);
+
+  if (!isReady) {
+    return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 py-20 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
-    }>
-      <OrderSuccessContent />
-    </Suspense>
-  );
+    );
+  }
+
+  return <OrderSuccessContent orderId={params.orderId} paymentId={params.paymentId} />;
 }

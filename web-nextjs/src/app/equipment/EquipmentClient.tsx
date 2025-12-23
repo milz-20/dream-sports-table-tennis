@@ -16,6 +16,7 @@ interface EquipmentClientProps {
   preOwnedRackets: any[];
   enhancedBlades: BladeData[];
   enhancedRubbers: RubberData[];
+  initialCategory?: 'blades' | 'rubbers' | 'shoes' | 'balls' | 'tables' | 'accessories' | 'preowned';
 }
 
 export default function EquipmentClient({ 
@@ -24,34 +25,36 @@ export default function EquipmentClient({
   shoes,
   preOwnedRackets,
   enhancedBlades,
-  enhancedRubbers 
+  enhancedRubbers,
+  initialCategory 
 }: EquipmentClientProps) {
   const searchParams = useSearchParams();
-  const categoryParam = searchParams.get('category');
+  const searchQuery = searchParams.get('search');
   
-  const [activeCategory, setActiveCategory] = useState<'blades' | 'rubbers' | 'shoes' | 'balls' | 'tables' | 'accessories' | 'preowned'>('blades');
+  const [activeCategory, setActiveCategory] = useState<'blades' | 'rubbers' | 'shoes' | 'balls' | 'tables' | 'accessories' | 'preowned'>(initialCategory || 'blades');
   const [selectedBrand, setSelectedBrand] = useState<string>('');
   const [showCustomizer, setShowCustomizer] = useState<boolean>(false);
   
+  // Function to search products
+  const searchProducts = (products: any[], query: string) => {
+    const lowerQuery = query.toLowerCase();
+    return products.filter(product => 
+      product.name.toLowerCase().includes(lowerQuery) ||
+      product.brand?.toLowerCase().includes(lowerQuery) ||
+      product.description?.toLowerCase().includes(lowerQuery) ||
+      product.category?.toLowerCase().includes(lowerQuery) ||
+      product.type?.toLowerCase().includes(lowerQuery) ||
+      product.composition?.toLowerCase().includes(lowerQuery)
+    );
+  };
+  
   useEffect(() => {
-    // Set category from URL parameter
-    if (categoryParam === 'rubbers') {
-      setActiveCategory('rubbers');
-    } else if (categoryParam === 'blades') {
-      setActiveCategory('blades');
-    } else if (categoryParam === 'shoes') {
-      setActiveCategory('shoes');
-    } else if (categoryParam === 'balls') {
-      setActiveCategory('balls');
-    } else if (categoryParam === 'tables') {
-      setActiveCategory('tables');
-    } else if (categoryParam === 'accessories') {
-      setActiveCategory('accessories');
-    } else if (categoryParam === 'preowned') {
-      setActiveCategory('preowned');
+    // Set category from initialCategory prop (path parameter)
+    if (initialCategory) {
+      setActiveCategory(initialCategory);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [categoryParam]);
+  }, [initialCategory, searchQuery]);
 
   return (
     <motion.div
@@ -88,8 +91,8 @@ export default function EquipmentClient({
             {/* Category Tabs */}
             <div className="flex flex-col items-center gap-4 mt-6 md:mt-8">
               <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4">
-                <button
-                  onClick={() => { setActiveCategory('blades'); setShowCustomizer(false); }}
+                <Link
+                  href="/equipment/blades"
                   className={`px-4 py-2 md:px-6 md:py-2.5 lg:px-8 lg:py-3 rounded-lg font-semibold text-xs md:text-sm lg:text-base transition-all duration-300 ${
                     activeCategory === 'blades' && !showCustomizer
                       ? 'bg-primary text-white shadow-lg'
@@ -98,9 +101,9 @@ export default function EquipmentClient({
                 >
                   <span className="hidden sm:inline">🏓 Professional Blades</span>
                   <span className="sm:hidden">🏓 Blades</span>
-                </button>
-                <button
-                  onClick={() => { setActiveCategory('rubbers'); setShowCustomizer(false); }}
+                </Link>
+                <Link
+                  href="/equipment/rubbers"
                   className={`px-4 py-2 md:px-6 md:py-2.5 lg:px-8 lg:py-3 rounded-lg font-semibold text-xs md:text-sm lg:text-base transition-all duration-300 ${
                     activeCategory === 'rubbers' && !showCustomizer
                       ? 'bg-primary text-white shadow-lg'
@@ -109,9 +112,9 @@ export default function EquipmentClient({
                 >
                   <span className="hidden sm:inline">🎯 Premium Rubbers</span>
                   <span className="sm:hidden">🎯 Rubbers</span>
-                </button>
-                <button
-                  onClick={() => { setActiveCategory('shoes'); setShowCustomizer(false); }}
+                </Link>
+                <Link
+                  href="/equipment/shoes"
                   className={`px-4 py-2 md:px-6 md:py-2.5 lg:px-8 lg:py-3 rounded-lg font-semibold text-xs md:text-sm lg:text-base transition-all duration-300 ${
                     activeCategory === 'shoes' && !showCustomizer
                       ? 'bg-primary text-white shadow-lg'
@@ -120,9 +123,9 @@ export default function EquipmentClient({
                 >
                   <span className="hidden sm:inline">👟 Professional Shoes</span>
                   <span className="sm:hidden">👟 Shoes</span>
-                </button>
-                <button
-                  onClick={() => { setActiveCategory('preowned'); setShowCustomizer(false); }}
+                </Link>
+                <Link
+                  href="/equipment/preowned"
                   className={`px-4 py-2 md:px-6 md:py-2.5 lg:px-8 lg:py-3 rounded-lg font-semibold text-xs md:text-sm lg:text-base transition-all duration-300 ${
                     activeCategory === 'preowned' && !showCustomizer
                       ? 'bg-primary text-white shadow-lg'
@@ -131,9 +134,9 @@ export default function EquipmentClient({
                 >
                   <span className="hidden sm:inline">♻️ Pre-Owned Rackets</span>
                   <span className="sm:hidden">♻️ Pre-Owned</span>
-                </button>
-                <button
-                  onClick={() => { setActiveCategory('accessories'); setShowCustomizer(false); }}
+                </Link>
+                <Link
+                  href="/equipment/accessories"
                   className={`px-4 py-2 md:px-6 md:py-2.5 lg:px-8 lg:py-3 rounded-lg font-semibold text-xs md:text-sm lg:text-base transition-all duration-300 ${
                     activeCategory === 'accessories' && !showCustomizer
                       ? 'bg-primary text-white shadow-lg'
@@ -142,7 +145,7 @@ export default function EquipmentClient({
                 >
                   <span className="hidden sm:inline">🎨 Accessories</span>
                   <span className="sm:hidden">🎨 Accessories</span>
-                </button>
+                </Link>
               </div>
               
               {/* Accessories Sub-buttons - Only show when accessories is active */}
@@ -264,18 +267,70 @@ export default function EquipmentClient({
               </a>
             </div>
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-              {(activeCategory === 'blades' 
-                ? blades.filter(blade => !selectedBrand || blade.brand === selectedBrand)
-                : activeCategory === 'rubbers'
-                ? rubbers
-                : activeCategory === 'shoes'
-                ? shoes
-                : preOwnedRackets
-              ).map((product, index) => (
-                <ProductCard key={product.id} {...product} index={index} />
-              ))}
-            </div>
+            <>
+              {/* Search Results Info */}
+              {searchQuery && (
+                <div className="mb-6 text-center">
+                  <p className="text-gray-600">
+                    Showing results for: <span className="font-semibold text-gray-900">{searchQuery}</span>
+                  </p>
+                  <a 
+                    href="/equipment/blades" 
+                    className="text-primary hover:underline text-sm mt-2 inline-block"
+                  >
+                    Clear search
+                  </a>
+                </div>
+              )}
+              
+              {(() => {
+                // Get all products from the active category
+                let productsToDisplay = activeCategory === 'blades' 
+                  ? blades.filter(blade => !selectedBrand || blade.brand === selectedBrand)
+                  : activeCategory === 'rubbers'
+                  ? rubbers
+                  : activeCategory === 'shoes'
+                  ? shoes
+                  : preOwnedRackets;
+                
+                // Apply search filter if query exists
+                if (searchQuery) {
+                  // If there's a search query, search across ALL categories
+                  const allProducts = [...blades, ...rubbers, ...shoes, ...preOwnedRackets];
+                  productsToDisplay = searchProducts(allProducts, searchQuery);
+                }
+                
+                return productsToDisplay.length > 0 ? (
+                  <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+                    {productsToDisplay.map((product, index) => (
+                      <ProductCard key={product.id} {...product} index={index} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-16">
+                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-6">
+                      <ShoppingBag className="w-10 h-10 text-gray-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                      No results found
+                    </h3>
+                    <p className="text-gray-600 mb-6">
+                      {searchQuery 
+                        ? `We couldn't find any products matching "${searchQuery}"`
+                        : 'No products available in this category'
+                      }
+                    </p>
+                    <a 
+                      href="/equipment/blades" 
+                      className="elegant-button inline-flex items-center justify-center group"
+                    >
+                      <span>View All Products</span>
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </a>
+                  </div>
+                );
+              })()}
+            </>
           )}
         </div>
       </section>
@@ -405,7 +460,11 @@ function ProductCard({
   const cartItem = items.find(item => item.id === id);
   const quantity = cartItem?.quantity || 0;
   
+  // Check if this is a coming soon item (shoes or pre-owned)
+  const isComingSoon = category === 'Pre-Owned Racket' || category === 'Shoes';
+  
   const handleAddToCart = () => {
+    if (isComingSoon) return; // Prevent adding coming soon items
     addToCart({
       id,
       name,
@@ -417,6 +476,7 @@ function ProductCard({
   };
   
   const handleIncrement = () => {
+    if (isComingSoon) return; // Prevent adding coming soon items
     if (cartItem) {
       updateQuantity(id, quantity + 1);
     } else {
@@ -425,9 +485,8 @@ function ProductCard({
   };
   
   const handleDecrement = () => {
-    if (quantity > 0) {
-      updateQuantity(id, quantity - 1);
-    }
+    if (isComingSoon || quantity === 0) return;
+    updateQuantity(id, quantity - 1);
   };
   
   return (
@@ -437,8 +496,17 @@ function ProductCard({
       viewport={{ once: true }}
       transition={{ delay: index * 0.05, duration: 0.5 }}
       whileHover={{ y: -8, transition: { duration: 0.3 } }}
-      className="elegant-card overflow-hidden group cursor-pointer"
+      className={`elegant-card overflow-hidden group cursor-pointer ${isComingSoon ? 'relative' : ''}`}
     >
+      {/* Coming Soon Overlay */}
+      {isComingSoon && (
+        <div className="absolute inset-0 bg-gray-900/75 z-10 flex items-center justify-center backdrop-blur-sm">
+          <div className="text-center">
+            <div className="text-white text-2xl font-bold mb-2">Coming Soon</div>
+            <div className="text-gray-300 text-sm">Currently Unavailable</div>
+          </div>
+        </div>
+      )}
       {/* Product Image */}
       <div className="aspect-square md:aspect-[4/3] bg-gradient-to-br from-muted/30 to-muted/50 relative overflow-hidden">
         <img
@@ -558,7 +626,7 @@ function ProductCard({
         {/* Action Buttons */}
         <div className="flex flex-col md:flex-row gap-1.5 md:gap-2">
           <Link
-            href={`/equipment/${id}`}
+            href={`/equipment/product/${id}`}
             className="elegant-button-outline flex-1 py-1.5 md:py-2 px-2 md:px-4 text-[10px] sm:text-xs md:text-sm inline-flex items-center justify-center group/btn"
           >
             <span className="hidden sm:inline">View Details</span>
@@ -568,12 +636,15 @@ function ProductCard({
           
           {quantity === 0 ? (
             <button
-              className="elegant-button py-1.5 md:py-2 px-2 md:px-4 text-[10px] sm:text-xs md:text-sm inline-flex items-center justify-center gap-1 md:gap-2 flex-1 md:flex-initial"
+              className={`elegant-button py-1.5 md:py-2 px-2 md:px-4 text-[10px] sm:text-xs md:text-sm inline-flex items-center justify-center gap-1 md:gap-2 flex-1 md:flex-initial ${
+                isComingSoon ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
               onClick={handleAddToCart}
+              disabled={isComingSoon}
             >
               <ShoppingCart className="w-3 h-3 md:w-4 md:h-4" />
-              <span className="hidden sm:inline">Add to Cart</span>
-              <span className="sm:hidden">Add</span>
+              <span className="hidden sm:inline">{isComingSoon ? 'Coming Soon' : 'Add to Cart'}</span>
+              <span className="sm:hidden">{isComingSoon ? 'Soon' : 'Add'}</span>
             </button>
           ) : (
             <div className="flex items-center justify-between border-2 border-primary rounded-lg px-2 md:px-3 py-1 md:py-1.5 flex-1 md:flex-initial bg-white">

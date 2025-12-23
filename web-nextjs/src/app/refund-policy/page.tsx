@@ -118,7 +118,7 @@ export default function RefundPolicyPage() {
                 <div>
                   <h4 className="font-bold text-gray-900 mb-1">Approval & Pickup</h4>
                   <p className="text-gray-700">
-                    Once approved, we'll arrange a free pickup from your address (within Pune) or provide return shipping instructions.
+                    Once approved, we'll provide return shipping instructions. Return shipping costs may apply for locations outside major metro cities.
                   </p>
                 </div>
               </div>
@@ -202,7 +202,7 @@ export default function RefundPolicyPage() {
             </ul>
             <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mt-4">
               <p className="text-red-800">
-                <strong>Important:</strong> Please inspect your order upon delivery. Report any issues within 24 hours for fastest resolution.
+                <strong>Important:</strong> Please inspect your order upon delivery. Report any issues within 48 hours for fastest resolution.
               </p>
             </div>
           </section>

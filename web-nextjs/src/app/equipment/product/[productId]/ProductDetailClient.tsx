@@ -307,9 +307,9 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
             {/* Delivery Info */}
             <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6">
-              <h4 className="font-bold text-lg mb-3">🚚 Fast Delivery in Pune</h4>
-              <ul className="space-y-2 text-sm text-gray-700">
-                <li>✓ Standard Delivery: 24 hours (FREE)</li>
+              <h4 className="font-bold text-lg mb-3">🚚 Fast Delivery Across India</h4>
+              <ul className="space-y-2 text-gray-700">
+                <li>✓ Standard Delivery: 3-7 business days (FREE)</li>
                 <li>✓ Instant Delivery: 3 hours</li>
                 <li>✓ Cash on Delivery available</li>
               </ul>

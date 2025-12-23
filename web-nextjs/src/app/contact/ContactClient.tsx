@@ -50,9 +50,8 @@ export default function ContactClient() {
                 <div>
                   <h3 className="font-bold text-xl mb-2">Visit Us</h3>
                   <p className="text-gray-600">
-                    Dream Sports Table Tennis Academy<br />
-                    Pune, Maharashtra<br />
-                    India
+                    All About Table Tennis<br />
+                    Maharashtra, India<br />
                   </p>
                 </div>
               </div>
@@ -75,8 +74,8 @@ export default function ContactClient() {
                 </div>
                 <div>
                   <h3 className="font-bold text-xl mb-2">Email Us</h3>
-                  <a href="mailto:info@dreamsportstt.com" className="text-gray-600 hover:text-primary transition-colors">
-                    info@dreamsportstt.com
+                  <a href="mailto:info@allabouttabletennis.in" className="text-gray-600 hover:text-primary transition-colors">
+                    info@allabouttabletennis.in
                   </a>
                 </div>
               </div>

@@ -25,7 +25,7 @@ export default function ShippingPage() {
               We currently ship to the following locations:
             </p>
             <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-              <li><strong>Primary Service Area:</strong> Pune, Maharashtra (Fast Delivery Available)</li>
+              <li><strong>Service Area:</strong> Pan India (All states and territories)</li>
               <li><strong>Pan-India Delivery:</strong> All major cities and towns across India</li>
             </ul>
           </section>
@@ -61,13 +61,13 @@ export default function ShippingPage() {
               3. Order Processing Time
             </h2>
             <p className="text-gray-700 mb-4">
-              <strong>In-Stock Items:</strong> Orders are processed within 24 hours of payment confirmation (Monday-Saturday, excluding public holidays).
+              <strong>In-Stock Items:</strong> Orders are processed within 1-2 business days of payment confirmation (Monday-Saturday, excluding public holidays).
             </p>
             <p className="text-gray-700 mb-4">
               <strong>Customized Rackets:</strong> Require 1-2 additional business days for professional assembly (blade and rubber pasting).
             </p>
             <p className="text-gray-700">
-              <strong>Pre-Owned Items:</strong> Shipped within 24 hours after final inspection and quality check.
+              <strong>Pre-Owned Items:</strong> Shipped within 1-2 business days after final inspection and quality check.
             </p>
           </section>
 
@@ -80,7 +80,7 @@ export default function ShippingPage() {
                 <thead className="bg-gray-100">
                   <tr>
                     <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Order Value</th>
-                    <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Pune</th>
+                    <th className="border border-gray-300 px-4 py-3 text-left font-semibold">All India</th>
                     <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Metro Cities</th>
                     <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Rest of India</th>
                   </tr>
@@ -134,7 +134,7 @@ export default function ShippingPage() {
               COD is available for orders:
             </p>
             <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-              <li>Within Pune: All orders accepted</li>
+              <li>Across India: All orders accepted</li>
               <li>Metro Cities: Orders up to ₹10,000</li>
               <li>Other locations: Orders up to ₹5,000</li>
             </ul>

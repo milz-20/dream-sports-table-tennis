@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home as HomeIcon, ShoppingBag, Mail, ShoppingCart, Menu, X, ChevronDown, ChevronRight } from 'lucide-react';
+import { Home as HomeIcon, ShoppingBag, Mail, ShoppingCart, Menu, X, ChevronDown, ChevronRight, Search } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import CartDrawer from './CartDrawer';
 
@@ -14,20 +14,22 @@ export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollectionsOpen, setIsCollectionsOpen] = useState(false);
   const [isAccessoriesOpen, setIsAccessoriesOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const collectionsLinks = [
-    { href: '/equipment?category=blades', label: 'Blades' },
-    { href: '/equipment?category=rubbers', label: 'Rubbers' },
-    { href: '/equipment?category=shoes', label: 'Shoes' },
-    { href: '/equipment?category=balls', label: 'Balls' },
-    { href: '/equipment?category=tables', label: 'Tables' },
-    { href: '/equipment?category=preowned', label: 'Pre-Owned Rackets' },
+    { href: '/equipment/blades', label: 'Blades' },
+    { href: '/equipment/rubbers', label: 'Rubbers' },
+    { href: '/equipment/shoes', label: 'Shoes' },
+    { href: '/equipment/balls', label: 'Balls' },
+    { href: '/equipment/tables', label: 'Tables' },
+    { href: '/equipment/preowned', label: 'Pre-Owned Rackets' },
   ];
 
   const accessoriesLinks = [
-    { href: '/equipment?category=accessories', label: 'Edge Tape' },
-    { href: '/equipment?category=accessories', label: 'Racket Cleaner' },
-    { href: '/equipment?category=accessories', label: 'Handle Grip' },
+    { href: '/equipment/accessories', label: 'Edge Tape' },
+    { href: '/equipment/accessories', label: 'Racket Cleaner' },
+    { href: '/equipment/accessories', label: 'Handle Grip' },
   ];
 
   const isActive = (path: string) => pathname === path;
@@ -136,6 +138,15 @@ export default function Navigation() {
                 <span>Contact</span>
               </Link>
 
+              {/* Search Button */}
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="px-3 py-2 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-2 text-foreground hover:bg-muted"
+              >
+                <Search className="w-4 h-4" />
+                <span>Search</span>
+              </button>
+
               {/* Cart Button */}
               <button
                 onClick={() => setIsCartOpen(true)}
@@ -151,17 +162,25 @@ export default function Navigation() {
               </button>
             </div>
 
-            {/* Hamburger Menu Button - Visible on tablet and mobile */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
-            >
-              {isMobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
-            </button>
+            {/* Mobile: Search and Hamburger Menu Buttons */}
+            <div className="lg:hidden flex items-center gap-2">
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="p-2 rounded-lg hover:bg-muted transition-colors"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2 rounded-lg hover:bg-muted transition-colors"
+              >
+                {isMobileMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Hamburger Menu */}
@@ -290,6 +309,56 @@ export default function Navigation() {
           )}
         </nav>
       </header>
+
+      {/* Search Modal */}
+      {isSearchOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-20 px-4">
+          <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl max-h-[80vh] overflow-hidden">
+            <div className="p-6 border-b border-gray-200 flex items-center gap-4">
+              <Search className="w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search for blades, rubbers, shoes..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && searchQuery.trim()) {
+                    window.location.href = `/equipment/blades?search=${encodeURIComponent(searchQuery)}`;
+                  }
+                }}
+                autoFocus
+                className="flex-1 text-lg outline-none"
+              />
+              <button
+                onClick={() => {
+                  setIsSearchOpen(false);
+                  setSearchQuery('');
+                }}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            {searchQuery.trim() && (
+              <div className="p-4">
+                <Link
+                  href={`/equipment/blades?search=${encodeURIComponent(searchQuery)}`}
+                  onClick={() => {
+                    setIsSearchOpen(false);
+                    setSearchQuery('');
+                  }}
+                  className="elegant-button w-full py-3 text-center"
+                >
+                  Search for "{searchQuery}"
+                </Link>
+                <p className="text-sm text-gray-500 text-center mt-3">
+                  Press Enter or click to search
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>

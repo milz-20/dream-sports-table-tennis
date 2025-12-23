@@ -27,6 +27,9 @@ export class IamDevelopersStack extends cdk.Stack {
     backendDevsGroup.addManagedPolicy(
       iam.ManagedPolicy.fromAwsManagedPolicyName('CloudWatchLogsFullAccess')
     );
+    backendDevsGroup.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess')
+    );
 
     // Read-only Policy for CloudFormation/CDK (no deployment permissions)
     const readOnlyInfraPolicy = new iam.Policy(this, 'ReadOnlyInfraPolicy', {
@@ -82,7 +85,7 @@ export class IamDevelopersStack extends cdk.Stack {
 
     backendDevsGroup.attachInlinePolicy(readOnlyInfraPolicy);
 
-    // Allow users to manage their own credentials
+    // Allow users to manage their own credentials and view account info
     const selfManagePolicy = new iam.Policy(this, 'SelfManageCredentials', {
       policyName: 'SelfManageCredentials',
       statements: [
@@ -110,13 +113,23 @@ export class IamDevelopersStack extends cdk.Stack {
             'arn:aws:iam::*:mfa/${aws:username}',
           ],
         }),
-        // Allow users to list their own MFA devices
+        // Allow users to list their own MFA devices and view group memberships
         new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
           actions: [
             'iam:ListMFADevices',
             'iam:ListVirtualMFADevices',
             'iam:ListUsers',
+            'iam:ListGroupsForUser',
+            'iam:GetGroup',
+            'iam:ListAttachedGroupPolicies',
+            'iam:ListGroupPolicies',
+            'iam:GetGroupPolicy',
+            'iam:GetPolicy',
+            'iam:GetPolicyVersion',
+            'iam:ListPolicies',
+            'iam:ListAttachedUserPolicies',
+            'iam:ListUserPolicies',
           ],
           resources: ['*'],
         }),
@@ -131,68 +144,28 @@ export class IamDevelopersStack extends cdk.Stack {
           ],
           resources: ['arn:aws:iam::*:user/${aws:username}'],
         }),
-      ],
-    });
-
-    backendDevsGroup.attachInlinePolicy(selfManagePolicy);
-
-    // Deny dangerous actions and infrastructure changes
-    const denyPolicy = new iam.Policy(this, 'DenyDangerousActions', {
-      policyName: 'DenyDangerousActions',
-      statements: [
+        // Allow viewing account alias and SSO configuration
         new iam.PolicyStatement({
-          effect: iam.Effect.DENY,
+          effect: iam.Effect.ALLOW,
           actions: [
-            // Prevent billing access
-            'aws-portal:*',
-            'budgets:*',
-            'ce:*',
-            'cur:*',
-            // Prevent IAM privilege escalation
-            'iam:CreateUser',
-            'iam:CreateGroup',
-            'iam:CreateRole',
-            'iam:AttachUserPolicy',
-            'iam:AttachGroupPolicy',
-            'iam:AttachRolePolicy',
-            'iam:PutUserPolicy',
-            'iam:PutGroupPolicy',
-            'iam:PutRolePolicy',
-            'iam:DeleteUser',
-            'iam:DeleteGroup',
-            'iam:DeleteRole',
-            'iam:UpdateAssumeRolePolicy',
-            // Prevent account modifications
-            'organizations:*',
-            'account:*',
-            // Prevent CloudFormation/CDK deployments
-            'cloudformation:CreateStack',
-            'cloudformation:UpdateStack',
-            'cloudformation:DeleteStack',
-            'cloudformation:CreateChangeSet',
-            'cloudformation:ExecuteChangeSet',
-            // Prevent infrastructure modifications
-            'amplify:CreateApp',
-            'amplify:DeleteApp',
-            'amplify:UpdateApp',
-            'amplify:CreateBranch',
-            'amplify:DeleteBranch',
-            'amplify:UpdateBranch',
-            'route53:CreateHostedZone',
-            'route53:DeleteHostedZone',
-            'route53:ChangeResourceRecordSets',
+            'iam:ListAccountAliases',
+            'iam:GetAccountSummary',
+            'sso:ListInstances',
+            'sso:DescribeInstance',
+            'identitystore:ListUsers',
+            'identitystore:ListGroups',
           ],
           resources: ['*'],
         }),
       ],
     });
 
-    backendDevsGroup.attachInlinePolicy(denyPolicy);
+    backendDevsGroup.attachInlinePolicy(selfManagePolicy);
 
     // Create IAM Users for Developers
     const developer1 = new iam.User(this, 'dev-sarv', {
       userName: 'dev-sarv',
-      password: cdk.SecretValue.unsafePlainText('TempPass123!@#Sarv'), // Change after first login
+      password: cdk.SecretValue.unsafePlainText('Sarv1211'), // Change after first login
       passwordResetRequired: true,
     });
 

@@ -134,7 +134,7 @@ export default function TermsPage() {
               11. Governing Law
             </h2>
             <p className="text-gray-700">
-              These Terms and Conditions are governed by the laws of India. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts in Pune, Maharashtra.
+              These Terms and Conditions are governed by the laws of India. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts in Maharashtra, India.
             </p>
           </section>
 

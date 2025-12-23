@@ -21,7 +21,7 @@ export default function CheckoutClient() {
     email: '',
     phone: '',
     address: '',
-    city: 'Pune',
+    city: '',
     pincode: '',
     paymentMethod: 'online',
   });

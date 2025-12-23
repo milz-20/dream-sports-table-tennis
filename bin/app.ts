@@ -5,6 +5,7 @@ import { TableTennisInfraStack } from '../lib/table-tennis-stack';
 import { TableTennisBudgetStack } from '../lib/budget-stack';
 import { Route53Stack } from '../lib/route53-stack';
 import { IamDevelopersStack } from '../lib/iam-developers-stack';
+import { DynamoDbTablesStack } from '../lib/dynamodb-tables-stack';
 
 const app = new cdk.App();
 
@@ -46,6 +47,15 @@ new IamDevelopersStack(app, 'IamDevelopersStack', {
     region: process.env.CDK_DEFAULT_REGION,
   },
   description: 'IAM users and groups for backend developers',
+});
+
+// DynamoDB Tables stack
+new DynamoDbTablesStack(app, 'DynamoDbTablesStack', {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: 'ap-south-1', // Same region as main infrastructure
+  },
+  description: 'DynamoDB tables for customers, products, payments, addresses, and shipments',
 });
 
 app.synth();
