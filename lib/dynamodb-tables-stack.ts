@@ -4,7 +4,7 @@ import { Construct } from 'constructs';
 
 export class DynamoDbTablesStack extends cdk.Stack {
   public readonly customersTable: dynamodb.Table;
-  public readonly ordersTable: dynamodb.Table;
+  public readonly ordersTable: dynamodb.ITable;
   public readonly paymentsTable: dynamodb.Table;
   public readonly productsTable: dynamodb.Table;
   public readonly addressesTable: dynamodb.Table;

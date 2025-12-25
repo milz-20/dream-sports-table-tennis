@@ -6,6 +6,7 @@ import { TableTennisBudgetStack } from '../lib/budget-stack';
 import { Route53Stack } from '../lib/route53-stack';
 import { IamDevelopersStack } from '../lib/iam-developers-stack';
 import { DynamoDbTablesStack } from '../lib/dynamodb-tables-stack';
+import { S3CloudFrontStack } from '../lib/s3-cloudfront-stack';
 
 const app = new cdk.App();
 
@@ -16,6 +17,15 @@ const infraStack = new TableTennisInfraStack(app, 'TableTennisInfraStack', {
     region: 'ap-south-1', // Mumbai region where existing Amplify app is located
   },
   description: 'Table Tennis Coaching and Equipment Business Infrastructure',
+});
+
+// S3 and CloudFront stack for images CDN
+new S3CloudFrontStack(app, 'S3CloudFrontStack', {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: 'ap-south-1', // Mumbai region for consistency
+  },
+  description: 'S3 bucket and CloudFront distribution for table tennis images',
 });
 
 // Route53 DNS stack

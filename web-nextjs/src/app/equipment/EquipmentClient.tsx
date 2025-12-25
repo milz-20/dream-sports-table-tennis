@@ -13,6 +13,7 @@ interface EquipmentClientProps {
   blades: any[];
   rubbers: any[];
   shoes: any[];
+  accessories: any[];
   preOwnedRackets: any[];
   enhancedBlades: BladeData[];
   enhancedRubbers: RubberData[];
@@ -23,6 +24,7 @@ export default function EquipmentClient({
   blades, 
   rubbers,
   shoes,
+  accessories,
   preOwnedRackets,
   enhancedBlades,
   enhancedRubbers,
@@ -33,6 +35,7 @@ export default function EquipmentClient({
   
   const [activeCategory, setActiveCategory] = useState<'blades' | 'rubbers' | 'shoes' | 'balls' | 'tables' | 'accessories' | 'preowned'>(initialCategory || 'blades');
   const [selectedBrand, setSelectedBrand] = useState<string>('');
+  const [selectedAccessoryType, setSelectedAccessoryType] = useState<string>('');
   const [showCustomizer, setShowCustomizer] = useState<boolean>(false);
   
   // Function to search products
@@ -152,20 +155,52 @@ export default function EquipmentClient({
               {activeCategory === 'accessories' && !showCustomizer && (
                 <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3">
                   <button
-                    onClick={() => { /* Will be handled by coming soon */ }}
-                    className="px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    onClick={() => setSelectedAccessoryType('')}
+                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
+                      selectedAccessoryType === ''
+                        ? 'bg-primary text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    All Accessories
+                  </button>
+                  <button
+                    onClick={() => setSelectedAccessoryType('Racket Case')}
+                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
+                      selectedAccessoryType === 'Racket Case'
+                        ? 'bg-primary text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    💼 Racket Case
+                  </button>
+                  <button
+                    onClick={() => setSelectedAccessoryType('Edge Tape')}
+                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
+                      selectedAccessoryType === 'Edge Tape'
+                        ? 'bg-primary text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
                   >
                     🎨 Edge Tape
                   </button>
                   <button
-                    onClick={() => { /* Will be handled by coming soon */ }}
-                    className="px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    onClick={() => setSelectedAccessoryType('Racket Cleaner')}
+                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
+                      selectedAccessoryType === 'Racket Cleaner'
+                        ? 'bg-primary text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
                   >
                     🧼 Racket Cleaner
                   </button>
                   <button
-                    onClick={() => { /* Will be handled by coming soon */ }}
-                    className="px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    onClick={() => setSelectedAccessoryType('Handle Grip')}
+                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
+                      selectedAccessoryType === 'Handle Grip'
+                        ? 'bg-primary text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
                   >
                     🤝 Handle Grip
                   </button>
@@ -205,6 +240,7 @@ export default function EquipmentClient({
             {activeCategory === 'shoes' && '👟 Table Tennis Shoes'}
             {activeCategory === 'balls' && '⚪ Competition Balls'}
             {activeCategory === 'tables' && '🏓 Table Tennis Tables'}
+            {activeCategory === 'accessories' && '🎒 Table Tennis Accessories'}
             {activeCategory === 'preowned' && '♻️ Pre-Owned Rackets'}
           </h2>
           <p className="text-gray-600 text-center mb-6 md:mb-8 max-w-2xl mx-auto text-sm md:text-base">
@@ -213,11 +249,12 @@ export default function EquipmentClient({
             {activeCategory === 'shoes' && 'Professional table tennis footwear for optimal performance'}
             {activeCategory === 'balls' && 'Competition grade balls for training and tournaments'}
             {activeCategory === 'tables' && 'Professional quality table tennis tables'}
+            {activeCategory === 'accessories' && 'Essential equipment protection and storage solutions'}
             {activeCategory === 'preowned' && 'Quality inspected used rackets at great prices - Final Sale, No Returns'}
           </p>
 
-          {/* Brand Filter - Only show for blades */}
-          {activeCategory === 'blades' && (
+          {/* Brand Filter - Show for blades and rubbers */}
+          {(activeCategory === 'blades' || activeCategory === 'rubbers') && (
             <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 md:mb-12">
               <button
                 onClick={() => setSelectedBrand('')}
@@ -229,7 +266,7 @@ export default function EquipmentClient({
               >
                 All Brands
               </button>
-              {['Butterfly', 'Stiga', 'Yasaka', 'Donic'].map((brand) => (
+              {['Butterfly', 'Stiga', 'Yasaka', 'Donic', 'Xiom'].map((brand) => (
                 <button
                   key={brand}
                   onClick={() => setSelectedBrand(brand)}
@@ -245,7 +282,7 @@ export default function EquipmentClient({
             </div>
           )}
 
-          {(activeCategory === 'balls' || activeCategory === 'tables' || activeCategory === 'accessories') ? (
+          {(activeCategory === 'balls' || activeCategory === 'tables') ? (
             <div className="text-center py-16">
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-6">
                 <ShoppingBag className="w-10 h-10 text-gray-400" />
@@ -254,7 +291,7 @@ export default function EquipmentClient({
                 Coming Soon!
               </h3>
               <p className="text-gray-600 mb-6">
-                We're working on adding {activeCategory === 'balls' ? 'balls' : activeCategory === 'tables' ? 'tables' : 'accessories'} to our inventory.
+                We're working on adding {activeCategory === 'balls' ? 'balls' : 'tables'} to our inventory.
               </p>
               <a 
                 href="https://wa.me/919325173787?text=Hi%20I%20am%20interested%20in%20table%20tennis%20equipment" 
@@ -288,16 +325,43 @@ export default function EquipmentClient({
                 let productsToDisplay = activeCategory === 'blades' 
                   ? blades.filter(blade => !selectedBrand || blade.brand === selectedBrand)
                   : activeCategory === 'rubbers'
-                  ? rubbers
+                  ? rubbers.filter(rubber => !selectedBrand || rubber.name.includes(selectedBrand))
                   : activeCategory === 'shoes'
                   ? shoes
+                  : activeCategory === 'accessories'
+                  ? accessories.filter(accessory => !selectedAccessoryType || accessory.type === selectedAccessoryType)
                   : preOwnedRackets;
                 
                 // Apply search filter if query exists
                 if (searchQuery) {
                   // If there's a search query, search across ALL categories
-                  const allProducts = [...blades, ...rubbers, ...shoes, ...preOwnedRackets];
+                  const allProducts = [...blades, ...rubbers, ...shoes, ...accessories, ...preOwnedRackets];
                   productsToDisplay = searchProducts(allProducts, searchQuery);
+                }
+                
+                // Show coming soon message for accessories without products in the selected type
+                if (activeCategory === 'accessories' && selectedAccessoryType && 
+                    selectedAccessoryType !== 'Racket Case' && productsToDisplay.length === 0) {
+                  return (
+                    <div className="text-center py-16">
+                      <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-6">
+                        <ShoppingBag className="w-10 h-10 text-gray-400" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                        Coming Soon!
+                      </h3>
+                      <p className="text-gray-600 mb-6">
+                        We're working on adding {selectedAccessoryType.toLowerCase()} to our inventory.
+                      </p>
+                      <button
+                        onClick={() => setSelectedAccessoryType('')}
+                        className="elegant-button inline-flex items-center justify-center group"
+                      >
+                        <span>View All Accessories</span>
+                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      </button>
+                    </div>
+                  );
                 }
                 
                 return productsToDisplay.length > 0 ? (
@@ -427,6 +491,8 @@ interface ProductCardProps {
   size?: string;
   material?: string;
   sole?: string;
+  capacity?: string;
+  features?: string;
   description: string;
   price: number;
   originalPrice: number;
@@ -437,6 +503,7 @@ interface ProductCardProps {
 function ProductCard({
   id,
   name,
+  brand,
   category,
   rating,
   reviews,
@@ -449,6 +516,8 @@ function ProductCard({
   size,
   material,
   sole,
+  capacity,
+  features,
   description,
   price,
   originalPrice,
@@ -460,8 +529,8 @@ function ProductCard({
   const cartItem = items.find(item => item.id === id);
   const quantity = cartItem?.quantity || 0;
   
-  // Check if this is a coming soon item (shoes or pre-owned)
-  const isComingSoon = category === 'Pre-Owned Racket' || category === 'Shoes';
+  // Check if this is a coming soon item (shoes except Xiom or pre-owned)
+  const isComingSoon = category === 'Pre-Owned Racket' || (category === 'Shoes' && brand !== 'Xiom');
   
   const handleAddToCart = () => {
     if (isComingSoon) return; // Prevent adding coming soon items
@@ -582,6 +651,12 @@ function ProductCard({
               <span className="text-muted-foreground">Arc: {arc}</span>
             </div>
           )}
+          {capacity && (
+            <div className="flex items-start gap-2 text-sm">
+              <Package className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+              <span className="text-muted-foreground">{capacity}</span>
+            </div>
+          )}
           {size && (
             <div className="flex items-start gap-2 text-sm">
               <Package className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
@@ -600,12 +675,19 @@ function ProductCard({
               <span className="text-muted-foreground">Sole: {sole}</span>
             </div>
           )}
+          {features && (
+            <div className="flex items-start gap-2 text-sm">
+              <Zap className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+              <span className="text-muted-foreground">{features}</span>
+            </div>
+          )}
         </div>
 
         {/* Mobile: Show compact specs */}
         <div className="md:hidden mb-2 text-[10px] text-muted-foreground">
           {speed && <span className="block">{speed}</span>}
           {type && <span className="block">{type}</span>}
+          {capacity && <span className="block">{capacity}</span>}
           {size && <span className="block">{size}</span>}
         </div>
 
