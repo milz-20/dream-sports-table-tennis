@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Star, ShoppingBag, ArrowRight, ShoppingCart, Package, Zap, MapPin, TrendingUp, Plus, Minus } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import CustomizeRacket from '@/components/CustomizeRacket';
@@ -30,13 +30,41 @@ export default function EquipmentClient({
   enhancedRubbers,
   initialCategory 
 }: EquipmentClientProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search');
+  const brandParam = searchParams.get('brand');
+  const accessoryTypeParam = searchParams.get('type');
   
   const [activeCategory, setActiveCategory] = useState<'blades' | 'rubbers' | 'shoes' | 'balls' | 'tables' | 'accessories' | 'preowned'>(initialCategory || 'blades');
-  const [selectedBrand, setSelectedBrand] = useState<string>('');
-  const [selectedAccessoryType, setSelectedAccessoryType] = useState<string>('');
+  const [selectedBrand, setSelectedBrand] = useState<string>(brandParam || '');
+  const [selectedAccessoryType, setSelectedAccessoryType] = useState<string>(accessoryTypeParam || '');
   const [showCustomizer, setShowCustomizer] = useState<boolean>(false);
+  
+  // Function to update URL with filter params
+  const updateURLParams = (brand?: string, accessoryType?: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    if (brand !== undefined) {
+      if (brand) {
+        params.set('brand', brand);
+      } else {
+        params.delete('brand');
+      }
+    }
+    
+    if (accessoryType !== undefined) {
+      if (accessoryType) {
+        params.set('type', accessoryType);
+      } else {
+        params.delete('type');
+      }
+    }
+    
+    const queryString = params.toString();
+    router.replace(`${pathname}${queryString ? '?' + queryString : ''}`, { scroll: false });
+  };
   
   // Function to search products
   const searchProducts = (products: any[], query: string) => {
@@ -56,8 +84,15 @@ export default function EquipmentClient({
     if (initialCategory) {
       setActiveCategory(initialCategory);
     }
+    // Restore filters from URL params
+    if (brandParam) {
+      setSelectedBrand(brandParam);
+    }
+    if (accessoryTypeParam) {
+      setSelectedAccessoryType(accessoryTypeParam);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [initialCategory, searchQuery]);
+  }, [initialCategory, searchQuery, brandParam, accessoryTypeParam]);
 
   return (
     <motion.div
@@ -155,7 +190,10 @@ export default function EquipmentClient({
               {activeCategory === 'accessories' && !showCustomizer && (
                 <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3">
                   <button
-                    onClick={() => setSelectedAccessoryType('')}
+                    onClick={() => {
+                      setSelectedAccessoryType('');
+                      updateURLParams(undefined, '');
+                    }}
                     className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
                       selectedAccessoryType === ''
                         ? 'bg-primary text-white shadow-md'
@@ -165,7 +203,10 @@ export default function EquipmentClient({
                     All Accessories
                   </button>
                   <button
-                    onClick={() => setSelectedAccessoryType('Racket Case')}
+                    onClick={() => {
+                      setSelectedAccessoryType('Racket Case');
+                      updateURLParams(undefined, 'Racket Case');
+                    }}
                     className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
                       selectedAccessoryType === 'Racket Case'
                         ? 'bg-primary text-white shadow-md'
@@ -175,7 +216,10 @@ export default function EquipmentClient({
                     💼 Racket Case
                   </button>
                   <button
-                    onClick={() => setSelectedAccessoryType('Edge Tape')}
+                    onClick={() => {
+                      setSelectedAccessoryType('Edge Tape');
+                      updateURLParams(undefined, 'Edge Tape');
+                    }}
                     className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
                       selectedAccessoryType === 'Edge Tape'
                         ? 'bg-primary text-white shadow-md'
@@ -185,7 +229,10 @@ export default function EquipmentClient({
                     🎨 Edge Tape
                   </button>
                   <button
-                    onClick={() => setSelectedAccessoryType('Racket Cleaner')}
+                    onClick={() => {
+                      setSelectedAccessoryType('Racket Cleaner');
+                      updateURLParams(undefined, 'Racket Cleaner');
+                    }}
                     className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
                       selectedAccessoryType === 'Racket Cleaner'
                         ? 'bg-primary text-white shadow-md'
@@ -195,7 +242,10 @@ export default function EquipmentClient({
                     🧼 Racket Cleaner
                   </button>
                   <button
-                    onClick={() => setSelectedAccessoryType('Handle Grip')}
+                    onClick={() => {
+                      setSelectedAccessoryType('Handle Grip');
+                      updateURLParams(undefined, 'Handle Grip');
+                    }}
                     className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
                       selectedAccessoryType === 'Handle Grip'
                         ? 'bg-primary text-white shadow-md'
@@ -257,7 +307,10 @@ export default function EquipmentClient({
           {(activeCategory === 'blades' || activeCategory === 'rubbers') && (
             <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 md:mb-12">
               <button
-                onClick={() => setSelectedBrand('')}
+                onClick={() => {
+                  setSelectedBrand('');
+                  updateURLParams('');
+                }}
                 className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
                   selectedBrand === ''
                     ? 'bg-primary text-white shadow-md'
@@ -269,7 +322,10 @@ export default function EquipmentClient({
               {['Butterfly', 'Stiga', 'Yasaka', 'Donic', 'Xiom'].map((brand) => (
                 <button
                   key={brand}
-                  onClick={() => setSelectedBrand(brand)}
+                  onClick={() => {
+                    setSelectedBrand(brand);
+                    updateURLParams(brand);
+                  }}
                   className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
                     selectedBrand === brand
                       ? 'bg-primary text-white shadow-md'
@@ -354,7 +410,10 @@ export default function EquipmentClient({
                         We're working on adding {selectedAccessoryType.toLowerCase()} to our inventory.
                       </p>
                       <button
-                        onClick={() => setSelectedAccessoryType('')}
+                        onClick={() => {
+                          setSelectedAccessoryType('');
+                          updateURLParams(undefined, '');
+                        }}
                         className="elegant-button inline-flex items-center justify-center group"
                       >
                         <span>View All Accessories</span>
