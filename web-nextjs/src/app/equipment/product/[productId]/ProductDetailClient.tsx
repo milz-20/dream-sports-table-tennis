@@ -9,32 +9,69 @@ import { useCart } from '@/contexts/CartContext';
 
 interface ProductDetailClientProps {
   product: any;
+  allProducts: any[];
 }
 
-export default function ProductDetailClient({ product }: ProductDetailClientProps) {
+export default function ProductDetailClient({ product, allProducts }: ProductDetailClientProps) {
   const router = useRouter();
   const { addToCart, updateQuantity, items } = useCart();
   const [showAddedMessage, setShowAddedMessage] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState(product);
+  const [selectedColorIndex, setSelectedColorIndex] = useState(0);
+  const [selectedRubberColor, setSelectedRubberColor] = useState<'red' | 'black' | null>(null);
 
-  const cartItem = items.find(item => item.id === product.id);
+  // Check if product has colorVariants array (new format)
+  const hasColorVariants = product.colorVariants && product.colorVariants.length > 0;
+  
+  // Check if this is a rubber product
+  const isRubber = product.category === 'Rubber';
+
+  // Find color variants based on product name pattern (old format)
+  const getColorVariants = () => {
+    if (!product.name) return [];
+    
+    // Extract base name without color
+    const baseName = product.name
+      .replace(/- (Pink|Navy Blue|Navy|Blue|Light Blue|Grey|Purple|Dark Blue|White|Magenta|Orange|Red|Black)/gi, '')
+      .trim();
+    
+    // Find all products with the same base name
+    const variants = allProducts.filter(p => {
+      const pBaseName = p.name
+        .replace(/- (Pink|Navy Blue|Navy|Blue|Light Blue|Grey|Purple|Dark Blue|White|Magenta|Orange|Red|Black)/gi, '')
+        .trim();
+      return pBaseName === baseName && p.category === product.category;
+    });
+    
+    return variants.length > 1 ? variants : [];
+  };
+
+  const colorVariants = getColorVariants();
+
+  const cartItem = items.find(item => item.id === (isRubber && selectedRubberColor ? `${selectedVariant.id}-${selectedRubberColor}` : selectedVariant.id));
   const quantity = cartItem?.quantity || 0;
 
   const handleAddToCart = () => {
+    if (isRubber && !selectedRubberColor) return; // Prevent adding rubbers without color selection
+    
     addToCart({
-      id: product.id,
-      name: product.name,
-      category: product.category,
-      price: product.price,
-      originalPrice: product.originalPrice,
-      image: product.image,
+      id: isRubber ? `${selectedVariant.id}-${selectedRubberColor}` : selectedVariant.id,
+      name: isRubber ? `${selectedVariant.name} (${selectedRubberColor?.toUpperCase()})` : selectedVariant.name,
+      category: selectedVariant.category,
+      price: selectedVariant.price,
+      originalPrice: selectedVariant.originalPrice,
+      image: selectedVariant.image,
+      rubberColor: isRubber && selectedRubberColor ? selectedRubberColor : undefined,
     });
     setShowAddedMessage(true);
     setTimeout(() => setShowAddedMessage(false), 3000);
   };
 
   const handleIncrement = () => {
+    if (isRubber && !selectedRubberColor) return; // Prevent adding rubbers without color selection
+    
     if (cartItem) {
-      updateQuantity(product.id, quantity + 1);
+      updateQuantity(isRubber ? `${selectedVariant.id}-${selectedRubberColor}` : selectedVariant.id, quantity + 1);
     } else {
       handleAddToCart();
     }
@@ -42,7 +79,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
   const handleDecrement = () => {
     if (quantity > 0) {
-      updateQuantity(product.id, quantity - 1);
+      updateQuantity(isRubber ? `${selectedVariant.id}-${selectedRubberColor}` : selectedVariant.id, quantity - 1);
     }
   };
 
@@ -79,10 +116,56 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             className="bg-white rounded-3xl p-8 shadow-lg border-2 border-gray-100"
           >
             <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-auto object-contain rounded-2xl"
+              src={hasColorVariants ? product.colorVariants[selectedColorIndex].image : selectedVariant.image}
+              alt={hasColorVariants ? `${product.name} - ${product.colorVariants[selectedColorIndex].color}` : selectedVariant.name}
+              className="w-full h-auto object-contain rounded-2xl mb-6"
             />
+            
+            {/* Variant Image Gallery - New format with colorVariants */}
+            {hasColorVariants && (
+              <div className="flex gap-3 overflow-x-auto pb-2">
+                {product.colorVariants.map((colorVariant: any, index: number) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedColorIndex(index)}
+                    className={`flex-shrink-0 w-20 h-20 rounded-lg border-2 overflow-hidden transition-all ${
+                      selectedColorIndex === index
+                        ? 'border-primary shadow-md'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <img
+                      src={colorVariant.image}
+                      alt={`${product.name} - ${colorVariant.color}`}
+                      className="w-full h-full object-contain"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+            
+            {/* Variant Image Gallery - Old format with separate products */}
+            {!hasColorVariants && colorVariants.length > 0 && (
+              <div className="flex gap-3 overflow-x-auto pb-2">
+                {colorVariants.map((variant) => (
+                  <button
+                    key={variant.id}
+                    onClick={() => setSelectedVariant(variant)}
+                    className={`flex-shrink-0 w-20 h-20 rounded-lg border-2 overflow-hidden transition-all ${
+                      selectedVariant.id === variant.id
+                        ? 'border-primary shadow-md'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <img
+                      src={variant.image}
+                      alt={variant.name}
+                      className="w-full h-full object-contain"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </motion.div>
 
           {/* Product Details */}
@@ -96,8 +179,62 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             </div>
 
             <h1 className="font-display font-bold text-4xl lg:text-5xl text-black mb-4">
-              {product.name}
+              {selectedVariant.name}
             </h1>
+
+            {/* Color Selector - New format with colorVariants */}
+            {hasColorVariants && (
+              <div className="mb-6">
+                <p className="text-sm font-medium text-gray-700 mb-3">Available Colors:</p>
+                <div className="flex flex-wrap gap-2">
+                  {product.colorVariants.map((colorVariant: any, index: number) => {
+                    const isSelected = selectedColorIndex === index;
+                    
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedColorIndex(index)}
+                        className={`px-4 py-2 rounded-lg border-2 transition-all ${
+                          isSelected
+                            ? 'border-primary bg-primary text-white shadow-md'
+                            : 'border-gray-300 bg-white text-gray-700 hover:border-primary/50'
+                        }`}
+                      >
+                        {colorVariant.color}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Color Selector - Old format with separate products */}
+            {!hasColorVariants && colorVariants.length > 0 && (
+              <div className="mb-6">
+                <p className="text-sm font-medium text-gray-700 mb-3">Available Colors:</p>
+                <div className="flex flex-wrap gap-2">
+                  {colorVariants.map((variant) => {
+                    const colorMatch = variant.name.match(/- (Pink|Navy Blue|Navy|Blue|Light Blue|Grey|Purple|Dark Blue|White|Magenta|Orange|Red|Black)/i);
+                    const colorName = colorMatch ? colorMatch[1] : 'Default';
+                    const isSelected = selectedVariant.id === variant.id;
+                    
+                    return (
+                      <button
+                        key={variant.id}
+                        onClick={() => setSelectedVariant(variant)}
+                        className={`px-4 py-2 rounded-lg border-2 transition-all ${
+                          isSelected
+                            ? 'border-primary bg-primary text-white shadow-md'
+                            : 'border-gray-300 bg-white text-gray-700 hover:border-primary/50'
+                        }`}
+                      >
+                        {colorName}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Rating */}
             <div className="flex items-center gap-4 mb-6">
@@ -121,6 +258,48 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             <p className="text-gray-600 text-lg mb-8 leading-relaxed">
               {product.description}
             </p>
+
+            {/* Rubber Color Selection */}
+            {isRubber && (
+              <div className="mb-8">
+                <p className="text-sm font-medium text-gray-700 mb-3">
+                  Select Rubber Color: <span className="text-red-500">*</span>
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setSelectedRubberColor('red')}
+                    className={`flex items-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
+                      selectedRubberColor === 'red'
+                        ? 'border-primary ring-2 ring-primary ring-offset-2 bg-primary/5'
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    <div
+                      className="w-6 h-6 rounded-full"
+                      style={{ backgroundColor: '#DC2626' }}
+                    />
+                    <span className="font-medium">Red</span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedRubberColor('black')}
+                    className={`flex items-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
+                      selectedRubberColor === 'black'
+                        ? 'border-primary ring-2 ring-primary ring-offset-2 bg-primary/5'
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    <div
+                      className="w-6 h-6 rounded-full border border-gray-300"
+                      style={{ backgroundColor: '#1F2937' }}
+                    />
+                    <span className="font-medium">Black</span>
+                  </button>
+                </div>
+                {!selectedRubberColor && (
+                  <p className="text-sm text-red-500 mt-2">Please select a rubber color to add to cart</p>
+                )}
+              </div>
+            )}
 
             {/* Specifications */}
             <div className="bg-gray-50 rounded-2xl p-6 mb-8 space-y-4">
@@ -196,6 +375,41 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               {/* Regular Product Fields */}
               {product.category !== 'Pre-Owned Racket' && (
                 <>
+                  {/* Accessory-specific fields */}
+                  {product.category === 'Accessories' && (
+                    <>
+                      {product.capacity && (
+                        <div className="flex items-center gap-3">
+                          <Package className="w-5 h-5 text-primary" />
+                          <div>
+                            <span className="text-gray-500 text-sm">Capacity:</span>
+                            <p className="font-medium">{product.capacity}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {product.features && (
+                        <div className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-primary mt-0.5" />
+                          <div>
+                            <span className="text-gray-500 text-sm">Features:</span>
+                            <p className="font-medium">{product.features}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {product.material && (
+                        <div className="flex items-center gap-3">
+                          <Package className="w-5 h-5 text-primary" />
+                          <div>
+                            <span className="text-gray-500 text-sm">Material:</span>
+                            <p className="font-medium">{product.material}</p>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+
                   {product.composition && (
                     <div className="flex items-center gap-3">
                       <Package className="w-5 h-5 text-primary" />
@@ -262,14 +476,14 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             {/* Pricing */}
             <div className="flex items-center gap-6 mb-8">
               <span className="font-display font-bold text-5xl text-primary">
-                ₹{product.price.toLocaleString('en-IN')}
+                ₹{selectedVariant.price.toLocaleString('en-IN')}
               </span>
               <div>
                 <span className="text-gray-400 line-through text-2xl block">
-                  ₹{product.originalPrice.toLocaleString('en-IN')}
+                  ₹{selectedVariant.originalPrice.toLocaleString('en-IN')}
                 </span>
                 <span className="text-green-600 font-bold text-sm">
-                  Save {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
+                  Save {Math.round(((selectedVariant.originalPrice - selectedVariant.price) / selectedVariant.originalPrice) * 100)}%
                 </span>
               </div>
             </div>
@@ -279,7 +493,11 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               {quantity === 0 ? (
                 <button
                   onClick={handleAddToCart}
-                  className="elegant-button flex-1 py-4 text-lg inline-flex items-center justify-center gap-3"
+                  disabled={isRubber && !selectedRubberColor}
+                  className={`elegant-button flex-1 py-4 text-lg inline-flex items-center justify-center gap-3 ${
+                    isRubber && !selectedRubberColor ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                  title={isRubber && !selectedRubberColor ? 'Please select a rubber color first' : ''}
                 >
                   <ShoppingCart className="w-6 h-6" />
                   <span>Add to Cart</span>
@@ -297,7 +515,10 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                   </span>
                   <button
                     onClick={handleIncrement}
-                    className="text-primary hover:bg-primary/10 rounded p-2 transition-colors"
+                    disabled={isRubber && !selectedRubberColor}
+                    className={`text-primary hover:bg-primary/10 rounded p-2 transition-colors ${
+                      isRubber && !selectedRubberColor ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                   >
                     <Plus className="w-6 h-6" />
                   </button>

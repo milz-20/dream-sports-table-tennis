@@ -584,6 +584,7 @@ function ProductCard({
   index,
 }: ProductCardProps) {
   const { addToCart, updateQuantity, items } = useCart();
+  const [selectedRubberColor, setSelectedRubberColor] = useState<'red' | 'black' | null>(null);
   
   const cartItem = items.find(item => item.id === id);
   const quantity = cartItem?.quantity || 0;
@@ -591,22 +592,30 @@ function ProductCard({
   // Check if this is a coming soon item (shoes except Xiom or pre-owned)
   const isComingSoon = category === 'Pre-Owned Racket' || (category === 'Shoes' && brand !== 'Xiom');
   
+  // Check if this is a rubber product
+  const isRubber = category === 'Rubber';
+  
   const handleAddToCart = () => {
     if (isComingSoon) return; // Prevent adding coming soon items
+    if (isRubber && !selectedRubberColor) return; // Prevent adding rubbers without color selection
+    
     addToCart({
-      id,
-      name,
+      id: isRubber ? `${id}-${selectedRubberColor}` : id,
+      name: isRubber ? `${name} (${selectedRubberColor?.toUpperCase()})` : name,
       category,
       price,
       originalPrice,
       image,
+      rubberColor: isRubber && selectedRubberColor ? selectedRubberColor : undefined,
     });
   };
   
   const handleIncrement = () => {
     if (isComingSoon) return; // Prevent adding coming soon items
+    if (isRubber && !selectedRubberColor) return; // Prevent adding rubbers without color selection
+    
     if (cartItem) {
-      updateQuantity(id, quantity + 1);
+      updateQuantity(isRubber ? `${id}-${selectedRubberColor}` : id, quantity + 1);
     } else {
       handleAddToCart();
     }
@@ -614,7 +623,7 @@ function ProductCard({
   
   const handleDecrement = () => {
     if (isComingSoon || quantity === 0) return;
-    updateQuantity(id, quantity - 1);
+    updateQuantity(isRubber ? `${id}-${selectedRubberColor}` : id, quantity - 1);
   };
   
   return (
@@ -754,6 +763,43 @@ function ProductCard({
           {description}
         </p>
 
+        {/* Rubber Color Selection */}
+        {isRubber && (
+          <div className="mb-3 md:mb-4">
+            <p className="text-xs md:text-sm font-medium text-gray-700 mb-2">Select Color:</p>
+            <div className="flex gap-2">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setSelectedRubberColor('red');
+                }}
+                className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-2 transition-all ${
+                  selectedRubberColor === 'red'
+                    ? 'border-primary ring-2 ring-primary ring-offset-2'
+                    : 'border-gray-300 hover:border-gray-400'
+                }`}
+                style={{ backgroundColor: '#DC2626' }}
+                title="Red"
+              />
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setSelectedRubberColor('black');
+                }}
+                className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-2 transition-all ${
+                  selectedRubberColor === 'black'
+                    ? 'border-primary ring-2 ring-primary ring-offset-2'
+                    : 'border-gray-300 hover:border-gray-400'
+                }`}
+                style={{ backgroundColor: '#1F2937' }}
+                title="Black"
+              />
+            </div>
+          </div>
+        )}
+
         {/* Pricing */}
         <div className="flex flex-col md:flex-row md:items-center gap-0.5 md:gap-3 mb-2 md:mb-4">
           <span className="font-display font-bold text-sm sm:text-base md:text-lg lg:text-2xl text-foreground">
@@ -778,10 +824,11 @@ function ProductCard({
           {quantity === 0 ? (
             <button
               className={`elegant-button py-1.5 md:py-2 px-2 md:px-4 text-[10px] sm:text-xs md:text-sm inline-flex items-center justify-center gap-1 md:gap-2 flex-1 md:flex-initial ${
-                isComingSoon ? 'opacity-50 cursor-not-allowed' : ''
+                isComingSoon || (isRubber && !selectedRubberColor) ? 'opacity-50 cursor-not-allowed' : ''
               }`}
               onClick={handleAddToCart}
-              disabled={isComingSoon}
+              disabled={isComingSoon || (isRubber && !selectedRubberColor)}
+              title={isRubber && !selectedRubberColor ? 'Please select a color first' : ''}
             >
               <ShoppingCart className="w-3 h-3 md:w-4 md:h-4" />
               <span className="hidden sm:inline">{isComingSoon ? 'Coming Soon' : 'Add to Cart'}</span>
