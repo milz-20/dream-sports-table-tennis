@@ -9,7 +9,6 @@ applications:
         build:
           commands:
             - npm run build
-            - node amplify-deploy.js
       artifacts:
         baseDirectory: .next
         files:
