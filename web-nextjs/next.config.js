@@ -7,3 +7,5 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+
+module.exports = require('@aws-amplify/adapter-nextjs/config').withAmplifyAdapter(nextConfig);
