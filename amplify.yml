@@ -8,7 +8,7 @@ applications:
             - npm ci
         build:
           commands:
-            - npx next build
+            - npm run build
       artifacts:
         baseDirectory: .next
         files:
@@ -16,5 +16,5 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-          - .next/cache/**/*
+    platform: WEB_COMPUTE
     platform: WEB_COMPUTE
