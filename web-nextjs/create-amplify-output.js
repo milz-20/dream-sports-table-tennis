@@ -15,21 +15,24 @@ fs.mkdirSync(staticDir, { recursive: true });
 
 // Copy Next.js standalone output to compute
 const standaloneDir = path.join(__dirname, '.next', 'standalone');
-if (fs.existsSync(standaloneDir)) {
-  // Copy standalone server
-  copyRecursive(standaloneDir, computeDir);
-} else {
-  // If standalone doesn't exist, copy the entire .next directory
-  copyRecursive(path.join(__dirname, '.next'), path.join(computeDir, '.next'));
-  copyRecursive(path.join(__dirname, 'node_modules'), path.join(computeDir, 'node_modules'));
-  copyRecursive(path.join(__dirname, 'public'), path.join(computeDir, 'public'));
+if (!fs.existsSync(standaloneDir)) {
+  throw new Error('Standalone output not found. Make sure output: "standalone" is set in next.config.js');
 }
 
-// Copy static assets
+// Copy standalone server files
+copyRecursive(standaloneDir, computeDir);
+
+// Copy .next/static to both compute (for server) and static (for CDN)
 const nextStaticDir = path.join(__dirname, '.next', 'static');
 if (fs.existsSync(nextStaticDir)) {
+  // Copy to compute for server access
+  const computeNextDir = path.join(computeDir, '.next', 'static');
+  fs.mkdirSync(path.join(computeDir, '.next'), { recursive: true });
+  copyRecursive(nextStaticDir, computeNextDir);
+  
+  // Copy to static for CDN
   const targetStaticDir = path.join(staticDir, '_next', 'static');
-  fs.mkdirSync(targetStaticDir, { recursive: true });
+  fs.mkdirSync(path.join(staticDir, '_next'), { recursive: true });
   copyRecursive(nextStaticDir, targetStaticDir);
 }
 
@@ -41,6 +44,7 @@ if (fs.existsSync(publicDir)) {
 
 // Create server.js entry point for compute
 const serverJs = `
+const { createServer } = require('http');
 const { parse } = require('url');
 const next = require('next');
 
@@ -48,13 +52,11 @@ const dev = false;
 const hostname = 'localhost';
 const port = 3000;
 
-const app = next({ dev, hostname, port, dir: __dirname });
+const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
-  const http = require('http');
-  
-  http.createServer(async (req, res) => {
+  createServer(async (req, res) => {
     try {
       const parsedUrl = parse(req.url, true);
       await handle(req, res, parsedUrl);
@@ -148,8 +150,16 @@ fs.writeFileSync(
   JSON.stringify(manifest, null, 2)
 );
 
-console.log('✓ Created .amplify-hosting directory structure');
-console.log('✓ Generated deploy-manifest.json');
+// Get size of compute bundle
+const computeSize = getDirSize(computeDir);
+const computeSizeMB = (computeSize / 1024 / 1024).toFixed(2);
+console.log(`✓ Created .amplify-hosting directory structure`);
+console.log(`✓ Generated deploy-manifest.json`);
+console.log(`✓ Compute bundle size: ${computeSizeMB} MB`);
+
+if (computeSize > 220 * 1024 * 1024) {
+  console.warn(`⚠ Warning: Compute bundle exceeds 220MB limit`);
+}
 
 // Helper function to copy directories recursively
 function copyRecursive(src, dest) {
@@ -169,4 +179,25 @@ function copyRecursive(src, dest) {
   } else {
     fs.copyFileSync(src, dest);
   }
+}
+
+// Helper function to get directory size
+function getDirSize(dirPath) {
+  let size = 0;
+  
+  if (!fs.existsSync(dirPath)) return 0;
+  
+  const files = fs.readdirSync(dirPath);
+  files.forEach(file => {
+    const filePath = path.join(dirPath, file);
+    const stats = fs.statSync(filePath);
+    
+    if (stats.isDirectory()) {
+      size += getDirSize(filePath);
+    } else {
+      size += stats.size;
+    }
+  });
+  
+  return size;
 }
