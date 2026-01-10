@@ -1,6 +1,7 @@
 version: 1
 applications:
   - appRoot: web-nextjs
+    platform: WEB_COMPUTE
     frontend:
       phases:
         preBuild:
@@ -9,12 +10,6 @@ applications:
         build:
           commands:
             - npm run build
-            - node create-amplify-output.js
-      artifacts:
-        baseDirectory: .amplify-hosting
-        files:
-          - '**/*'
       cache:
         paths:
           - node_modules/**/*
-    platform: WEB_COMPUTE
