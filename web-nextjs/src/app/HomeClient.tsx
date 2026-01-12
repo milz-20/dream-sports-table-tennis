@@ -145,7 +145,7 @@ export default function HomeClient({
               All About Table Tennis
             </h1>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10">
-              Professional Butterfly, Stiga, and other premium table tennis equipment with fast delivery across India. 
+              Professional Butterfly, Stiga, and other premium table tennis equipment with fast shipping across India. 
               Shop professional gear used by champions.
             </p>
 
@@ -284,9 +284,9 @@ export default function HomeClient({
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
                 <Zap className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="font-bold text-xl mb-2">Fast Delivery</h3>
+              <h3 className="font-bold text-xl mb-2">Fast Shipping</h3>
               <p className="text-gray-600">
-                Quick delivery across India - get your gear in 2-3 days
+                Quick shipping across India - get your gear in 4-5 days
               </p>
             </motion.div>
 
@@ -309,14 +309,14 @@ export default function HomeClient({
         </div>
       </section>
 
-      {/* Fast Delivery Section */}
+      {/* Fast Shipping Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <h2 className="font-display font-bold text-3xl text-black mb-12 text-center">
-            🚚 Fast Delivery Across India
+            🚚 Fast Shipping Across India
           </h2>
           <p className="text-gray-600 text-center mb-12">
-            Get your equipment delivered quickly and safely
+            Get your equipment shipped quickly and safely
           </p>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -326,10 +326,10 @@ export default function HomeClient({
               viewport={{ once: true }}
               className="bg-white rounded-2xl p-8 border-2 border-gray-200"
             >
-              <h3 className="font-display font-bold text-2xl text-black mb-2">Standard Delivery</h3>
-              <p className="text-4xl font-bold text-primary mb-4">2-3 Days</p>
+              <h3 className="font-display font-bold text-2xl text-black mb-2">Standard Shipping</h3>
+              <p className="text-4xl font-bold text-primary mb-4">4-5 Days</p>
               <p className="text-gray-600">
-                Fast and reliable delivery across India. Order today and receive your equipment within 2-3 business days!
+                Fast and reliable shipping across India. Order today and receive your equipment within 4-5 business days!
               </p>
             </motion.div>
 
@@ -343,16 +343,16 @@ export default function HomeClient({
               <div className="absolute top-4 right-4 bg-white text-primary text-xs font-bold px-3 py-1 rounded-full">
                 PREMIUM
               </div>
-              <h3 className="font-display font-bold text-2xl mb-2">Express Delivery</h3>
-              <p className="text-4xl font-bold mb-4">Next Day</p>
+              <h3 className="font-display font-bold text-2xl mb-2">Express Shipping</h3>
+              <p className="text-4xl font-bold mb-4">1-2 Days</p>
               <p className="text-white/90">
-                Need it urgently? Get express delivery and receive your order the next day in major cities!
+                Need it urgently? Get express shipping and receive your order within 1-2 business days!
               </p>
             </motion.div>
           </div>
 
           <p className="text-center text-sm text-gray-500 mt-8">
-            * Delivery times may vary based on location. Free shipping on orders above ₹2000. Contact us for more details.
+            * Shipping times may vary based on location. Free shipping on orders above ₹10,000. Contact us for more details.
           </p>
         </div>
       </section>

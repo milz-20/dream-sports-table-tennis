@@ -28,25 +28,25 @@ export default function CheckoutClient() {
     city: '',
     pincode: '',
     paymentMethod: 'online',
-    deliveryType: 'standard', // 'standard' or 'express'
+    shippingType: 'standard', // 'standard' or 'express'
   });
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Calculate delivery charges
+  // Calculate shipping charges
   const subtotal = getTotalPrice();
-  const freeDeliveryThreshold = 10000;
-  const expressDeliveryCharge = 250;
+  const freeShippingThreshold = 10000;
+  const expressShippingCharge = 250;
   
-  const getDeliveryCharge = () => {
-    if (formData.deliveryType === 'express') {
-      return expressDeliveryCharge;
+  const getShippingCharge = () => {
+    if (formData.shippingType === 'express') {
+      return expressShippingCharge;
     }
-    // Standard delivery is free above threshold, otherwise ₹100
-    return subtotal >= freeDeliveryThreshold ? 0 : 100;
+    // Standard shipping is free above threshold, otherwise ₹100
+    return subtotal >= freeShippingThreshold ? 0 : 100;
   };
 
-  const deliveryCharge = getDeliveryCharge();
-  const totalPrice = subtotal + deliveryCharge;
+  const shippingCharge = getShippingCharge();
+  const totalPrice = subtotal + shippingCharge;
 
   // Pre-fill form with user data
   useEffect(() => {
@@ -128,8 +128,8 @@ export default function CheckoutClient() {
             customerAddress: formData.address,
             customerCity: formData.city,
             customerPincode: formData.pincode,
-            deliveryType: formData.deliveryType,
-            deliveryCharge: deliveryCharge,
+            shippingType: formData.shippingType,
+            shippingCharge: shippingCharge,
             subtotal: subtotal,
             items: JSON.stringify(items.map(item => ({
               id: item.id,
@@ -192,8 +192,8 @@ export default function CheckoutClient() {
                   category: item.category,
                 })),
                 subtotal: subtotal,
-                deliveryType: formData.deliveryType,
-                deliveryCharge: deliveryCharge,
+                shippingType: formData.shippingType,
+                shippingCharge: shippingCharge,
                 totalAmount: totalPrice,
                 paymentMethod: 'Online Payment',
               }),
@@ -259,8 +259,8 @@ export default function CheckoutClient() {
             category: item.category,
           })),
           subtotal: subtotal,
-          deliveryType: formData.deliveryType,
-          deliveryCharge: deliveryCharge,
+          shippingType: formData.shippingType,
+          shippingCharge: shippingCharge,
           totalAmount: totalPrice,
           paymentMethod: 'Cash on Delivery',
         }),
@@ -346,7 +346,7 @@ export default function CheckoutClient() {
               <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 shadow-lg border-2 border-gray-100">
                 <h2 className="font-bold text-2xl mb-6 flex items-center gap-2">
                   <MapPin className="w-6 h-6 text-primary" />
-                  Delivery Information
+                  Shipping Address
                 </h2>
 
               <div className="space-y-6">
@@ -389,7 +389,7 @@ export default function CheckoutClient() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Delivery Address *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Shipping Address *</label>
                   <textarea
                     required
                     rows={3}
@@ -462,34 +462,34 @@ export default function CheckoutClient() {
                 <div>
                   <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
                     <Truck className="w-5 h-5 text-primary" />
-                    Delivery Options
+                    Shipping Options
                   </h3>
-                  {subtotal >= freeDeliveryThreshold && (
+                  {subtotal >= freeShippingThreshold && (
                     <div className="mb-3 bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-700">
-                      🎉 You qualify for free standard delivery!
+                      🎉 You qualify for free standard shipping!
                     </div>
                   )}
                   <div className="space-y-3">
                     <label className="flex items-start gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary transition-colors">
                       <input
                         type="radio"
-                        name="delivery"
+                        name="shipping"
                         value="standard"
-                        checked={formData.deliveryType === 'standard'}
-                        onChange={(e) => setFormData({ ...formData, deliveryType: e.target.value })}
+                        checked={formData.shippingType === 'standard'}
+                        onChange={(e) => setFormData({ ...formData, shippingType: e.target.value })}
                         className="w-5 h-5 text-primary mt-0.5"
                       />
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="font-medium">Standard Delivery</span>
+                          <span className="font-medium">Standard Shipping (4-5 days)</span>
                           <span className="font-bold text-primary">
-                            {subtotal >= freeDeliveryThreshold ? 'FREE' : '₹100'}
+                            {subtotal >= freeShippingThreshold ? 'FREE' : '₹100'}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-600">Delivery in 2-3 business days</p>
-                        {subtotal < freeDeliveryThreshold && (
+                        <p className="text-sm text-gray-600">Arrives in 4-5 business days</p>
+                        {subtotal < freeShippingThreshold && (
                           <p className="text-xs text-gray-500 mt-1">
-                            Add ₹{(freeDeliveryThreshold - subtotal).toLocaleString('en-IN')} more for free delivery
+                            Add ₹{(freeShippingThreshold - subtotal).toLocaleString('en-IN')} more for free shipping
                           </p>
                         )}
                       </div>
@@ -497,18 +497,18 @@ export default function CheckoutClient() {
                     <label className="flex items-start gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary transition-colors">
                       <input
                         type="radio"
-                        name="delivery"
+                        name="shipping"
                         value="express"
-                        checked={formData.deliveryType === 'express'}
-                        onChange={(e) => setFormData({ ...formData, deliveryType: e.target.value })}
+                        checked={formData.shippingType === 'express'}
+                        onChange={(e) => setFormData({ ...formData, shippingType: e.target.value })}
                         className="w-5 h-5 text-primary mt-0.5"
                       />
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="font-medium">Express Delivery</span>
-                          <span className="font-bold text-primary">₹{expressDeliveryCharge}</span>
+                          <span className="font-medium">Express Shipping (1-2 days)</span>
+                          <span className="font-bold text-primary">₹{expressShippingCharge}</span>
                         </div>
-                        <p className="text-sm text-gray-600">Next day delivery</p>
+                        <p className="text-sm text-gray-600">Fast shipping in 1-2 business days</p>
                       </div>
                     </label>
                   </div>
@@ -551,10 +551,10 @@ export default function CheckoutClient() {
                 <div className="flex justify-between text-gray-600">
                   <span className="flex items-center gap-2">
                     <Truck className="w-4 h-4" />
-                    Delivery ({formData.deliveryType === 'express' ? 'Express' : 'Standard'})
+                    Shipping ({formData.shippingType === 'express' ? 'Express' : 'Standard'})
                   </span>
-                  <span className={deliveryCharge === 0 ? "text-green-600 font-medium" : "text-gray-900"}>
-                    {deliveryCharge === 0 ? 'FREE' : `₹${deliveryCharge.toLocaleString('en-IN')}`}
+                  <span className={shippingCharge === 0 ? "text-green-600 font-medium" : "text-gray-900"}>
+                    {shippingCharge === 0 ? 'FREE' : `₹${shippingCharge.toLocaleString('en-IN')}`}
                   </span>
                 </div>
                 <div className="flex justify-between text-xl font-bold border-t-2 border-gray-200 pt-3">

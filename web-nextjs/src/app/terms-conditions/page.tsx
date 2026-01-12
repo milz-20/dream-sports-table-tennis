@@ -74,7 +74,7 @@ export default function TermsPage() {
               5. Customized Rackets
             </h2>
             <p className="text-gray-700">
-              When you customize a racket using our "Customize Your Racket" tool, the blade and rubbers will be professionally assembled and pasted together before delivery. Customized rackets are subject to our standard return and refund policy, except in cases where the assembly is defective.
+              When you customize a racket using our "Customize Your Racket" tool, the blade and rubbers will be professionally assembled and pasted together before shipment. Customized rackets are subject to our standard return and refund policy, except in cases where the assembly is defective.
             </p>
           </section>
 

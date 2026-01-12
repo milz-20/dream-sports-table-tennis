@@ -33,7 +33,7 @@ export default function RefundPolicyPage() {
               <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
                 <h3 className="font-bold text-lg text-yellow-900 mb-2">After Shipment</h3>
                 <p className="text-yellow-800">
-                  Once shipped, orders cannot be cancelled. However, you may refuse delivery or return the product as per our return policy.
+                  Once shipped, orders cannot be cancelled. However, you may refuse the shipment or return the product as per our return policy.
                 </p>
               </div>
 
@@ -65,7 +65,7 @@ export default function RefundPolicyPage() {
                   <li>Missing items from order</li>
                 </ul>
                 <p className="text-gray-700 mt-2">
-                  <strong>Return Window:</strong> 7 days from delivery date
+                  <strong>Return Window:</strong> 7 days from shipment arrival
                 </p>
               </div>
 
@@ -94,7 +94,7 @@ export default function RefundPolicyPage() {
                 <div>
                   <h4 className="font-bold text-gray-900 mb-1">Contact Us</h4>
                   <p className="text-gray-700">
-                    Call/WhatsApp us at +91 93251 73787 or email contact@allabouttabletennis.in within 7 days of delivery.
+                    Call/WhatsApp us at +91 93251 73787 or email contact@allabouttabletennis.in within 7 days of receiving your shipment.
                   </p>
                 </div>
               </div>
@@ -195,14 +195,14 @@ export default function RefundPolicyPage() {
               If you receive a damaged or defective product:
             </p>
             <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-              <li>Do not accept delivery if package is visibly damaged</li>
+              <li>Do not accept the shipment if package is visibly damaged</li>
               <li>Contact us immediately with photos/videos</li>
               <li>We'll arrange immediate replacement or full refund</li>
               <li>No questions asked for manufacturing defects</li>
             </ul>
             <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mt-4">
               <p className="text-red-800">
-                <strong>Important:</strong> Please inspect your order upon delivery. Report any issues within 48 hours for fastest resolution.
+                <strong>Important:</strong> Please inspect your order upon arrival. Report any issues within 48 hours for fastest resolution.
               </p>
             </div>
           </section>

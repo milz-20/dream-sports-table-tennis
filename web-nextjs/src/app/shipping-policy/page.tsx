@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Shipping Policy - All About Table Tennis',
-  description: 'Shipping and delivery information for All About Table Tennis orders.',
+  description: 'Shipping information and timelines for All About Table Tennis orders.',
 };
 
 export default function ShippingPage() {
@@ -32,25 +32,24 @@ export default function ShippingPage() {
 
           <section>
             <h2 className="font-display font-bold text-2xl text-black mb-4">
-              2. Delivery Options
+              2. Shipping Options
             </h2>
             
             <div className="space-y-6">
               <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
-                <h3 className="font-bold text-xl text-blue-900 mb-3">🚚 Pune Delivery</h3>
+                <h3 className="font-bold text-xl text-blue-900 mb-3">🚚 Pune Shipping</h3>
                 <ul className="space-y-2 text-blue-800">
-                  <li><strong>Standard Delivery:</strong> 24 hours - FREE</li>
-                  <li><strong>Express Delivery:</strong> 3-4 hours - ₹100 extra</li>
-                  <li><strong>Same Day Delivery:</strong> Order before 2 PM for delivery by 8 PM</li>
+                  <li><strong>Standard Shipping:</strong> 24 hours - FREE</li>
+                  <li><strong>Express Shipping:</strong> 3-4 hours - ₹100 extra</li>
+                  <li><strong>Same Day Shipping:</strong> Order before 2 PM for arrival by 8 PM</li>
                 </ul>
               </div>
 
               <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6">
-                <h3 className="font-bold text-xl text-green-900 mb-3">📦 Pan-India Delivery</h3>
+                <h3 className="font-bold text-xl text-green-900 mb-3">📦 Pan-India Shipping</h3>
                 <ul className="space-y-2 text-green-800">
-                  <li><strong>Metro Cities:</strong> 3-5 business days - ₹99 (Free above ₹3000)</li>
-                  <li><strong>Other Cities:</strong> 5-7 business days - ₹149 (Free above ₹3000)</li>
-                  <li><strong>Remote Areas:</strong> 7-10 business days - ₹199 (Free above ₹5000)</li>
+                  <li><strong>Standard Shipping:</strong> 4-5 business days - ₹100 (Free above ₹10,000)</li>
+                  <li><strong>Express Shipping:</strong> 1-2 business days - ₹250</li>
                 </ul>
               </div>
             </div>
@@ -119,7 +118,7 @@ export default function ShippingPage() {
             <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
               <li>Email confirmation with tracking number</li>
               <li>WhatsApp notification with live tracking link</li>
-              <li>SMS updates at key delivery milestones</li>
+              <li>SMS updates at key shipping milestones</li>
             </ul>
             <p className="text-gray-700 mt-4">
               You can track your order status anytime by contacting us at +91 93251 73787 or via WhatsApp.
@@ -148,22 +147,22 @@ export default function ShippingPage() {
               7. Packaging
             </h2>
             <p className="text-gray-700">
-              All products are carefully packaged to prevent damage during transit. Blades and rubbers are wrapped with protective materials. Customized rackets are packed in specialized cases to ensure safe delivery.
+              All products are carefully packaged to prevent damage during transit. Blades and rubbers are wrapped with protective materials. Customized rackets are packed in specialized cases to ensure safe shipping.
             </p>
           </section>
 
           <section>
             <h2 className="font-display font-bold text-2xl text-black mb-4">
-              8. Delivery Attempts
+              8. Shipping Attempts
             </h2>
             <p className="text-gray-700 mb-4">
-              Our courier partner will attempt delivery up to 3 times. If delivery cannot be completed:
+              Our courier partner will attempt shipping up to 3 times. If shipment cannot be completed:
             </p>
             <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
               <li>We will contact you to reschedule</li>
               <li>Package will be held at the local courier facility for 7 days</li>
               <li>After 7 days, the order will be returned to us</li>
-              <li>Return shipping charges may apply for re-delivery</li>
+              <li>Return shipping charges may apply for re-shipment</li>
             </ul>
           </section>
 
@@ -172,7 +171,7 @@ export default function ShippingPage() {
               9. Damaged or Lost Shipments
             </h2>
             <p className="text-gray-700 mb-4">
-              <strong>Damaged Package:</strong> If your package arrives damaged, please refuse delivery and contact us immediately. Do not accept damaged packages.
+              <strong>Damaged Package:</strong> If your package arrives damaged, please refuse the shipment and contact us immediately. Do not accept damaged packages.
             </p>
             <p className="text-gray-700">
               <strong>Lost Package:</strong> If your shipment is lost in transit, we will investigate with the courier and provide a replacement or full refund within 7-10 business days.

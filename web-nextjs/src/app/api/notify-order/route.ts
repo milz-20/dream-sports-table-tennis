@@ -23,18 +23,18 @@ async function sendSMSNotification(orderData: any) {
       .map((item: any) => `${item.name} x${item.quantity}`)
       .join(', ');
 
-    const deliveryInfo = orderData.deliveryType === 'express' 
-      ? `Express (Rs.${orderData.deliveryCharge})`
-      : orderData.deliveryCharge === 0 
+    const shippingInfo = orderData.shippingType === 'express' 
+      ? `Express (Rs.${orderData.shippingCharge})`
+      : orderData.shippingCharge === 0 
         ? 'Standard (FREE)' 
-        : `Standard (Rs.${orderData.deliveryCharge})`;
+        : `Standard (Rs.${orderData.shippingCharge})`;
 
     const message = `New Order ${orderData.orderId}
 Customer: ${orderData.customerName}
 Phone: ${orderData.customerPhone}
 Items: ${itemsList}
 Subtotal: Rs.${orderData.subtotal || orderData.totalAmount}
-Delivery: ${deliveryInfo}
+Shipping: ${shippingInfo}
 Total: Rs.${orderData.totalAmount}
 Payment: ${orderData.paymentMethod}
 Address: ${orderData.customerCity}, ${orderData.customerPincode}`;
@@ -48,10 +48,15 @@ Address: ${orderData.customerCity}, ${orderData.customerPincode}`;
           DataType: 'String',
           StringValue: 'Transactional', // Use 'Promotional' for marketing messages
         },
-        'AWS.SNS.SMS.SenderID': {
-          DataType: 'String',
-          StringValue: 'AATT-order', // Custom sender ID (max 11 alphanumeric characters)
-        },
+        // Note: Sender ID requires registration with AWS SNS for India
+        // Until registered, SMS will show a random number
+        // To register: AWS Console > Pinpoint > SMS and voice > Sender IDs
+        // Or use AWS Pinpoint Origination Identities
+        // Commenting out until registered to avoid confusion
+        // 'AWS.SNS.SMS.SenderID': {
+        //   DataType: 'String',
+        //   StringValue: 'AATT', // Max 6 chars for India (alphanumeric)
+        // },
       },
     });
 

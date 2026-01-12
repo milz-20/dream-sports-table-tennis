@@ -65,7 +65,7 @@ function OrderSuccessContent({ orderId, paymentId }: OrderSuccessParams) {
               <Package className="w-12 h-12 text-primary mx-auto mb-4" />
               <h3 className="font-bold text-lg mb-2">Order Processing</h3>
               <p className="text-sm text-gray-600">
-                We're preparing your order for delivery
+                We're preparing your order for shipment
               </p>
             </motion.div>
 
@@ -76,9 +76,9 @@ function OrderSuccessContent({ orderId, paymentId }: OrderSuccessParams) {
               className="bg-gray-50 rounded-2xl p-6"
             >
               <Truck className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="font-bold text-lg mb-2">Fast Delivery</h3>
+              <h3 className="font-bold text-lg mb-2">Fast Shipping</h3>
               <p className="text-sm text-gray-600">
-                Delivery across India
+                Shipping across India
               </p>
             </motion.div>
 

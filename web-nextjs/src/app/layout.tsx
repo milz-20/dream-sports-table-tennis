@@ -14,7 +14,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'All About Table Tennis - Premium Equipment & Accessories',
-  description: 'Premium table tennis equipment and accessories in India. Genuine Butterfly, Stiga, DHS products with fast delivery.',
+  description: 'Premium table tennis equipment and accessories in India. Genuine Butterfly, Stiga, DHS products with fast shipping.',
   keywords: 'table tennis india, tt equipment, butterfly blades, stiga equipment, table tennis shop',
   openGraph: {
     title: 'All About Table Tennis - Premium Equipment & Accessories',
