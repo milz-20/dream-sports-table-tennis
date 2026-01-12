@@ -168,10 +168,6 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                       ₹{totalSavings.toLocaleString('en-IN')}
                     </span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Delivery</span>
-                    <span className="font-semibold text-green-600">FREE</span>
-                  </div>
                   <div className="border-t border-gray-300 pt-2 mt-2">
                     <div className="flex justify-between">
                       <span className="font-display font-bold text-lg">Total</span>

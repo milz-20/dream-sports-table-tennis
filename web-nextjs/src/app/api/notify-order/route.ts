@@ -23,10 +23,18 @@ async function sendSMSNotification(orderData: any) {
       .map((item: any) => `${item.name} x${item.quantity}`)
       .join(', ');
 
+    const deliveryInfo = orderData.deliveryType === 'express' 
+      ? `Express (Rs.${orderData.deliveryCharge})`
+      : orderData.deliveryCharge === 0 
+        ? 'Standard (FREE)' 
+        : `Standard (Rs.${orderData.deliveryCharge})`;
+
     const message = `New Order ${orderData.orderId}
 Customer: ${orderData.customerName}
 Phone: ${orderData.customerPhone}
 Items: ${itemsList}
+Subtotal: Rs.${orderData.subtotal || orderData.totalAmount}
+Delivery: ${deliveryInfo}
 Total: Rs.${orderData.totalAmount}
 Payment: ${orderData.paymentMethod}
 Address: ${orderData.customerCity}, ${orderData.customerPincode}`;
