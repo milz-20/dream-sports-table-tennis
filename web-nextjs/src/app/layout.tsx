@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { CartProvider } from '@/contexts/CartContext'
+import { AuthProvider } from '@/contexts/AuthContext'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 
@@ -33,13 +34,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen flex flex-col bg-white">
-        <CartProvider>
-          <Navigation />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <Navigation />
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   )

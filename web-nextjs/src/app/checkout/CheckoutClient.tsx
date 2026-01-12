@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
-import { ShoppingBag, CreditCard, MapPin, Phone, Mail } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { ShoppingBag, CreditCard, MapPin, Phone, Mail, User as UserIcon } from 'lucide-react';
+import AuthModal from '@/components/AuthModal';
 
 // Razorpay types
 declare global {
@@ -16,6 +18,8 @@ declare global {
 export default function CheckoutClient() {
   const router = useRouter();
   const { items, getTotalPrice, clearCart } = useCart();
+  const { user } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -26,6 +30,24 @@ export default function CheckoutClient() {
     paymentMethod: 'online',
   });
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Pre-fill form with user data
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || '',
+        email: user.email || '',
+      }));
+    }
+  }, [user]);
+
+  // Show auth modal if user is not logged in
+  useEffect(() => {
+    if (!user && items.length > 0) {
+      setShowAuthModal(true);
+    }
+  }, [user, items.length]);
 
   // Load Razorpay script
   const loadRazorpayScript = () => {
@@ -39,6 +61,12 @@ export default function CheckoutClient() {
   };
 
   const handlePayment = async () => {
+    // Check if user is logged in
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
@@ -62,6 +90,7 @@ export default function CheckoutClient() {
       
       console.log('API URL:', apiUrl);
       console.log('Creating order with amount:', getTotalPrice());
+      console.log('Customer ID:', (user as any).customerId);
       
       // Create order on backend
       const orderResponse = await fetch(`${apiUrl}/payment/create-order`, {
@@ -73,7 +102,9 @@ export default function CheckoutClient() {
           amount: getTotalPrice(),
           currency: 'INR',
           receipt: `order_${Date.now()}`,
+          customerId: (user as any).customerId, // Add customer ID from auth
           notes: {
+            customerId: (user as any).customerId,
             customerName: formData.name,
             customerEmail: formData.email,
             customerPhone: formData.phone,
@@ -114,9 +145,40 @@ export default function CheckoutClient() {
         theme: {
           color: '#dc2626',
         },
-        handler: function (response: any) {
+        handler: async function (response: any) {
           // Payment successful
           console.log('Payment successful:', response);
+          
+          // Send WhatsApp notification
+          try {
+            await fetch('/api/notify-order', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                orderId: orderData.order.id,
+                paymentId: response.razorpay_payment_id,
+                customerName: formData.name,
+                customerEmail: formData.email,
+                customerPhone: formData.phone,
+                customerAddress: formData.address,
+                customerCity: formData.city,
+                customerPincode: formData.pincode,
+                items: items.map(item => ({
+                  name: item.name,
+                  quantity: item.quantity,
+                  price: item.price,
+                  category: item.category,
+                })),
+                totalAmount: getTotalPrice(),
+                paymentMethod: 'Online Payment',
+              }),
+            });
+          } catch (notifError) {
+            console.error('Failed to send notification:', notifError);
+            // Don't block the order flow if notification fails
+          }
           
           // Clear cart
           clearCart();
@@ -141,9 +203,51 @@ export default function CheckoutClient() {
     }
   };
 
-  const handleCODOrder = () => {
+  const handleCODOrder = async () => {
+    // Check if user is logged in
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+
     // Handle Cash on Delivery
-    router.push('/order-success');
+    const orderId = `COD_${Date.now()}`;
+    
+    // Send SMS notification
+    try {
+      await fetch('/api/notify-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orderId: orderId,
+          customerId: (user as any).customerId,
+          customerName: formData.name,
+          customerEmail: formData.email,
+          customerPhone: formData.phone,
+          customerAddress: formData.address,
+          customerCity: formData.city,
+          customerPincode: formData.pincode,
+          items: items.map(item => ({
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price,
+            category: item.category,
+          })),
+          totalAmount: getTotalPrice(),
+          paymentMethod: 'Cash on Delivery',
+        }),
+      });
+    } catch (error) {
+      console.error('Failed to send notification:', error);
+      // Don't block the order flow if notification fails
+    }
+    
+    // Clear cart
+    clearCart();
+    
+    router.push(`/order-success?orderId=${orderId}`);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -172,24 +276,52 @@ export default function CheckoutClient() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 py-20">
-      <div className="max-w-6xl mx-auto px-6 lg:px-8">
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="font-display font-bold text-5xl text-black mb-12 text-center"
-        >
-          Checkout
-        </motion.h1>
+    <>
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => {
+          setShowAuthModal(false);
+          if (!user) {
+            router.push('/equipment');
+          }
+        }}
+        redirectTo="/checkout"
+      />
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 py-20">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="font-display font-bold text-5xl text-black mb-12 text-center"
+          >
+            Checkout
+          </motion.h1>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Checkout Form */}
-          <div className="lg:col-span-2">
-            <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 shadow-lg border-2 border-gray-100">
-              <h2 className="font-bold text-2xl mb-6 flex items-center gap-2">
-                <MapPin className="w-6 h-6 text-primary" />
-                Delivery Information
-              </h2>
+          {/* User Info Banner */}
+          {user && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3"
+            >
+              <UserIcon className="w-5 h-5 text-green-600" />
+              <div>
+                <p className="text-sm font-medium text-green-900">
+                  Signed in as <span className="font-bold">{user.name}</span>
+                </p>
+                <p className="text-xs text-green-700">{user.email}</p>
+              </div>
+            </motion.div>
+          )}
+
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Checkout Form */}
+            <div className="lg:col-span-2">
+              <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 shadow-lg border-2 border-gray-100">
+                <h2 className="font-bold text-2xl mb-6 flex items-center gap-2">
+                  <MapPin className="w-6 h-6 text-primary" />
+                  Delivery Information
+                </h2>
 
               <div className="space-y-6">
                 <div>
@@ -346,8 +478,9 @@ export default function CheckoutClient() {
               </div>
             </div>
           </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

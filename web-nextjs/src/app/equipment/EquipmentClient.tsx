@@ -585,9 +585,7 @@ function ProductCard({
 }: ProductCardProps) {
   const { addToCart, updateQuantity, items } = useCart();
   const [selectedRubberColor, setSelectedRubberColor] = useState<'red' | 'black' | null>(null);
-  
-  const cartItem = items.find(item => item.id === id);
-  const quantity = cartItem?.quantity || 0;
+  const [selectedShoeSize, setSelectedShoeSize] = useState<number | null>(null);
   
   // Check if this is a coming soon item (shoes except Xiom or pre-owned)
   const isComingSoon = category === 'Pre-Owned Racket' || (category === 'Shoes' && brand !== 'Xiom');
@@ -595,27 +593,66 @@ function ProductCard({
   // Check if this is a rubber product
   const isRubber = category === 'Rubber';
   
+  // Check if this is a shoe product
+  const isShoe = category === 'Shoes' && !isComingSoon;
+  
+  // Available shoe sizes (Indian sizes)
+  const shoeSizes = [6, 7, 8, 9, 10, 11];
+  const unavailableSizes = [6, 11];
+  
+  // Calculate the cart item ID based on product type and selections
+  let cartItemId = id;
+  if (isRubber && selectedRubberColor) {
+    cartItemId = `${id}-${selectedRubberColor}`;
+  } else if (isShoe && selectedShoeSize) {
+    cartItemId = `${id}-size${selectedShoeSize}`;
+  }
+  
+  const cartItem = items.find(item => item.id === cartItemId);
+  const quantity = cartItem?.quantity || 0;
+  
   const handleAddToCart = () => {
     if (isComingSoon) return; // Prevent adding coming soon items
     if (isRubber && !selectedRubberColor) return; // Prevent adding rubbers without color selection
+    if (isShoe && !selectedShoeSize) return; // Prevent adding shoes without size selection
+    
+    let itemId = id;
+    let itemName = name;
+    
+    if (isRubber && selectedRubberColor) {
+      itemId = `${id}-${selectedRubberColor}`;
+      itemName = `${name} (${selectedRubberColor.toUpperCase()})`;
+    } else if (isShoe && selectedShoeSize) {
+      itemId = `${id}-size${selectedShoeSize}`;
+      itemName = `${name} (Size ${selectedShoeSize})`;
+    }
     
     addToCart({
-      id: isRubber ? `${id}-${selectedRubberColor}` : id,
-      name: isRubber ? `${name} (${selectedRubberColor?.toUpperCase()})` : name,
+      id: itemId,
+      name: itemName,
       category,
       price,
       originalPrice,
       image,
       rubberColor: isRubber && selectedRubberColor ? selectedRubberColor : undefined,
+      shoeSize: isShoe && selectedShoeSize ? selectedShoeSize : undefined,
     });
   };
   
   const handleIncrement = () => {
     if (isComingSoon) return; // Prevent adding coming soon items
     if (isRubber && !selectedRubberColor) return; // Prevent adding rubbers without color selection
+    if (isShoe && !selectedShoeSize) return; // Prevent adding shoes without size selection
+    
+    let itemId = id;
+    if (isRubber && selectedRubberColor) {
+      itemId = `${id}-${selectedRubberColor}`;
+    } else if (isShoe && selectedShoeSize) {
+      itemId = `${id}-size${selectedShoeSize}`;
+    }
     
     if (cartItem) {
-      updateQuantity(isRubber ? `${id}-${selectedRubberColor}` : id, quantity + 1);
+      updateQuantity(itemId, quantity + 1);
     } else {
       handleAddToCart();
     }
@@ -623,7 +660,15 @@ function ProductCard({
   
   const handleDecrement = () => {
     if (isComingSoon || quantity === 0) return;
-    updateQuantity(isRubber ? `${id}-${selectedRubberColor}` : id, quantity - 1);
+    
+    let itemId = id;
+    if (isRubber && selectedRubberColor) {
+      itemId = `${id}-${selectedRubberColor}`;
+    } else if (isShoe && selectedShoeSize) {
+      itemId = `${id}-size${selectedShoeSize}`;
+    }
+    
+    updateQuantity(itemId, quantity - 1);
   };
   
   return (
@@ -800,6 +845,40 @@ function ProductCard({
           </div>
         )}
 
+        {/* Shoe Size Selection */}
+        {isShoe && (
+          <div className="mb-3 md:mb-4">
+            <p className="text-xs md:text-sm font-medium text-gray-700 mb-2">Select Size (IND):</p>
+            <div className="grid grid-cols-5 gap-1.5">
+              {shoeSizes.map((size) => {
+                const isUnavailable = unavailableSizes.includes(size);
+                return (
+                  <button
+                    key={size}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (!isUnavailable) {
+                        setSelectedShoeSize(size);
+                      }
+                    }}
+                    disabled={isUnavailable}
+                    className={`px-2 py-1.5 text-xs md:text-sm rounded border-2 transition-all ${
+                      isUnavailable
+                        ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed line-through'
+                        : selectedShoeSize === size
+                        ? 'border-primary bg-primary text-white font-semibold'
+                        : 'border-gray-300 hover:border-gray-400 bg-white text-gray-700'
+                    }`}
+                  >
+                    {size}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Pricing */}
         <div className="flex flex-col md:flex-row md:items-center gap-0.5 md:gap-3 mb-2 md:mb-4">
           <span className="font-display font-bold text-sm sm:text-base md:text-lg lg:text-2xl text-foreground">
@@ -824,10 +903,10 @@ function ProductCard({
           {quantity === 0 ? (
             <button
               className={`elegant-button py-1.5 md:py-2 px-2 md:px-4 text-[10px] sm:text-xs md:text-sm inline-flex items-center justify-center gap-1 md:gap-2 flex-1 md:flex-initial ${
-                isComingSoon || (isRubber && !selectedRubberColor) ? 'opacity-50 cursor-not-allowed' : ''
+                isComingSoon || (isRubber && !selectedRubberColor) || (isShoe && !selectedShoeSize) ? 'opacity-50 cursor-not-allowed' : ''
               }`}
               onClick={handleAddToCart}
-              disabled={isComingSoon || (isRubber && !selectedRubberColor)}
+              disabled={isComingSoon || (isRubber && !selectedRubberColor) || (isShoe && !selectedShoeSize)}
               title={isRubber && !selectedRubberColor ? 'Please select a color first' : ''}
             >
               <ShoppingCart className="w-3 h-3 md:w-4 md:h-4" />

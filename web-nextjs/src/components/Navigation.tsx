@@ -3,14 +3,18 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home as HomeIcon, ShoppingBag, Mail, ShoppingCart, Menu, X, ChevronDown, ChevronRight, Search } from 'lucide-react';
+import { Home as HomeIcon, ShoppingBag, Mail, ShoppingCart, Menu, X, ChevronDown, ChevronRight, Search, User, LogOut } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
 import CartDrawer from './CartDrawer';
+import AuthModal from './AuthModal';
 
 export default function Navigation() {
   const pathname = usePathname();
   const { getTotalItems } = useCart();
+  const { user, signOut } = useAuth();
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollectionsOpen, setIsCollectionsOpen] = useState(false);
   const [isAccessoriesOpen, setIsAccessoriesOpen] = useState(false);
@@ -160,6 +164,44 @@ export default function Navigation() {
                   </span>
                 )}
               </button>
+
+              {/* User Menu */}
+              {user ? (
+                <div className="relative group">
+                  <button className="flex items-center space-x-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 text-foreground hover:bg-muted">
+                    {user.picture ? (
+                      <img src={user.picture} alt={user.name} className="w-6 h-6 rounded-full" />
+                    ) : (
+                      <User className="w-4 h-4" />
+                    )}
+                    <span className="max-w-[100px] truncate">{user.name}</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                  <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div className="py-2">
+                      <div className="px-4 py-2 border-b border-gray-100">
+                        <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
+                        <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                      </div>
+                      <button
+                        onClick={signOut}
+                        className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="px-3 py-2 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-2 text-foreground hover:bg-muted"
+                >
+                  <User className="w-4 h-4" />
+                  <span>Sign In</span>
+                </button>
+              )}
             </div>
 
             {/* Mobile: Search and Hamburger Menu Buttons */}
@@ -361,6 +403,21 @@ export default function Navigation() {
       )}
 
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+      
+      {/* Floating Cart Button - Only visible when cart has items */}
+      {getTotalItems() > 0 && (
+        <button
+          onClick={() => setIsCartOpen(true)}
+          className="fixed bottom-6 right-6 z-40 bg-primary hover:bg-primary/90 text-white rounded-full p-4 shadow-2xl hover:shadow-xl transition-all duration-300 hover:scale-110 group animate-in fade-in slide-in-from-bottom-4"
+          aria-label="Open Cart"
+        >
+          <ShoppingCart className="w-6 h-6" />
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center ring-2 ring-white">
+            {getTotalItems()}
+          </span>
+        </button>
+      )}
     </>
   );
 }

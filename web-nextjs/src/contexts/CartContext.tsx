@@ -13,6 +13,7 @@ export interface CartItem {
   isCustomized?: boolean; // True if part of a customized racket combination
   customizationNote?: string; // Note for customized items
   rubberColor?: 'red' | 'black'; // Rubber color selection for rubber products
+  shoeSize?: number; // Shoe size selection for shoe products
 }
 
 interface CartContextType {

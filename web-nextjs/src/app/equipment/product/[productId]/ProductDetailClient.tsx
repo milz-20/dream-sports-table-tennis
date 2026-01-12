@@ -19,12 +19,20 @@ export default function ProductDetailClient({ product, allProducts }: ProductDet
   const [selectedVariant, setSelectedVariant] = useState(product);
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [selectedRubberColor, setSelectedRubberColor] = useState<'red' | 'black' | null>(null);
+  const [selectedShoeSize, setSelectedShoeSize] = useState<number | null>(null);
 
   // Check if product has colorVariants array (new format)
   const hasColorVariants = product.colorVariants && product.colorVariants.length > 0;
   
   // Check if this is a rubber product
   const isRubber = product.category === 'Rubber';
+  
+  // Check if this is a shoe product (and not coming soon)
+  const isShoe = product.category === 'Shoes' && product.brand === 'Xiom';
+  
+  // Available shoe sizes (Indian sizes)
+  const shoeSizes = [6, 7, 8, 9, 10, 11];
+  const unavailableSizes = [6, 11];
 
   // Find color variants based on product name pattern (old format)
   const getColorVariants = () => {
@@ -48,20 +56,40 @@ export default function ProductDetailClient({ product, allProducts }: ProductDet
 
   const colorVariants = getColorVariants();
 
-  const cartItem = items.find(item => item.id === (isRubber && selectedRubberColor ? `${selectedVariant.id}-${selectedRubberColor}` : selectedVariant.id));
+  let cartItemId = selectedVariant.id;
+  if (isRubber && selectedRubberColor) {
+    cartItemId = `${selectedVariant.id}-${selectedRubberColor}`;
+  } else if (isShoe && selectedShoeSize) {
+    cartItemId = `${selectedVariant.id}-size${selectedShoeSize}`;
+  }
+  
+  const cartItem = items.find(item => item.id === cartItemId);
   const quantity = cartItem?.quantity || 0;
 
   const handleAddToCart = () => {
     if (isRubber && !selectedRubberColor) return; // Prevent adding rubbers without color selection
+    if (isShoe && !selectedShoeSize) return; // Prevent adding shoes without size selection
+    
+    let itemId = selectedVariant.id;
+    let itemName = selectedVariant.name;
+    
+    if (isRubber && selectedRubberColor) {
+      itemId = `${selectedVariant.id}-${selectedRubberColor}`;
+      itemName = `${selectedVariant.name} (${selectedRubberColor.toUpperCase()})`;
+    } else if (isShoe && selectedShoeSize) {
+      itemId = `${selectedVariant.id}-size${selectedShoeSize}`;
+      itemName = `${selectedVariant.name} (Size ${selectedShoeSize})`;
+    }
     
     addToCart({
-      id: isRubber ? `${selectedVariant.id}-${selectedRubberColor}` : selectedVariant.id,
-      name: isRubber ? `${selectedVariant.name} (${selectedRubberColor?.toUpperCase()})` : selectedVariant.name,
+      id: itemId,
+      name: itemName,
       category: selectedVariant.category,
       price: selectedVariant.price,
       originalPrice: selectedVariant.originalPrice,
       image: selectedVariant.image,
       rubberColor: isRubber && selectedRubberColor ? selectedRubberColor : undefined,
+      shoeSize: isShoe && selectedShoeSize ? selectedShoeSize : undefined,
     });
     setShowAddedMessage(true);
     setTimeout(() => setShowAddedMessage(false), 3000);
@@ -69,9 +97,10 @@ export default function ProductDetailClient({ product, allProducts }: ProductDet
 
   const handleIncrement = () => {
     if (isRubber && !selectedRubberColor) return; // Prevent adding rubbers without color selection
+    if (isShoe && !selectedShoeSize) return; // Prevent adding shoes without size selection
     
     if (cartItem) {
-      updateQuantity(isRubber ? `${selectedVariant.id}-${selectedRubberColor}` : selectedVariant.id, quantity + 1);
+      updateQuantity(cartItemId, quantity + 1);
     } else {
       handleAddToCart();
     }
@@ -79,7 +108,7 @@ export default function ProductDetailClient({ product, allProducts }: ProductDet
 
   const handleDecrement = () => {
     if (quantity > 0) {
-      updateQuantity(isRubber ? `${selectedVariant.id}-${selectedRubberColor}` : selectedVariant.id, quantity - 1);
+      updateQuantity(cartItemId, quantity - 1);
     }
   };
 
@@ -301,6 +330,39 @@ export default function ProductDetailClient({ product, allProducts }: ProductDet
               </div>
             )}
 
+            {/* Shoe Size Selection */}
+            {isShoe && (
+              <div className="mb-8">
+                <p className="text-sm font-medium text-gray-700 mb-3">
+                  Select Size (IND): <span className="text-red-500">*</span>
+                </p>
+                <div className="grid grid-cols-5 sm:grid-cols-9 gap-2">
+                  {shoeSizes.map((size) => {
+                    const isUnavailable = unavailableSizes.includes(size);
+                    return (
+                      <button
+                        key={size}
+                        onClick={() => !isUnavailable && setSelectedShoeSize(size)}
+                        disabled={isUnavailable}
+                        className={`px-3 py-2.5 rounded-lg border-2 transition-all font-medium ${
+                          isUnavailable
+                            ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed line-through'
+                            : selectedShoeSize === size
+                            ? 'border-primary bg-primary text-white ring-2 ring-primary ring-offset-2'
+                            : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    );
+                  })}
+                </div>
+                {!selectedShoeSize && (
+                  <p className="text-sm text-red-500 mt-2">Please select a shoe size to add to cart</p>
+                )}
+              </div>
+            )}
+
             {/* Specifications */}
             <div className="bg-gray-50 rounded-2xl p-6 mb-8 space-y-4">
               <h3 className="font-bold text-xl mb-4">
@@ -493,11 +555,17 @@ export default function ProductDetailClient({ product, allProducts }: ProductDet
               {quantity === 0 ? (
                 <button
                   onClick={handleAddToCart}
-                  disabled={isRubber && !selectedRubberColor}
+                  disabled={(isRubber && !selectedRubberColor) || (isShoe && !selectedShoeSize)}
                   className={`elegant-button flex-1 py-4 text-lg inline-flex items-center justify-center gap-3 ${
-                    isRubber && !selectedRubberColor ? 'opacity-50 cursor-not-allowed' : ''
+                    (isRubber && !selectedRubberColor) || (isShoe && !selectedShoeSize) ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
-                  title={isRubber && !selectedRubberColor ? 'Please select a rubber color first' : ''}
+                  title={
+                    isRubber && !selectedRubberColor 
+                      ? 'Please select a rubber color first' 
+                      : isShoe && !selectedShoeSize 
+                      ? 'Please select a shoe size first' 
+                      : ''
+                  }
                 >
                   <ShoppingCart className="w-6 h-6" />
                   <span>Add to Cart</span>
@@ -515,9 +583,9 @@ export default function ProductDetailClient({ product, allProducts }: ProductDet
                   </span>
                   <button
                     onClick={handleIncrement}
-                    disabled={isRubber && !selectedRubberColor}
+                    disabled={(isRubber && !selectedRubberColor) || (isShoe && !selectedShoeSize)}
                     className={`text-primary hover:bg-primary/10 rounded p-2 transition-colors ${
-                      isRubber && !selectedRubberColor ? 'opacity-50 cursor-not-allowed' : ''
+                      (isRubber && !selectedRubberColor) || (isShoe && !selectedShoeSize) ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >
                     <Plus className="w-6 h-6" />
