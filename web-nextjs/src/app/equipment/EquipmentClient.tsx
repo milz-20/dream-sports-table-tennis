@@ -13,6 +13,7 @@ interface EquipmentClientProps {
   blades: any[];
   rubbers: any[];
   shoes: any[];
+  balls: any[];
   accessories: any[];
   preOwnedRackets: any[];
   enhancedBlades: BladeData[];
@@ -24,6 +25,7 @@ export default function EquipmentClient({
   blades, 
   rubbers,
   shoes,
+  balls,
   accessories,
   preOwnedRackets,
   enhancedBlades,
@@ -163,6 +165,17 @@ export default function EquipmentClient({
                   <span className="sm:hidden">👟 Shoes</span>
                 </Link>
                 <Link
+                  href="/equipment/balls"
+                  className={`px-4 py-2 md:px-6 md:py-2.5 lg:px-8 lg:py-3 rounded-lg font-semibold text-xs md:text-sm lg:text-base transition-all duration-300 ${
+                    activeCategory === 'balls' && !showCustomizer
+                      ? 'bg-primary text-white shadow-lg'
+                      : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-primary'
+                  }`}
+                >
+                  <span className="hidden sm:inline">⚪ Competition Balls</span>
+                  <span className="sm:hidden">⚪ Balls</span>
+                </Link>
+                <Link
                   href="/equipment/preowned"
                   className={`px-4 py-2 md:px-6 md:py-2.5 lg:px-8 lg:py-3 rounded-lg font-semibold text-xs md:text-sm lg:text-base transition-all duration-300 ${
                     activeCategory === 'preowned' && !showCustomizer
@@ -188,72 +201,74 @@ export default function EquipmentClient({
               
               {/* Accessories Sub-buttons - Only show when accessories is active */}
               {activeCategory === 'accessories' && !showCustomizer && (
-                <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3">
-                  <button
-                    onClick={() => {
-                      setSelectedAccessoryType('');
-                      updateURLParams(undefined, '');
-                    }}
-                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
-                      selectedAccessoryType === ''
-                        ? 'bg-primary text-white shadow-md'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    All Accessories
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedAccessoryType('Racket Case');
-                      updateURLParams(undefined, 'Racket Case');
-                    }}
-                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
-                      selectedAccessoryType === 'Racket Case'
-                        ? 'bg-primary text-white shadow-md'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    💼 Racket Case
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedAccessoryType('Edge Tape');
-                      updateURLParams(undefined, 'Edge Tape');
-                    }}
-                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
-                      selectedAccessoryType === 'Edge Tape'
-                        ? 'bg-primary text-white shadow-md'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    🎨 Edge Tape
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedAccessoryType('Racket Cleaner');
-                      updateURLParams(undefined, 'Racket Cleaner');
-                    }}
-                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
-                      selectedAccessoryType === 'Racket Cleaner'
-                        ? 'bg-primary text-white shadow-md'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    🧼 Racket Cleaner
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedAccessoryType('Handle Grip');
-                      updateURLParams(undefined, 'Handle Grip');
-                    }}
-                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all ${
-                      selectedAccessoryType === 'Handle Grip'
-                        ? 'bg-primary text-white shadow-md'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    🤝 Handle Grip
-                  </button>
+                <div className="w-full max-w-4xl mx-auto">
+                  <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3">
+                    <button
+                      onClick={() => {
+                        setSelectedAccessoryType('');
+                        updateURLParams(undefined, '');
+                      }}
+                      className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                        selectedAccessoryType === ''
+                          ? 'bg-primary text-white shadow-md'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      All Accessories
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedAccessoryType('Racket Case');
+                        updateURLParams(undefined, 'Racket Case');
+                      }}
+                      className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                        selectedAccessoryType === 'Racket Case'
+                          ? 'bg-primary text-white shadow-md'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      💼 Racket Case
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedAccessoryType('Edge Tape');
+                        updateURLParams(undefined, 'Edge Tape');
+                      }}
+                      className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                        selectedAccessoryType === 'Edge Tape'
+                          ? 'bg-primary text-white shadow-md'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      🎨 Edge Tape
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedAccessoryType('Racket Cleaner');
+                        updateURLParams(undefined, 'Racket Cleaner');
+                      }}
+                      className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                        selectedAccessoryType === 'Racket Cleaner'
+                          ? 'bg-primary text-white shadow-md'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      🧼 Racket Cleaner
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedAccessoryType('Handle Grip');
+                        updateURLParams(undefined, 'Handle Grip');
+                      }}
+                      className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                        selectedAccessoryType === 'Handle Grip'
+                          ? 'bg-primary text-white shadow-md'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      🤝 Handle Grip
+                    </button>
+                  </div>
                 </div>
               )}
               
@@ -338,7 +353,7 @@ export default function EquipmentClient({
             </div>
           )}
 
-          {(activeCategory === 'balls' || activeCategory === 'tables') ? (
+          {(activeCategory === 'tables') ? (
             <div className="text-center py-16">
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-6">
                 <ShoppingBag className="w-10 h-10 text-gray-400" />
@@ -347,7 +362,7 @@ export default function EquipmentClient({
                 Coming Soon!
               </h3>
               <p className="text-gray-600 mb-6">
-                We're working on adding {activeCategory === 'balls' ? 'balls' : 'tables'} to our inventory.
+                We're working on adding tables to our inventory.
               </p>
               <a 
                 href="https://wa.me/919325173787?text=Hi%20I%20am%20interested%20in%20table%20tennis%20equipment" 
@@ -384,6 +399,8 @@ export default function EquipmentClient({
                   ? rubbers.filter(rubber => !selectedBrand || rubber.name.includes(selectedBrand))
                   : activeCategory === 'shoes'
                   ? shoes
+                  : activeCategory === 'balls'
+                  ? balls
                   : activeCategory === 'accessories'
                   ? accessories.filter(accessory => !selectedAccessoryType || accessory.type === selectedAccessoryType)
                   : preOwnedRackets;
@@ -391,7 +408,7 @@ export default function EquipmentClient({
                 // Apply search filter if query exists
                 if (searchQuery) {
                   // If there's a search query, search across ALL categories
-                  const allProducts = [...blades, ...rubbers, ...shoes, ...accessories, ...preOwnedRackets];
+                  const allProducts = [...blades, ...rubbers, ...shoes, ...balls, ...accessories, ...preOwnedRackets];
                   productsToDisplay = searchProducts(allProducts, searchQuery);
                 }
                 
@@ -502,7 +519,7 @@ export default function EquipmentClient({
           </div>
 
           <p className="text-center text-sm text-gray-500 mt-8">
-            * Shipping times may vary based on location. Free shipping on orders above ₹10,000. Contact us for more details.
+            * Shipping times may vary based on location. Free shipping on orders above ₹2,000. Contact us for more details.
           </p>
         </div>
       </section>

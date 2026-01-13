@@ -309,7 +309,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6">
               <h4 className="font-bold text-lg mb-3">🚚 Fast Shipping Across India</h4>
               <ul className="space-y-2 text-gray-700">
-                <li>✓ Standard Shipping: 4-5 business days (₹100, FREE above ₹10,000)</li>
+                <li>✓ Standard Shipping: 4-5 business days (₹100, FREE above ₹2,000)</li>
                 <li>✓ Express Shipping: 1-2 business days (₹250)</li>
                 <li>✓ Cash on Delivery available</li>
               </ul>

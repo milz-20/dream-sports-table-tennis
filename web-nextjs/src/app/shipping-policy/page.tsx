@@ -48,7 +48,7 @@ export default function ShippingPage() {
               <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6">
                 <h3 className="font-bold text-xl text-green-900 mb-3">📦 Pan-India Shipping</h3>
                 <ul className="space-y-2 text-green-800">
-                  <li><strong>Standard Shipping:</strong> 4-5 business days - ₹100 (Free above ₹10,000)</li>
+                  <li><strong>Standard Shipping:</strong> 4-5 business days - ₹100 (Free above ₹2,000)</li>
                   <li><strong>Express Shipping:</strong> 1-2 business days - ₹250</li>
                 </ul>
               </div>

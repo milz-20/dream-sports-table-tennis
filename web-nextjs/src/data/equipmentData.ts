@@ -105,6 +105,63 @@ const xiomOmega8ChinaImg = '/assets/images/rubbers/omega8china.webp';
 const xiomOmega8EuroImg = '/assets/images/rubbers/omega8euro.webp';
 const xiomOmega8HybridImg = '/assets/images/rubbers/omega8hybrid.webp';
 
+// Ball images
+const doubleFishV40Img = '/assets/images/balls/Double_Fish_v40+.jpg';
+const dhsDJ40Img = '/assets/images/balls/DHS_DJ40+.jpg';
+const gkiSuperbSeamImg = '/assets/images/balls/gki_superbSeam40+.jpg';
+
+// Table Tennis Balls
+export const balls = [
+  {
+    id: 'ball-double-fish-v40',
+    name: 'Double Fish V40+ 3-Star Table Tennis Balls',
+    brand: 'Double Fish',
+    category: 'Balls',
+    rating: 4.5,
+    reviews: 124,
+    type: '3-Star ITTF Approved',
+    material: 'ABS Plastic - Seamless',
+    size: '40mm diameter',
+    features: 'WTT Official Ball, Tournament Grade',
+    description: 'Professional 3-star ITTF approved table tennis balls used in WTT tournaments. Premium seamless ABS plastic construction ensures consistent bounce, excellent durability, and true spin response. Pack of 6 balls perfect for training and competitive play.',
+    price: 450,
+    originalPrice: 699,
+    image: doubleFishV40Img,
+  },
+  {
+    id: 'ball-dhs-dj40',
+    name: 'DHS DJ40+ 3-Star WTT Table Tennis Balls',
+    brand: 'DHS',
+    category: 'Balls',
+    rating: 4.7,
+    reviews: 156,
+    type: '3-Star ITTF Approved',
+    material: 'ABS Plastic - Seamless',
+    size: '40mm diameter',
+    features: 'WTT Official Ball, Pro Tournament Grade',
+    description: 'Premium 3-star ITTF approved balls officially used in WTT (World Table Tennis) tournaments. Superior quality seamless ABS construction provides exceptional roundness, consistent bounce, and outstanding durability. Pack of 6 balls ideal for professional training and competition.',
+    price: 750,
+    originalPrice: 999,
+    image: dhsDJ40Img,
+  },
+  {
+    id: 'ball-gki-superb-seam',
+    name: 'GKI Superb Seam 40+ Table Tennis Balls',
+    brand: 'GKI',
+    category: 'Balls',
+    rating: 4.3,
+    reviews: 98,
+    type: '3-Star Quality',
+    material: 'ABS Plastic',
+    size: '40mm diameter',
+    features: 'Great value, Training & Recreation',
+    description: 'Quality 40+ table tennis balls perfect for training, practice, and recreational play. Durable ABS plastic construction offers good bounce consistency and spin response. Excellent value pack of 6 balls for regular practice sessions and casual games.',
+    price: 400,
+    originalPrice: 599,
+    image: gkiSuperbSeamImg,
+  },
+];
+
 export const blades = [
   {
     id: 'butterfly-timo-boll-alc',
@@ -117,8 +174,8 @@ export const blades = [
     speed: 'OFF+',
     origin: 'Made in Japan',
     description: 'Legendary blade used by Timo Boll. Perfect balance of speed and control with Arylate Carbon layers.',
-    price: 19999,
-    originalPrice: 22999,
+    price: 17999,
+    originalPrice: 29999,
     image: timoBollImg,
   },
   {
@@ -132,8 +189,8 @@ export const blades = [
     speed: 'OFF',
     origin: 'Made in Japan',
     description: 'Signature blade of Olympic Champion Zhang Jike. Excellent for aggressive play with superior control.',
-    price: 13849,
-    originalPrice: 15999,
+    price: 11999,
+    originalPrice: 19999,
     image: zhangJikeImg,
   },
   {
@@ -147,8 +204,8 @@ export const blades = [
     speed: 'OFF++',
     origin: 'Made in Japan',
     description: 'Ultra-fast Super ZLC blade for explosive power. Ideal for advanced players seeking maximum speed.',
-    price: 21999,
-    originalPrice: 24999,
+    price: 24499,
+    originalPrice: 48999,
     image: linYuJuImg,
   },
   {
@@ -162,8 +219,8 @@ export const blades = [
     speed: 'OFF',
     origin: 'Made in Japan',
     description: 'Most popular professional blade. Used by Jan-Ove Waldner. Perfect for all-round offensive play.',
-    price: 17999,
-    originalPrice: 20999,
+    price: 15999,
+    originalPrice: 26999,
     image: viscariaImg,
   },
   {
@@ -177,8 +234,8 @@ export const blades = [
     speed: 'OFF-',
     origin: 'Made in Japan',
     description: 'Inner fiber construction for excellent feel. Great for controlled offensive play and precision.',
-    price: 16999,
-    originalPrice: 19499,
+    price: 14999,
+    originalPrice: 24999,
     image: innerforceImg,
   },
   {
@@ -192,8 +249,8 @@ export const blades = [
     speed: 'OFF',
     origin: 'Made in Japan',
     description: 'Signature blade of young prodigy Harimoto. Exceptional balance of speed, spin, and control.',
-    price: 19499,
-    originalPrice: 22499,
+    price: 16999,
+    originalPrice: 28499,
     image: harimotoImg,
   },
   {
@@ -207,8 +264,8 @@ export const blades = [
     speed: 'OFF+',
     origin: 'Made in Japan',
     description: 'Olympic medalist Jun Mizutani\'s signature blade. ZL Carbon for lightweight explosive power.',
-    price: 18499,
-    originalPrice: 21499,
+    price: 16499,
+    originalPrice: 27499,
     image: mizutaniImg,
   },
   {
@@ -222,8 +279,8 @@ export const blades = [
     speed: 'OFF-',
     origin: 'Made in Japan',
     description: 'Defensive blade with excellent control. Perfect for choppers and all-round defensive players.',
-    price: 15999,
-    originalPrice: 18499,
+    price: 13999,
+    originalPrice: 23499,
     image: hadrawImg,
   },
   {
@@ -237,8 +294,8 @@ export const blades = [
     speed: 'OFF-',
     origin: 'Made in Japan',
     description: 'Classic defensive blade with carbon layers. Used by Zoran Primorac for decades.',
-    price: 14999,
-    originalPrice: 17499,
+    price: 3999,
+    originalPrice: 11499,
     image: primoracImg,
   },
   {
@@ -252,8 +309,8 @@ export const blades = [
     speed: 'OFF+',
     origin: 'Made in Japan',
     description: 'World #1 Fan Zhendong\'s blade. Perfect for powerful loops with exceptional control.',
-    price: 16299,
-    originalPrice: 18999,
+    price: 24749,
+    originalPrice: 49499,
     image: fanZhendongImg,
   },
   {
@@ -267,8 +324,8 @@ export const blades = [
     speed: 'OFF',
     origin: 'Made in Japan',
     description: 'Updated version of legendary Ma Long\'s blade. Perfect balance for offensive play.',
-    price: 21999,
-    originalPrice: 24999,
+    price: 19999,
+    originalPrice: 33999,
     image: maLongImg,
   },
   {
@@ -282,8 +339,8 @@ export const blades = [
     speed: 'OFF',
     origin: 'Made in Japan',
     description: 'Thicker blade for powerful offensive play. Excellent for close-to-table aggressive loops.',
-    price: 13299,
-    originalPrice: 15499,
+    price: 11499,
+    originalPrice: 18999,
     image: garaydiaImg,
   },
   {
@@ -297,8 +354,8 @@ export const blades = [
     speed: 'OFF-',
     origin: 'Made in Japan',
     description: 'Upgraded Korbel with 7-ply construction. More speed while maintaining excellent control.',
-    price: 8499,
-    originalPrice: 9999,
+    price: 5199,
+    originalPrice: 9499,
     image: korbelImg,
   },
   {
@@ -312,8 +369,8 @@ export const blades = [
     speed: 'OFF-',
     origin: 'Made in Japan',
     description: '7-ply blade with excellent touch. Great for spin-oriented offensive play.',
-    price: 9299,
-    originalPrice: 10999,
+    price: 7999,
+    originalPrice: 13499,
     image: sardiusImg,
   },
   {
@@ -327,8 +384,8 @@ export const blades = [
     speed: 'OFF++',
     origin: 'Made in Sweden',
     description: 'Premium carbon blade from Stiga. Exceptional speed and power for aggressive players.',
-    price: 12999,
-    originalPrice: 14999,
+    price: 11499,
+    originalPrice: 18999,
     image: carbonadoImg,
   },
   {
@@ -342,8 +399,8 @@ export const blades = [
     speed: 'OFF+',
     origin: 'Made in Sweden',
     description: 'Innovative teardrop shape for larger sweet spot. Carbon power with enhanced control.',
-    price: 11799,
-    originalPrice: 13499,
+    price: 10499,
+    originalPrice: 17499,
     image: cybershapeImg,
   },
   {

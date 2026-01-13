@@ -34,7 +34,7 @@ export default function CheckoutClient() {
 
   // Calculate shipping charges
   const subtotal = getTotalPrice();
-  const freeShippingThreshold = 10000;
+  const freeShippingThreshold = 2000;
   const expressShippingCharge = 250;
   
   const getShippingCharge = () => {

@@ -92,9 +92,9 @@ const categories: CategoryCard[] = [
     icon: '⚪',
     description: 'Competition grade balls for training',
     href: '/equipment/balls',
-    available: false,
+    available: true,
     gradient: 'from-orange-500 to-orange-600',
-    image: '/assets/images/balls.webp'
+    image: '/assets/images//balls/balls.jpg'
   },
   {
     id: 'tables',
@@ -352,7 +352,7 @@ export default function HomeClient({
           </div>
 
           <p className="text-center text-sm text-gray-500 mt-8">
-            * Shipping times may vary based on location. Free shipping on orders above ₹10,000. Contact us for more details.
+            * Shipping times may vary based on location. Free shipping on orders above ₹2,000. Contact us for more details.
           </p>
         </div>
       </section>
