@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 import { ShoppingBag, CreditCard, MapPin, Phone, Mail } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
 // Razorpay types
 declare global {
@@ -16,6 +17,7 @@ declare global {
 export default function CheckoutClient() {
   const router = useRouter();
   const { items, getTotalPrice, clearCart } = useCart();
+  const { data: session } = useSession();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -27,13 +29,21 @@ export default function CheckoutClient() {
   });
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // TEMPORARY: Use test customer ID for testing
-  // This will be replaced by actual login/signup later
+  // Pre-fill form with user data from session
+  useEffect(() => {
+    if (session?.user) {
+      setFormData(prev => ({
+        ...prev,
+        name: session.user.name || '',
+        email: session.user.email || '',
+        phone: session.user.phone || '',
+      }));
+    }
+  }, [session]);
+
+  // Get customer ID from session or use guest checkout
   const getCustomerId = () => {
-    // Use test customer ID (already exists in database)
-    // You can change this to test different customers:
-    // cst_test001, cst_test002, cst_test003
-    return 'cst_test001';
+    return session?.user?.customerId || `guest_${Date.now()}`;
   };
 
   // Load Razorpay script
@@ -128,15 +138,42 @@ export default function CheckoutClient() {
         theme: {
           color: '#dc2626',
         },
-        handler: function (response: any) {
+        handler: async function (response: any) {
           // Payment successful
           console.log('Payment successful:', response);
           
-          // Clear cart
-          clearCart();
-          
-          // Redirect to success page
-          router.push(`/order-success?orderId=${orderData.order.id}&paymentId=${response.razorpay_payment_id}`);
+          try {
+            // Verify payment with backend
+            const verifyResponse = await fetch('/api/verify-payment', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                orderId: orderData.orderId, // Our internal order ID
+              }),
+            });
+
+            const verifyData = await verifyResponse.json();
+            
+            if (verifyData.success) {
+              // Clear cart
+              clearCart();
+              
+              // Redirect to success page
+              router.push(`/order-success?orderId=${orderData.order.id}&paymentId=${response.razorpay_payment_id}`);
+            } else {
+              alert('Payment verification failed. Please contact support.');
+              setIsProcessing(false);
+            }
+          } catch (error) {
+            console.error('Verification error:', error);
+            alert('Payment verification failed. Please contact support.');
+            setIsProcessing(false);
+          }
         },
         modal: {
           ondismiss: function () {
@@ -155,9 +192,82 @@ export default function CheckoutClient() {
     }
   };
 
-  const handleCODOrder = () => {
-    // Handle Cash on Delivery
-    router.push('/order-success');
+  const handleCODOrder = async () => {
+    setIsProcessing(true);
+    
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_PAYMENT_API_URL;
+      
+      if (!apiUrl || apiUrl === 'YOUR_API_GATEWAY_URL') {
+        alert('Payment API is not configured. Please restart the dev server after adding .env.local file.');
+        setIsProcessing(false);
+        return;
+      }
+      
+      const customerId = getCustomerId();
+      
+      // Create order with COD payment method
+      const orderResponse = await fetch(`${apiUrl}/payment/create-order`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: getTotalPrice(),
+          currency: 'INR',
+          receipt: `cod_order_${Date.now()}`,
+          notes: {
+            customerId: customerId,
+            customerName: formData.name,
+            customerEmail: formData.email,
+            customerPhone: formData.phone,
+            customerAddress: formData.address,
+            customerCity: formData.city,
+            customerPincode: formData.pincode,
+            items: JSON.stringify(items.map(item => ({
+              id: item.id,
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price,
+            }))),
+            paymentMethod: 'cod',
+          },
+        }),
+      });
+
+      if (!orderResponse.ok) {
+        throw new Error('Failed to create COD order');
+      }
+
+      const orderData = await orderResponse.json();
+      console.log('COD Order created:', orderData);
+
+      // Call verify-payment endpoint to update records
+      const verifyResponse = await fetch('/api/verify-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          razorpay_order_id: orderData.orderId,
+          razorpay_payment_id: 'cod_' + Date.now(),
+          razorpay_signature: 'cod_order',
+          payment_method: 'cod',
+        }),
+      });
+
+      if (!verifyResponse.ok) {
+        throw new Error('Failed to confirm COD order');
+      }
+
+      clearCart();
+      router.push('/order-success');
+    } catch (error) {
+      console.error('COD order error:', error);
+      alert('Failed to place COD order. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {

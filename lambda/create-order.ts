@@ -188,7 +188,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         customerId: existingCustomerId,
         status: 'pending',
         totalAmount: requestBody.amount,
-        paymentMethod: 'razorpay',
+        paymentMethod: requestBody.notes?.paymentMethod || 'razorpay',
         paymentStatus: 'pending',
         shippingAddressId: addressId,
         orderItems: cartItems.map(item => ({

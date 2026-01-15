@@ -3,17 +3,23 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home as HomeIcon, ShoppingBag, Mail, ShoppingCart, Menu, X, ChevronDown, ChevronRight } from 'lucide-react';
+import { Home as HomeIcon, ShoppingBag, Mail, ShoppingCart, Menu, X, ChevronDown, ChevronRight, User, LogOut } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import CartDrawer from './CartDrawer';
+import AuthModal from './AuthModal';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Navigation() {
   const pathname = usePathname();
   const { getTotalItems } = useCart();
+  const { data: session } = useSession();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollectionsOpen, setIsCollectionsOpen] = useState(false);
   const [isAccessoriesOpen, setIsAccessoriesOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authTab, setAuthTab] = useState<"login" | "signup">("login");
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   const collectionsLinks = [
     { href: '/equipment?category=blades', label: 'Blades' },
@@ -149,6 +155,54 @@ export default function Navigation() {
                   </span>
                 )}
               </button>
+
+              {/* Auth Buttons */}
+              {session ? (
+                <div className="relative group">
+                  <button
+                    className="px-3 py-2 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-2 text-foreground hover:bg-muted"
+                  >
+                    <User className="w-4 h-4" />
+                    <span>{session.user?.name?.split(' ')[0] || 'Account'}</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                  <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div className="py-2">
+                      <div className="px-4 py-2 text-sm text-gray-500 border-b">
+                        {session.user?.email}
+                      </div>
+                      <button
+                        onClick={() => signOut()}
+                        className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors flex items-center space-x-2"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={() => {
+                      setAuthTab("login");
+                      setIsAuthModalOpen(true);
+                    }}
+                    className="px-3 py-2 rounded-lg font-medium transition-all duration-200 text-foreground hover:bg-muted"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => {
+                      setAuthTab("signup");
+                      setIsAuthModalOpen(true);
+                    }}
+                    className="px-3 py-2 rounded-lg font-medium transition-all duration-200 bg-primary text-white hover:bg-primary/90"
+                  >
+                    Sign Up
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Hamburger Menu Button - Visible on tablet and mobile */}
@@ -285,6 +339,49 @@ export default function Navigation() {
                   <ShoppingCart className="w-5 h-5" />
                   <span>Cart {getTotalItems() > 0 && `(${getTotalItems()})`}</span>
                 </button>
+
+                {/* Auth Buttons */}
+                {session ? (
+                  <>
+                    <div className="px-4 py-2 text-sm text-gray-500 border-t border-b">
+                      {session.user?.name} <br />
+                      <span className="text-xs">{session.user?.email}</span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        signOut();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="px-4 py-3 rounded-lg font-medium transition-all duration-200 inline-flex items-center space-x-3 text-red-600 hover:bg-red-50 text-left"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      <span>Sign Out</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        setAuthTab("login");
+                        setIsAuthModalOpen(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="px-4 py-3 rounded-lg font-medium transition-all duration-200 text-foreground hover:bg-muted text-left border-t"
+                    >
+                      Login
+                    </button>
+                    <button
+                      onClick={() => {
+                        setAuthTab("signup");
+                        setIsAuthModalOpen(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="px-4 py-3 rounded-lg font-medium transition-all duration-200 bg-primary text-white hover:bg-primary/90 text-left"
+                    >
+                      Sign Up
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           )}
@@ -292,6 +389,11 @@ export default function Navigation() {
       </header>
 
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)}
+        defaultTab={authTab}
+      />
     </>
   );
 }
