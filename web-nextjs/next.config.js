@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Removed 'output: export' to enable server-side features (NextAuth, API routes)
+  // Standalone output for AWS Amplify SSR deployment
+  output: 'standalone',
   experimental: {
     serverActions: { allowedOrigins: ['*'] },
   },
