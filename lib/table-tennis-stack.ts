@@ -6,10 +6,28 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as path from 'path';
+// Import table interfaces for type safety
+import {
+  ProductItem,
+  CustomerItem,
+  AddressItem,
+  OrderItem,
+  PaymentItem,
+  ShipmentItem
+} from './table-interfaces';
 
 export class TableTennisInfraStack extends cdk.Stack {
   public readonly amplifyAppId: string;
   public readonly mainBranch: amplify.CfnBranch;
+
+  // Expose table references for other stacks
+  public readonly productsTable: dynamodb.Table;
+  public readonly customersTable: dynamodb.Table;
+  public readonly addressesTable: dynamodb.Table;
+  public readonly ordersTable: dynamodb.Table;
+  public readonly paymentsTable: dynamodb.Table;
+  public readonly shipmentsTable: dynamodb.Table;
+  public readonly sellersTable: dynamodb.Table;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -19,15 +37,157 @@ export class TableTennisInfraStack extends cdk.Stack {
     this.amplifyAppId = 'd34u3bzjibnwqi';
 
     // ========================================
-    // PAYMENT INTEGRATION - RAZORPAY
+    // DYNAMODB TABLES
     // ========================================
+    // See DYNAMODB-DOCUMENTATION.md for detailed field specifications
+    // and table-interfaces.ts for TypeScript type definitions
 
-    // Import existing DynamoDB Table for Orders
-    const ordersTable = dynamodb.Table.fromTableName(
-      this,
-      'OrdersTable',
-      'table-tennis-orders'
-    );
+    // 1. Products Table
+    this.productsTable = new dynamodb.Table(this, 'ProductsTable', {
+      tableName: 'table-tennis-products',
+      partitionKey: { name: 'productId', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'sellerId', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      pointInTimeRecovery: true,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+    });
+
+    // GSIs for Products table
+    this.productsTable.addGlobalSecondaryIndex({
+      indexName: 'CategoryIndex',
+      partitionKey: { name: 'category', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'name', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
+    this.productsTable.addGlobalSecondaryIndex({
+      indexName: 'BrandIndex',
+      partitionKey: { name: 'brand', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'name', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
+    // 2. Customers Table
+    this.customersTable = new dynamodb.Table(this, 'CustomersTable', {
+      tableName: 'table-tennis-customers',
+      partitionKey: { name: 'customerId', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'email', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      pointInTimeRecovery: true,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+    });
+
+    // GSI for phone lookup
+    this.customersTable.addGlobalSecondaryIndex({
+      indexName: 'PhoneIndex',
+      partitionKey: { name: 'phone', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
+    // 3. Addresses Table
+    this.addressesTable = new dynamodb.Table(this, 'AddressesTable', {
+      tableName: 'table-tennis-addresses',
+      partitionKey: { name: 'addressId', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      pointInTimeRecovery: true,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+    });
+
+    // GSI for owner lookup (customers or sellers)
+    this.addressesTable.addGlobalSecondaryIndex({
+      indexName: 'OwnerIndex',
+      partitionKey: { name: 'ownerId', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
+    // 4. Orders Table
+    this.ordersTable = new dynamodb.Table(this, 'OrdersTable', {
+      tableName: 'table-tennis-orders',
+      partitionKey: { name: 'orderId', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'createdAt', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      pointInTimeRecovery: true,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+    });
+
+    // GSIs for Orders table
+    this.ordersTable.addGlobalSecondaryIndex({
+      indexName: 'CustomerOrdersIndex',
+      partitionKey: { name: 'customerId', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'createdAt', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
+    this.ordersTable.addGlobalSecondaryIndex({
+      indexName: 'StatusIndex',
+      partitionKey: { name: 'status', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'createdAt', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
+    // 5. Payments Table
+    this.paymentsTable = new dynamodb.Table(this, 'PaymentsTable', {
+      tableName: 'table-tennis-payments',
+      partitionKey: { name: 'paymentId', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'orderId', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      pointInTimeRecovery: true,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+    });
+
+    // GSI for Razorpay order lookup
+    this.paymentsTable.addGlobalSecondaryIndex({
+      indexName: 'RazorpayIndex',
+      partitionKey: { name: 'razorpayOrderId', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
+    // 6. Shipments Table
+    this.shipmentsTable = new dynamodb.Table(this, 'ShipmentsTable', {
+      tableName: 'table-tennis-shipments',
+      partitionKey: { name: 'shipmentId', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'orderId', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      pointInTimeRecovery: true,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+    });
+
+    // GSI for ShipRocket order lookup
+    this.shipmentsTable.addGlobalSecondaryIndex({
+      indexName: 'ShiprocketIndex',
+      partitionKey: { name: 'shiprocketOrderId', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
+    // GSI for tracking number lookup
+    this.shipmentsTable.addGlobalSecondaryIndex({
+      indexName: 'TrackingIndex',
+      partitionKey: { name: 'trackingNumber', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
+    // 7. Sellers Table
+    this.sellersTable = new dynamodb.Table(this, 'SellersTable', {
+      tableName: 'table-tennis-sellers',
+      partitionKey: { name: 'sellerId', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      pointInTimeRecovery: true,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+    });
+
+    // GSI for email lookup
+    this.sellersTable.addGlobalSecondaryIndex({
+      indexName: 'EmailIndex',
+      partitionKey: { name: 'email', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
 
     // ========================================
     // LAMBDA FUNCTIONS FOR PAYMENT
@@ -42,8 +202,20 @@ export class TableTennisInfraStack extends cdk.Stack {
       memorySize: 256,
       environment: {
         RAZORPAY_SECRET_NAME: 'test_secret',
+        PRODUCTS_TABLE: this.productsTable.tableName,
+        CUSTOMERS_TABLE: this.customersTable.tableName,
+        ADDRESSES_TABLE: this.addressesTable.tableName,
+        ORDERS_TABLE: this.ordersTable.tableName,
+        PAYMENTS_TABLE: this.paymentsTable.tableName,
       },
     });
+
+    // Grant permissions to Lambda
+    this.productsTable.grantReadWriteData(createOrderFunction);
+    this.customersTable.grantReadWriteData(createOrderFunction);
+    this.addressesTable.grantReadWriteData(createOrderFunction);
+    this.ordersTable.grantReadWriteData(createOrderFunction);
+    this.paymentsTable.grantReadWriteData(createOrderFunction);
 
     // Payment Webhook Lambda Function
     const webhookFunction = new lambda.Function(this, 'PaymentWebhookFunction', {
@@ -54,7 +226,10 @@ export class TableTennisInfraStack extends cdk.Stack {
       memorySize: 256,
       environment: {
         RAZORPAY_SECRET_NAME: 'test_secret',
-        ORDERS_TABLE_NAME: ordersTable.tableName,
+        ORDERS_TABLE_NAME: this.ordersTable.tableName,
+        PAYMENTS_TABLE_NAME: this.paymentsTable.tableName,
+        PRODUCTS_TABLE_NAME: this.productsTable.tableName,
+        SELLERS_TABLE_NAME: this.sellersTable.tableName,
       },
     });
 
@@ -72,7 +247,14 @@ export class TableTennisInfraStack extends cdk.Stack {
     }));
 
     // Grant DynamoDB write permissions to webhook function
-    ordersTable.grantWriteData(webhookFunction);
+    this.ordersTable.grantWriteData(webhookFunction);
+    this.paymentsTable.grantWriteData(webhookFunction);
+    this.productsTable.grantWriteData(webhookFunction);
+    this.sellersTable.grantWriteData(webhookFunction);
+    
+    // Grant read permissions to get product and seller details
+    this.productsTable.grantReadData(webhookFunction);
+    this.sellersTable.grantReadData(webhookFunction);
 
     // API Gateway
     const api = new apigateway.RestApi(this, 'PaymentApi', {
@@ -99,7 +281,73 @@ export class TableTennisInfraStack extends cdk.Stack {
     const webhook = payment.addResource('webhook');
     webhook.addMethod('POST', new apigateway.LambdaIntegration(webhookFunction));
 
+    // AWS Amplify - Managing existing app: dream-sports-table-tennis
+    // App ID: d34u3bzjibnwqi in ap-south-1 region
+    // Connected to GitHub repository: milz-20/dream-sports-table-tennis
+    
+    // Note: The existing branch 'shadCNTailwindUI' is already configured in the console
+    // Custom domain 'allabouttabletennis.in' already exists and is managed in Amplify Console
+    // Commenting out to avoid "AlreadyExists" error during deployment
+    /*
+    const customDomain = new amplify.CfnDomain(this, 'CustomDomain', {
+      appId: this.amplifyAppId,
+      domainName: 'allabouttabletennis.in',
+      enableAutoSubDomain: false,
+      subDomainSettings: [
+        {
+          branchName: 'shadCNTailwindUI', // Existing branch name
+          prefix: '', // Root domain
+        },
+        {
+          branchName: 'shadCNTailwindUI',
+          prefix: 'www', // www subdomain
+        },
+      ],
+    });
+    */
 
+    // ========================================
+    // CLOUDFORMATION OUTPUTS
+    // ========================================
+
+    // DynamoDB Tables
+    new cdk.CfnOutput(this, 'ProductsTableName', {
+      value: this.productsTable.tableName,
+      description: 'DynamoDB Products Table Name',
+      exportName: 'TableTennis-ProductsTable',
+    });
+
+    new cdk.CfnOutput(this, 'CustomersTableName', {
+      value: this.customersTable.tableName,
+      description: 'DynamoDB Customers Table Name',
+      exportName: 'TableTennis-CustomersTable',
+    });
+
+    new cdk.CfnOutput(this, 'AddressesTableName', {
+      value: this.addressesTable.tableName,
+      description: 'DynamoDB Addresses Table Name',
+      exportName: 'TableTennis-AddressesTable',
+    });
+
+    new cdk.CfnOutput(this, 'OrdersTableName', {
+      value: this.ordersTable.tableName,
+      description: 'DynamoDB Orders Table Name',
+      exportName: 'TableTennis-OrdersTable',
+    });
+
+    new cdk.CfnOutput(this, 'PaymentsTableName', {
+      value: this.paymentsTable.tableName,
+      description: 'DynamoDB Payments Table Name',
+      exportName: 'TableTennis-PaymentsTable',
+    });
+
+    new cdk.CfnOutput(this, 'ShipmentsTableName', {
+      value: this.shipmentsTable.tableName,
+      description: 'DynamoDB Shipments Table Name',
+      exportName: 'TableTennis-ShipmentsTable',
+    });
+
+    // Amplify Outputs
     new cdk.CfnOutput(this, 'AmplifyAppId', {
       value: this.amplifyAppId,
       description: 'Amplify App ID',
@@ -138,11 +386,6 @@ export class TableTennisInfraStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'WebhookEndpoint', {
       value: `${api.url}payment/webhook`,
       description: 'Razorpay Webhook Endpoint',
-    });
-
-    new cdk.CfnOutput(this, 'OrdersTableName', {
-      value: ordersTable.tableName,
-      description: 'DynamoDB Orders Table Name',
     });
   }
 }

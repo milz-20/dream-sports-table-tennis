@@ -5,6 +5,7 @@ import { CartProvider } from '@/contexts/CartContext'
 import { AuthProvider } from '@/contexts/AuthContext'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
+import NextAuthProvider from '@/components/AuthProvider'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -34,15 +35,17 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen flex flex-col bg-white">
-        <AuthProvider>
-          <CartProvider>
-            <Navigation />
-            <main className="flex-1">
-              {children}
-            </main>
-            <Footer />
-          </CartProvider>
-        </AuthProvider>
+        <NextAuthProvider>
+          <AuthProvider>
+            <CartProvider>
+              <Navigation />
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
+            </CartProvider>
+          </AuthProvider>
+        </NextAuthProvider>
       </body>
     </html>
   )

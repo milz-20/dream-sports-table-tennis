@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
-import { useAuth } from '@/contexts/AuthContext';
 import { ShoppingBag, CreditCard, MapPin, Phone, Mail, User as UserIcon, Truck } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import AuthModal from '@/components/AuthModal';
 
 // Razorpay types
@@ -18,8 +18,7 @@ declare global {
 export default function CheckoutClient() {
   const router = useRouter();
   const { items, getTotalPrice, clearCart } = useCart();
-  const { user } = useAuth();
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const { data: session } = useSession();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -31,40 +30,36 @@ export default function CheckoutClient() {
     shippingType: 'standard', // 'standard' or 'express'
   });
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
-  // Calculate shipping charges
-  const subtotal = getTotalPrice();
+  // Shipping constants
   const freeShippingThreshold = 2000;
-  const expressShippingCharge = 250;
+  const expressShippingCharge = 200;
   
-  const getShippingCharge = () => {
-    if (formData.shippingType === 'express') {
-      return expressShippingCharge;
-    }
-    // Standard shipping is free above threshold, otherwise ₹100
-    return subtotal >= freeShippingThreshold ? 0 : 100;
-  };
-
-  const shippingCharge = getShippingCharge();
+  // Calculate values
+  const subtotal = getTotalPrice();
+  const shippingCharge = formData.shippingType === 'express' 
+    ? expressShippingCharge 
+    : (subtotal >= freeShippingThreshold ? 0 : 100);
   const totalPrice = subtotal + shippingCharge;
+  const user = session?.user;
 
-  // Pre-fill form with user data
+  // Pre-fill form with user data from session
   useEffect(() => {
-    if (user) {
+    if (session?.user) {
       setFormData(prev => ({
         ...prev,
-        name: user.name || '',
-        email: user.email || '',
+        name: session.user.name || '',
+        email: session.user.email || '',
+        phone: session.user.phone || '',
       }));
     }
-  }, [user]);
+  }, [session]);
 
-  // Show auth modal if user is not logged in
-  useEffect(() => {
-    if (!user && items.length > 0) {
-      setShowAuthModal(true);
-    }
-  }, [user, items.length]);
+  // Get customer ID from session or use guest checkout
+  const getCustomerId = () => {
+    return session?.user?.customerId || `guest_${Date.now()}`;
+  };
 
   // Load Razorpay script
   const loadRazorpayScript = () => {
@@ -109,6 +104,10 @@ export default function CheckoutClient() {
       console.log('Creating order with amount:', totalPrice);
       console.log('Customer ID:', (user as any).customerId);
       
+      // Get customer ID (temporary until login/signup is implemented)
+      const customerId = getCustomerId();
+      console.log('Using customer ID:', customerId);
+      
       // Create order on backend
       const orderResponse = await fetch(`${apiUrl}/payment/create-order`, {
         method: 'POST',
@@ -121,7 +120,7 @@ export default function CheckoutClient() {
           receipt: `order_${Date.now()}`,
           customerId: (user as any).customerId, // Add customer ID from auth
           notes: {
-            customerId: (user as any).customerId,
+            customerId: customerId, // Pass existing customer ID
             customerName: formData.name,
             customerEmail: formData.email,
             customerPhone: formData.phone,
@@ -169,45 +168,38 @@ export default function CheckoutClient() {
           // Payment successful
           console.log('Payment successful:', response);
           
-          // Send WhatsApp notification
           try {
-            await fetch('/api/notify-order', {
+            // Verify payment with backend
+            const verifyResponse = await fetch('/api/verify-payment', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                orderId: orderData.order.id,
-                paymentId: response.razorpay_payment_id,
-                customerName: formData.name,
-                customerEmail: formData.email,
-                customerPhone: formData.phone,
-                customerAddress: formData.address,
-                customerCity: formData.city,
-                customerPincode: formData.pincode,
-                items: items.map(item => ({
-                  name: item.name,
-                  quantity: item.quantity,
-                  price: item.price,
-                  category: item.category,
-                })),
-                subtotal: subtotal,
-                shippingType: formData.shippingType,
-                shippingCharge: shippingCharge,
-                totalAmount: totalPrice,
-                paymentMethod: 'Online Payment',
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                orderId: orderData.orderId, // Our internal order ID
               }),
             });
-          } catch (notifError) {
-            console.error('Failed to send notification:', notifError);
-            // Don't block the order flow if notification fails
+
+            const verifyData = await verifyResponse.json();
+            
+            if (verifyData.success) {
+              // Clear cart
+              clearCart();
+              
+              // Redirect to success page
+              router.push(`/order-success?orderId=${orderData.order.id}&paymentId=${response.razorpay_payment_id}`);
+            } else {
+              alert('Payment verification failed. Please contact support.');
+              setIsProcessing(false);
+            }
+          } catch (error) {
+            console.error('Verification error:', error);
+            alert('Payment verification failed. Please contact support.');
+            setIsProcessing(false);
           }
-          
-          // Clear cart
-          clearCart();
-          
-          // Redirect to success page
-          router.push(`/order-success?orderId=${orderData.order.id}&paymentId=${response.razorpay_payment_id}`);
         },
         modal: {
           ondismiss: function () {
@@ -227,53 +219,81 @@ export default function CheckoutClient() {
   };
 
   const handleCODOrder = async () => {
-    // Check if user is logged in
-    if (!user) {
-      setShowAuthModal(true);
-      return;
-    }
-
-    // Handle Cash on Delivery
-    const orderId = `COD_${Date.now()}`;
+    setIsProcessing(true);
     
-    // Send SMS notification
     try {
-      await fetch('/api/notify-order', {
+      const apiUrl = process.env.NEXT_PUBLIC_PAYMENT_API_URL;
+      
+      if (!apiUrl || apiUrl === 'YOUR_API_GATEWAY_URL') {
+        alert('Payment API is not configured. Please restart the dev server after adding .env.local file.');
+        setIsProcessing(false);
+        return;
+      }
+      
+      const customerId = getCustomerId();
+      
+      // Create order with COD payment method
+      const orderResponse = await fetch(`${apiUrl}/payment/create-order`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          orderId: orderId,
-          customerId: (user as any).customerId,
-          customerName: formData.name,
-          customerEmail: formData.email,
-          customerPhone: formData.phone,
-          customerAddress: formData.address,
-          customerCity: formData.city,
-          customerPincode: formData.pincode,
-          items: items.map(item => ({
-            name: item.name,
-            quantity: item.quantity,
-            price: item.price,
-            category: item.category,
-          })),
-          subtotal: subtotal,
-          shippingType: formData.shippingType,
-          shippingCharge: shippingCharge,
-          totalAmount: totalPrice,
-          paymentMethod: 'Cash on Delivery',
+          amount: getTotalPrice(),
+          currency: 'INR',
+          receipt: `cod_order_${Date.now()}`,
+          notes: {
+            customerId: customerId,
+            customerName: formData.name,
+            customerEmail: formData.email,
+            customerPhone: formData.phone,
+            customerAddress: formData.address,
+            customerCity: formData.city,
+            customerPincode: formData.pincode,
+            items: JSON.stringify(items.map(item => ({
+              id: item.id,
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price,
+            }))),
+            paymentMethod: 'cod',
+          },
         }),
       });
+
+      if (!orderResponse.ok) {
+        throw new Error('Failed to create COD order');
+      }
+
+      const orderData = await orderResponse.json();
+      console.log('COD Order created:', orderData);
+
+      // Call verify-payment endpoint to update records
+      const verifyResponse = await fetch('/api/verify-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          razorpay_order_id: orderData.orderId,
+          razorpay_payment_id: 'cod_' + Date.now(),
+          razorpay_signature: 'cod_order',
+          payment_method: 'cod',
+        }),
+      });
+
+      if (!verifyResponse.ok) {
+        throw new Error('Failed to confirm COD order');
+      }
+
+      clearCart();
+      router.push('/order-success');
     } catch (error) {
-      console.error('Failed to send notification:', error);
-      // Don't block the order flow if notification fails
+      console.error('COD order error:', error);
+      alert('Failed to place COD order. Please try again.');
+    } finally {
+      setIsProcessing(false);
     }
-    
-    // Clear cart
-    clearCart();
-    
-    router.push(`/order-success?orderId=${orderId}`);
   };
 
   const handleSubmit = (e: React.FormEvent) => {

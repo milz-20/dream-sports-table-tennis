@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  // Removed 'output: export' to enable server-side features (NextAuth, API routes)
   experimental: {
     serverActions: { allowedOrigins: ['*'] },
   },

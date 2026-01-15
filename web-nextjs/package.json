@@ -13,14 +13,19 @@
     "@aws-sdk/client-dynamodb": "^3.461.0",
     "@aws-sdk/client-sns": "^3.966.0",
     "@aws-sdk/lib-dynamodb": "^3.461.0",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/uuid": "^11.0.0",
+    "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.555.0",
     "next": "^14.2.0",
+    "next-auth": "^4.24.13",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@aws-amplify/backend-cli": "^1.8.1",
